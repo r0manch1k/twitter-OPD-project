@@ -1,8 +1,8 @@
 import tzlocal
 from pytz import timezone, utc
 from datetime import datetime
-from DataBase import DataBase
-from UserInfo import UserInfo
+from src.main.objects.server.DataBase import DataBase
+from src.main.objects.server.UserInfo import UserInfo
 
 
 class PostTools:
