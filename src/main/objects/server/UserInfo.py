@@ -1,4 +1,4 @@
-from DataBase import DataBase
+from src.main.objects.server.DataBase import DataBase
 from src.main.objects.server.Static import getConfigInfo, setConfigInfo
 
 
