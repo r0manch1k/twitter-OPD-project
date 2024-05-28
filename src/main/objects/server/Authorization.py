@@ -32,13 +32,8 @@ class Authorization:
             self.__db.insert(
             f"""INSERT INTO Users (login, password, name, access) \
                 VALUES  ('{in_login}', '{password}', '{in_name}', 'user');""")
-            
-        if not self.__db.connect():
-            return 'CONNECTION_ERROR: Check your internet connection'
-        else:
-            userID = self.__db.select(f"""SELECT user_id FROM Users WHERE login = '{in_login}';""")
 
-        setConfigInfo('current_user', 'user_id', userID)
+        setConfigInfo('current_user', 'login', in_login)
         UserInfo().updateConfig()
 
         return None
@@ -58,7 +53,7 @@ class Authorization:
         if user_info['password'] != hashed_in_password:
             return 'PASSWORD_ERROR: ' + "Wrong password"
 
-        setConfigInfo('current_user', 'user_id', str(user_info['user_id']))
+        setConfigInfo('current_user', 'login', in_login)
         UserInfo().updateConfig()
 
         return None

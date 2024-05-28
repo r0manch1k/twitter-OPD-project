@@ -7,21 +7,28 @@ class UserInfo:
         self.__db = DataBase()
 
     def updateConfig(self):
-        userID = self.userID
-        if userID == "-1":
+        login = self.login
+        if login == "-1":
             return
         
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            user_info = self.__db.select(f"""SELECT * FROM Users WHERE user_id = '{userID}';""")[0]
+            user_info = self.__db.select(f"""SELECT * FROM Users WHERE login = '{login}';""")[0]
         
-        setConfigInfo('current_user', 'login', str(user_info['login']))
         setConfigInfo('current_user', 'user_id', str(user_info['user_id']))
         setConfigInfo('current_user', 'name', str(user_info['name']))
         setConfigInfo('current_user', 'access', str(user_info['access']))
         setConfigInfo('current_user', 'image_id', str(user_info['image_id']))
         setConfigInfo('current_user', 'info', str(user_info['info']))
+
+    def getOtherInfo(self, login):
+        if not self.__db.connect():
+            return 'CONNECTION_ERROR: Check your internet connection'
+        else:
+            user_info = self.__db.select(f"""SELECT * FROM Users WHERE login = '{login}';""")[0]
+        
+        return user_info
     
     @property
     def userID(self):
