@@ -54,21 +54,22 @@ class PostTools:
 
         return ids
 
-    def getPostInfo(self, post_id):
+    def getPostInfo(self, post_ids):
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            post_info = self.__db.select(f"""SELECT * FROM Posts WHERE post_id = '{post_id}';""")[0]
+            posts_info = self.__db.select(f"""SELECT * FROM Posts \
+                                          WHERE post_id IN ({', '.join([str(i) for i in post_ids])});""")
 
-        server_datetime = utc.localize(datetime.strptime(post_info['post_time'], "%Y-%m-%d %H:%M:%S"))
-        post_info['post_time'] = server_datetime.astimezone(timezone(str(tzlocal.get_localzone()))).strftime(
-            "%I:%M %p - %d %b %Y")
+        for i in range(len(posts_info)):
+            server_datetime = utc.localize(datetime.strptime(posts_info[i]['post_time'], "%Y-%m-%d %H:%M:%S"))
+            posts_info[i]['post_time'] = server_datetime.astimezone(timezone(str(tzlocal.get_localzone()))).strftime(
+                "%I:%M %p - %d %b %Y")
 
-        return post_info
+        return posts_info
 
 # Example to using
 # p = PostTools()
 # print(p.createPost("я руся", 19, 45))
 # ids = p.getPostIds(sort_by_time=True)
-# for i in ids:
-#     print(p.getPostInfo(i))
+# print(p.getPostInfo(ids))
