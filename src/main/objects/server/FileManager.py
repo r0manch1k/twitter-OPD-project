@@ -169,13 +169,13 @@ class FileManager(Singleton):
             self.__db.insert(f"""UPDATE `Images` SET path = '{UUID + fileType}' WHERE image_id = {str(imageID)};""")
         elif imageID and imageID == 1:
             self.__db.insert(f"INSERT INTO `Images` (path) VALUES ('{UUID + fileType}')")
-            imageID = self.__db.select(f"SELECT image_id FROM `Images` WHERE path = '{UUID + fileType}'")["image_id"]
+            imageID = self.__db.select(f"SELECT image_id FROM `Images` WHERE path = '{UUID + fileType}'")[0]["image_id"]
 
         if videoID and videoID > 1:
             self.__db.insert(f"""UPDATE `Videos` SET path = '{UUID + fileType}' WHERE image_id = {str(videoID)};""")
         elif videoID and videoID == 1:
             self.__db.insert(f"INSERT INTO `Videos` (path) VALUES ('{UUID + fileType}')")
-            videoID = self.__db.select(f"SELECT video_id FROM `Videos` WHERE path = '{UUID + fileType}'")["video_id"]
+            videoID = self.__db.select(f"SELECT video_id FROM `Videos` WHERE path = '{UUID + fileType}'")[0]["video_id"]
 
         if imageID:
             return imageID
@@ -197,7 +197,7 @@ class FileManager(Singleton):
             row = self.__db.select(f"SELECT path FROM `Videos` WHERE video_id = {videoID}")[0]
             UUID = row["path"].split(".")[0]
         else:
-            raise ValueError("Can't delete default imageID/videID!")
+            raise ValueError("Can't delete default imageID/videoID!")
 
         if imageID:
             fileType = ".png"
@@ -229,7 +229,7 @@ class FileManager(Singleton):
             self.__db.insert(f"DELETE FROM `Images` WHERE image_id = {imageID};")
             self.__db.insert(f"UPDATE `Users` SET image_id = 1 WHERE image_id IS NULL")
         else:
-            self.__db.insert(f"DELETE FROM `Videos` WHERE video_id = {str(videoID)};")
+            self.__db.insert(f"DELETE FROM `Videos` WHERE video_id = {videoID};")
             self.__db.insert(f"UPDATE `Users` SET video_id = 1 WHERE video_id IS NULL")
 
     def __clear(self) -> None:

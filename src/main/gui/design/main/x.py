@@ -321,8 +321,10 @@ class Ui_MainWindow(object):
         self.frame_HomePosts.setObjectName(u"frame_HomePosts")
         self.frame_HomePosts.setFrameShape(QFrame.StyledPanel)
         self.frame_HomePosts.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_3 = QVBoxLayout(self.frame_HomePosts)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.layout_Posts = QVBoxLayout(self.frame_HomePosts)
+        self.layout_Posts.setSpacing(20)
+        self.layout_Posts.setObjectName(u"layout_Posts")
+        self.layout_Posts.setContentsMargins(150, 10, 150, 10)
 
         self.verticalLayout_4.addWidget(self.frame_HomePosts)
 
@@ -476,6 +478,10 @@ class Ui_MainWindow(object):
 "	color: white;\n"
 "}\n"
 "\n"
+"QLabel#label_AccountPhoto {\n"
+"	border-radius: 75px;\n"
+"}\n"
+"\n"
 "QFrame#frame_AccountInfoContainer {\n"
 "	border-radius: 0;\n"
 "}\n"
@@ -483,39 +489,10 @@ class Ui_MainWindow(object):
 "")
         self.frame_AccountInfoContainer.setFrameShape(QFrame.StyledPanel)
         self.frame_AccountInfoContainer.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_7 = QHBoxLayout(self.frame_AccountInfoContainer)
-        self.horizontalLayout_7.setSpacing(10)
-        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(20, 10, 10, 10)
-        self.frame_AccountPhoto = QFrame(self.frame_AccountInfoContainer)
-        self.frame_AccountPhoto.setObjectName(u"frame_AccountPhoto")
-        self.frame_AccountPhoto.setMinimumSize(QSize(150, 150))
-        self.frame_AccountPhoto.setMaximumSize(QSize(150, 150))
-        self.frame_AccountPhoto.setStyleSheet(u"")
-        self.frame_AccountPhoto.setFrameShape(QFrame.StyledPanel)
-        self.frame_AccountPhoto.setFrameShadow(QFrame.Raised)
-        self.gridLayout_3 = QGridLayout(self.frame_AccountPhoto)
-        self.gridLayout_3.setSpacing(10)
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.button_AccountPhotoAdd = QPushButton(self.frame_AccountPhoto)
-        self.button_AccountPhotoAdd.setObjectName(u"button_AccountPhotoAdd")
-        self.button_AccountPhotoAdd.setMinimumSize(QSize(40, 40))
-        self.button_AccountPhotoAdd.setMaximumSize(QSize(40, 40))
-
-        self.gridLayout_3.addWidget(self.button_AccountPhotoAdd, 1, 1, 1, 1)
-
-        self.verticalSpacer = QSpacerItem(37, 97, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_3.addItem(self.verticalSpacer, 0, 1, 1, 1)
-
-        self.horizontalSpacer = QSpacerItem(97, 37, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_3.addItem(self.horizontalSpacer, 1, 0, 1, 1)
-
-
-        self.horizontalLayout_7.addWidget(self.frame_AccountPhoto)
-
+        self.layout_AccountInfoContainer = QHBoxLayout(self.frame_AccountInfoContainer)
+        self.layout_AccountInfoContainer.setSpacing(10)
+        self.layout_AccountInfoContainer.setObjectName(u"layout_AccountInfoContainer")
+        self.layout_AccountInfoContainer.setContentsMargins(20, 10, 10, 10)
         self.frame_AccountInfo = QFrame(self.frame_AccountInfoContainer)
         self.frame_AccountInfo.setObjectName(u"frame_AccountInfo")
         self.frame_AccountInfo.setMinimumSize(QSize(0, 150))
@@ -532,19 +509,16 @@ class Ui_MainWindow(object):
 "QLabel#label_AccountInformationText {\n"
 "	padding-bottom: 5px;\n"
 "	border-bottom: 1px solid rgb(229,235,238);\n"
-"	background-color:  white;\n"
 "}\n"
 "\n"
 "QLabel#label_AccountInformationID {\n"
 "	margin: 0;\n"
 "	border-bottom-left-radius: 10px;\n"
-"	background-color:  white;\n"
 "}\n"
 "\n"
 "QLabel#label_AccountInformationAccess{\n"
 "	margin: 0;\n"
 "	border-bottom-right-radius: 10px;\n"
-"	background-color:  white;\n"
 "}\n"
 "\n"
 "\n"
@@ -568,12 +542,12 @@ class Ui_MainWindow(object):
 "\n"
 "QPushButton#button_AccountExitYes:pressed {\n"
 "	background-color: rgb(167,0,0);\n"
-""
-                        "}\n"
+"}\n"
 "\n"
 "QPushButton#button_AccountExitNo {\n"
 "	border-top-left-radius: 0;\n"
-"	border-bottom-left-radius: 0;\n"
+"	border-bo"
+                        "ttom-left-radius: 0;\n"
 "	background-color: rgb(229,235,238);\n"
 "}\n"
 "\n"
@@ -609,6 +583,9 @@ class Ui_MainWindow(object):
         self.label_AccountNickname.setSizePolicy(sizePolicy)
         self.label_AccountNickname.setMinimumSize(QSize(0, 30))
         self.label_AccountNickname.setMaximumSize(QSize(16777215, 30))
+        font2 = QFont()
+        font2.setPointSize(28)
+        self.label_AccountNickname.setFont(font2)
         self.label_AccountNickname.setStyleSheet(u"")
         self.label_AccountNickname.setScaledContents(False)
         self.label_AccountNickname.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
@@ -684,10 +661,10 @@ class Ui_MainWindow(object):
         self.label_AccountInformationID.setObjectName(u"label_AccountInformationID")
         self.label_AccountInformationID.setMinimumSize(QSize(0, 20))
         self.label_AccountInformationID.setMaximumSize(QSize(100, 20))
-        font2 = QFont()
-        font2.setPointSize(12)
-        font2.setItalic(False)
-        self.label_AccountInformationID.setFont(font2)
+        font3 = QFont()
+        font3.setPointSize(12)
+        font3.setItalic(False)
+        self.label_AccountInformationID.setFont(font3)
         self.label_AccountInformationID.setStyleSheet(u"")
         self.label_AccountInformationID.setIndent(0)
         self.label_AccountInformationID.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
@@ -698,9 +675,9 @@ class Ui_MainWindow(object):
         self.label_AccountInformationText.setObjectName(u"label_AccountInformationText")
         self.label_AccountInformationText.setMinimumSize(QSize(200, 20))
         self.label_AccountInformationText.setMaximumSize(QSize(50, 70))
-        font3 = QFont()
-        font3.setItalic(False)
-        self.label_AccountInformationText.setFont(font3)
+        font4 = QFont()
+        font4.setItalic(False)
+        self.label_AccountInformationText.setFont(font4)
         self.label_AccountInformationText.setStyleSheet(u"")
         self.label_AccountInformationText.setAlignment(Qt.AlignBottom|Qt.AlignLeading|Qt.AlignLeft)
         self.label_AccountInformationText.setWordWrap(True)
@@ -758,7 +735,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.frame_AccountButtons)
 
 
-        self.horizontalLayout_7.addWidget(self.frame_AccountInfo)
+        self.layout_AccountInfoContainer.addWidget(self.frame_AccountInfo)
 
 
         self.gridLayout_4.addWidget(self.frame_AccountInfoContainer, 0, 0, 1, 2)
@@ -784,14 +761,14 @@ class Ui_MainWindow(object):
         self.verticalLayout_13 = QVBoxLayout(self.frame_AccountEditContainer)
         self.verticalLayout_13.setSpacing(10)
         self.verticalLayout_13.setObjectName(u"verticalLayout_13")
-        self.verticalLayout_13.setContentsMargins(20, 10, 0, 10)
+        self.verticalLayout_13.setContentsMargins(20, 0, 0, 10)
         self.scrollArea_AccountEdit = QScrollArea(self.frame_AccountEditContainer)
         self.scrollArea_AccountEdit.setObjectName(u"scrollArea_AccountEdit")
         self.scrollArea_AccountEdit.setStyleSheet(u"")
         self.scrollArea_AccountEdit.setWidgetResizable(True)
         self.scrollAreaWidget_AccountEdit = QWidget()
         self.scrollAreaWidget_AccountEdit.setObjectName(u"scrollAreaWidget_AccountEdit")
-        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, 0, 580, 691))
+        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, 0, 580, 651))
         self.scrollAreaWidget_AccountEdit.setStyleSheet(u"")
         self.verticalLayout_8 = QVBoxLayout(self.scrollAreaWidget_AccountEdit)
         self.verticalLayout_8.setSpacing(10)
@@ -813,13 +790,13 @@ class Ui_MainWindow(object):
         self.label_AccountEditSettings.setObjectName(u"label_AccountEditSettings")
         self.label_AccountEditSettings.setMinimumSize(QSize(0, 50))
         self.label_AccountEditSettings.setMaximumSize(QSize(16777215, 50))
-        font4 = QFont()
-        font4.setPointSize(20)
-        font4.setBold(False)
-        font4.setItalic(False)
-        font4.setUnderline(False)
-        font4.setStrikeOut(False)
-        self.label_AccountEditSettings.setFont(font4)
+        font5 = QFont()
+        font5.setPointSize(20)
+        font5.setBold(False)
+        font5.setItalic(False)
+        font5.setUnderline(False)
+        font5.setStrikeOut(False)
+        self.label_AccountEditSettings.setFont(font5)
         self.label_AccountEditSettings.setStyleSheet(u"")
         self.label_AccountEditSettings.setLineWidth(0)
         self.label_AccountEditSettings.setIndent(0)
@@ -828,8 +805,8 @@ class Ui_MainWindow(object):
 
         self.frame_AccountEditTabs = QFrame(self.frame_AccountEditTabsContainer)
         self.frame_AccountEditTabs.setObjectName(u"frame_AccountEditTabs")
-        self.frame_AccountEditTabs.setMinimumSize(QSize(0, 60))
-        self.frame_AccountEditTabs.setMaximumSize(QSize(16777215, 60))
+        self.frame_AccountEditTabs.setMinimumSize(QSize(0, 50))
+        self.frame_AccountEditTabs.setMaximumSize(QSize(16777215, 50))
         self.frame_AccountEditTabs.setStyleSheet(u"QFrame {\n"
 "	border-radius: 0;\n"
 "	border-top-left-radius: 20px;\n"
@@ -863,7 +840,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_11 = QHBoxLayout(self.frame_AccountEditTabs)
         self.horizontalLayout_11.setSpacing(10)
         self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
-        self.horizontalLayout_11.setContentsMargins(0, 10, 0, 10)
+        self.horizontalLayout_11.setContentsMargins(0, 0, 0, 10)
         self.button_AccountEditTabsProfile = QPushButton(self.frame_AccountEditTabs)
         self.buttonGroup_AccountEditTabs = QButtonGroup(MainWindow)
         self.buttonGroup_AccountEditTabs.setObjectName(u"buttonGroup_AccountEditTabs")
@@ -1054,10 +1031,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_14.addWidget(self.label_AccountEditPhoto_2)
 
-        self.verticalSpacer_8 = QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-
-        self.verticalLayout_14.addItem(self.verticalSpacer_8)
-
         self.frame_AccountEditAccountContainer = QFrame(self.frame_AccountEditProfileContainer)
         self.frame_AccountEditAccountContainer.setObjectName(u"frame_AccountEditAccountContainer")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
@@ -1077,9 +1050,9 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QLabel#label_Sign_1,\n"
-"QLabel#label_Sign_2,\n"
+"QLabel#label_AccountEditNameSymbols,\n"
 "QLabel#label_Sign_3,\n"
-"QLabel#label_Sign_4 { \n"
+"QLabel#label_AccountEditAboutSymbols { \n"
 "	color: rgb(184,191,195);\n"
 "}\n"
 "\n"
@@ -1117,15 +1090,16 @@ class Ui_MainWindow(object):
         self.gridLayout_9 = QGridLayout(self.frame_AccountEditNickname)
         self.gridLayout_9.setObjectName(u"gridLayout_9")
         self.gridLayout_9.setHorizontalSpacing(10)
-        self.gridLayout_9.setVerticalSpacing(5)
+        self.gridLayout_9.setVerticalSpacing(0)
         self.gridLayout_9.setContentsMargins(0, 0, 0, 0)
         self.label_3 = QLabel(self.frame_AccountEditNickname)
         self.label_3.setObjectName(u"label_3")
         self.label_3.setMinimumSize(QSize(0, 25))
         self.label_3.setMaximumSize(QSize(16777215, 25))
-        font5 = QFont()
-        font5.setPointSize(15)
-        self.label_3.setFont(font5)
+        font6 = QFont()
+        font6.setPointSize(15)
+        self.label_3.setFont(font6)
+        self.label_3.setAlignment(Qt.AlignBottom|Qt.AlignLeading|Qt.AlignLeft)
         self.label_3.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
         self.gridLayout_9.addWidget(self.label_3, 1, 0, 1, 1)
@@ -1151,22 +1125,18 @@ class Ui_MainWindow(object):
 
         self.gridLayout_9.addWidget(self.line_AccountEditName, 3, 0, 1, 1)
 
-        self.label_Sign_4 = QLabel(self.frame_AccountEditNickname)
-        self.label_Sign_4.setObjectName(u"label_Sign_4")
-        self.label_Sign_4.setMinimumSize(QSize(0, 15))
-        self.label_Sign_4.setMaximumSize(QSize(16777215, 15))
-        self.label_Sign_4.setFont(font)
-        self.label_Sign_4.setIndent(0)
-        self.label_Sign_4.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
+        self.label_AccountEditNameSymbols = QLabel(self.frame_AccountEditNickname)
+        self.label_AccountEditNameSymbols.setObjectName(u"label_AccountEditNameSymbols")
+        self.label_AccountEditNameSymbols.setMinimumSize(QSize(0, 15))
+        self.label_AccountEditNameSymbols.setMaximumSize(QSize(16777215, 15))
+        self.label_AccountEditNameSymbols.setFont(font)
+        self.label_AccountEditNameSymbols.setIndent(0)
+        self.label_AccountEditNameSymbols.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
-        self.gridLayout_9.addWidget(self.label_Sign_4, 4, 0, 1, 1)
+        self.gridLayout_9.addWidget(self.label_AccountEditNameSymbols, 4, 0, 1, 1)
 
 
         self.verticalLayout_7.addWidget(self.frame_AccountEditNickname)
-
-        self.verticalSpacer_7 = QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-
-        self.verticalLayout_7.addItem(self.verticalSpacer_7)
 
         self.frame_AccountEditInfo = QFrame(self.frame_AccountEditAccountContainer)
         self.frame_AccountEditInfo.setObjectName(u"frame_AccountEditInfo")
@@ -1178,7 +1148,7 @@ class Ui_MainWindow(object):
         self.gridLayout_10 = QGridLayout(self.frame_AccountEditInfo)
         self.gridLayout_10.setObjectName(u"gridLayout_10")
         self.gridLayout_10.setHorizontalSpacing(10)
-        self.gridLayout_10.setVerticalSpacing(5)
+        self.gridLayout_10.setVerticalSpacing(0)
         self.gridLayout_10.setContentsMargins(0, 0, 0, 0)
         self.label_Sign_1 = QLabel(self.frame_AccountEditInfo)
         self.label_Sign_1.setObjectName(u"label_Sign_1")
@@ -1198,7 +1168,8 @@ class Ui_MainWindow(object):
         self.label_4.setObjectName(u"label_4")
         self.label_4.setMinimumSize(QSize(0, 25))
         self.label_4.setMaximumSize(QSize(16777215, 25))
-        self.label_4.setFont(font5)
+        self.label_4.setFont(font6)
+        self.label_4.setAlignment(Qt.AlignBottom|Qt.AlignLeading|Qt.AlignLeft)
         self.label_4.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
         self.gridLayout_10.addWidget(self.label_4, 0, 0, 1, 1)
@@ -1210,25 +1181,21 @@ class Ui_MainWindow(object):
 
         self.gridLayout_10.addWidget(self.line_AccountEditAbout, 2, 0, 1, 1)
 
-        self.label_Sign_2 = QLabel(self.frame_AccountEditInfo)
-        self.label_Sign_2.setObjectName(u"label_Sign_2")
-        self.label_Sign_2.setMinimumSize(QSize(0, 15))
-        self.label_Sign_2.setMaximumSize(QSize(16777215, 15))
-        self.label_Sign_2.setFont(font)
-        self.label_Sign_2.setIndent(0)
-        self.label_Sign_2.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
+        self.label_AccountEditAboutSymbols = QLabel(self.frame_AccountEditInfo)
+        self.label_AccountEditAboutSymbols.setObjectName(u"label_AccountEditAboutSymbols")
+        self.label_AccountEditAboutSymbols.setMinimumSize(QSize(0, 15))
+        self.label_AccountEditAboutSymbols.setMaximumSize(QSize(16777215, 15))
+        self.label_AccountEditAboutSymbols.setFont(font)
+        self.label_AccountEditAboutSymbols.setIndent(0)
+        self.label_AccountEditAboutSymbols.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
-        self.gridLayout_10.addWidget(self.label_Sign_2, 3, 0, 1, 1)
+        self.gridLayout_10.addWidget(self.label_AccountEditAboutSymbols, 3, 0, 1, 1)
 
 
         self.verticalLayout_7.addWidget(self.frame_AccountEditInfo)
 
 
         self.verticalLayout_14.addWidget(self.frame_AccountEditAccountContainer)
-
-        self.verticalSpacer_10 = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-
-        self.verticalLayout_14.addItem(self.verticalSpacer_10)
 
         self.label_AccountEditProfileWarning = QLabel(self.frame_AccountEditProfileContainer)
         self.label_AccountEditProfileWarning.setObjectName(u"label_AccountEditProfileWarning")
@@ -1261,17 +1228,17 @@ class Ui_MainWindow(object):
         self.button_AccountEditProfileCancel = QPushButton(self.frame_AccounEditButtonsContainer)
         self.button_AccountEditProfileCancel.setObjectName(u"button_AccountEditProfileCancel")
         self.button_AccountEditProfileCancel.setMinimumSize(QSize(120, 0))
-        font6 = QFont()
-        font6.setPointSize(13)
-        font6.setBold(True)
-        self.button_AccountEditProfileCancel.setFont(font6)
+        font7 = QFont()
+        font7.setPointSize(13)
+        font7.setBold(True)
+        self.button_AccountEditProfileCancel.setFont(font7)
 
         self.horizontalLayout_5.addWidget(self.button_AccountEditProfileCancel)
 
         self.button_AccountEditProfileSave = QPushButton(self.frame_AccounEditButtonsContainer)
         self.button_AccountEditProfileSave.setObjectName(u"button_AccountEditProfileSave")
         self.button_AccountEditProfileSave.setMinimumSize(QSize(150, 0))
-        self.button_AccountEditProfileSave.setFont(font6)
+        self.button_AccountEditProfileSave.setFont(font7)
 
         self.horizontalLayout_5.addWidget(self.button_AccountEditProfileSave)
 
@@ -1339,7 +1306,7 @@ class Ui_MainWindow(object):
         self.button_AccountExit.toggled.connect(self.frame_AccountExitConfirmation.setVisible)
         self.button_AccountExitNo.toggled.connect(self.button_AccountExit.setVisible)
 
-        self.stacked_Pages.setCurrentIndex(2)
+        self.stacked_Pages.setCurrentIndex(0)
         self.stacked_AccountEditTabs.setCurrentIndex(0)
 
 
@@ -1360,7 +1327,6 @@ class Ui_MainWindow(object):
         self.button_AccountTabsPosts.setText(QCoreApplication.translate("MainWindow", u"Posts", None))
         self.button_AccountTabsComments.setText(QCoreApplication.translate("MainWindow", u"Comments", None))
         self.button_AccountTabsFriend.setText(QCoreApplication.translate("MainWindow", u"Friends", None))
-        self.button_AccountPhotoAdd.setText("")
         self.label_AccountNickname.setText(QCoreApplication.translate("MainWindow", u"Nickname", None))
         self.label_AccountStatus.setText("")
         self.button_AccountExit.setText("")
@@ -1381,11 +1347,11 @@ class Ui_MainWindow(object):
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Name", None))
         self.label_Sign_3.setText(QCoreApplication.translate("MainWindow", u"Set a profile name", None))
         self.line_AccountEditName.setPlaceholderText("")
-        self.label_Sign_4.setText(QCoreApplication.translate("MainWindow", u"Maximum 20 chrachters", None))
+        self.label_AccountEditNameSymbols.setText(QCoreApplication.translate("MainWindow", u"Maximum 20 chrachters", None))
         self.label_Sign_1.setText(QCoreApplication.translate("MainWindow", u"A brief description of yourself shown on your profile.", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"About (optional)", None))
         self.line_AccountEditAbout.setPlaceholderText("")
-        self.label_Sign_2.setText(QCoreApplication.translate("MainWindow", u"Maximum 50 chrachters", None))
+        self.label_AccountEditAboutSymbols.setText(QCoreApplication.translate("MainWindow", u"Maximum 50 chrachters", None))
         self.label_AccountEditProfileWarning.setText(QCoreApplication.translate("MainWindow", u"There are unsaved changes!", None))
         self.button_AccountEditProfileCancel.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
         self.button_AccountEditProfileSave.setText(QCoreApplication.translate("MainWindow", u"Save Changes", None))

@@ -385,7 +385,7 @@ QFrame#frame_AccountTabsContainer {
 }</string>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page_Home">
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -535,7 +535,23 @@ QPushButton:pressed {
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_3"/>
+                 <layout class="QVBoxLayout" name="layout_Posts">
+                  <property name="spacing">
+                   <number>20</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>150</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>20</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>150</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>10</number>
+                  </property>
+                 </layout>
                 </widget>
                </item>
                <item>
@@ -842,6 +858,10 @@ QPushButton:pressed {
 	color: white;
 }
 
+QLabel#label_AccountPhoto {
+	border-radius: 75px;
+}
+
 QFrame#frame_AccountInfoContainer {
 	border-radius: 0;
 }
@@ -854,7 +874,7 @@ QFrame#frame_AccountInfoContainer {
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_7">
+                 <layout class="QHBoxLayout" name="layout_AccountInfoContainer">
                   <property name="spacing">
                    <number>10</number>
                   </property>
@@ -870,93 +890,6 @@ QFrame#frame_AccountInfoContainer {
                   <property name="bottomMargin">
                    <number>10</number>
                   </property>
-                  <item>
-                   <widget class="QFrame" name="frame_AccountPhoto">
-                    <property name="minimumSize">
-                     <size>
-                      <width>150</width>
-                      <height>150</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>150</width>
-                      <height>150</height>
-                     </size>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true"/>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_3">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="spacing">
-                      <number>10</number>
-                     </property>
-                     <item row="1" column="1">
-                      <widget class="QPushButton" name="button_AccountPhotoAdd">
-                       <property name="minimumSize">
-                        <size>
-                         <width>40</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>40</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <spacer name="verticalSpacer">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>37</width>
-                         <height>97</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item row="1" column="0">
-                      <spacer name="horizontalSpacer">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>97</width>
-                         <height>37</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
                   <item>
                    <widget class="QFrame" name="frame_AccountInfo">
                     <property name="minimumSize">
@@ -987,19 +920,16 @@ QFrame#frame_AccountInfoContainer {
 QLabel#label_AccountInformationText {
 	padding-bottom: 5px;
 	border-bottom: 1px solid rgb(229,235,238);
-	background-color:  white;
 }
 
 QLabel#label_AccountInformationID {
 	margin: 0;
 	border-bottom-left-radius: 10px;
-	background-color:  white;
 }
 
 QLabel#label_AccountInformationAccess{
 	margin: 0;
 	border-bottom-right-radius: 10px;
-	background-color:  white;
 }
 
 
@@ -1118,6 +1048,11 @@ QPushButton#button_AccountExitNo:pressed {
                             <width>16777215</width>
                             <height>30</height>
                            </size>
+                          </property>
+                          <property name="font">
+                           <font>
+                            <pointsize>28</pointsize>
+                           </font>
                           </property>
                           <property name="styleSheet">
                            <string notr="true"/>
@@ -1558,7 +1493,7 @@ QPushButton#button_AccountExitNo:pressed {
                <number>20</number>
               </property>
               <property name="topMargin">
-               <number>10</number>
+               <number>0</number>
               </property>
               <property name="rightMargin">
                <number>0</number>
@@ -1580,7 +1515,7 @@ QPushButton#button_AccountExitNo:pressed {
                    <x>0</x>
                    <y>0</y>
                    <width>580</width>
-                   <height>691</height>
+                   <height>651</height>
                   </rect>
                  </property>
                  <property name="styleSheet">
@@ -1675,13 +1610,13 @@ QPushButton#button_AccountExitNo:pressed {
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
-                         <height>60</height>
+                         <height>50</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
                          <width>16777215</width>
-                         <height>60</height>
+                         <height>50</height>
                         </size>
                        </property>
                        <property name="styleSheet">
@@ -1728,7 +1663,7 @@ QPushButton:pressed {
                          <number>0</number>
                         </property>
                         <property name="topMargin">
-                         <number>10</number>
+                         <number>0</number>
                         </property>
                         <property name="rightMargin">
                          <number>0</number>
@@ -2180,22 +2115,6 @@ QPushButton#button_AccountEditProfileSave::pressed{
                           </widget>
                          </item>
                          <item>
-                          <spacer name="verticalSpacer_8">
-                           <property name="orientation">
-                            <enum>Qt::Vertical</enum>
-                           </property>
-                           <property name="sizeType">
-                            <enum>QSizePolicy::Minimum</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>20</width>
-                             <height>10</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item>
                           <widget class="QFrame" name="frame_AccountEditAccountContainer">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -2226,9 +2145,9 @@ QLabel {
 }
 
 QLabel#label_Sign_1,
-QLabel#label_Sign_2,
+QLabel#label_AccountEditNameSymbols,
 QLabel#label_Sign_3,
-QLabel#label_Sign_4 { 
+QLabel#label_AccountEditAboutSymbols { 
 	color: rgb(184,191,195);
 }
 
@@ -2313,7 +2232,7 @@ QTextEdit::focus {
                                 <number>10</number>
                                </property>
                                <property name="verticalSpacing">
-                                <number>5</number>
+                                <number>0</number>
                                </property>
                                <item row="1" column="0">
                                 <widget class="QLabel" name="label_3">
@@ -2336,6 +2255,9 @@ QTextEdit::focus {
                                  </property>
                                  <property name="text">
                                   <string>Name</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
                                  </property>
                                  <property name="textInteractionFlags">
                                   <set>Qt::LinksAccessibleByMouse</set>
@@ -2405,7 +2327,7 @@ QTextEdit::focus {
                                 </widget>
                                </item>
                                <item row="4" column="0">
-                                <widget class="QLabel" name="label_Sign_4">
+                                <widget class="QLabel" name="label_AccountEditNameSymbols">
                                  <property name="minimumSize">
                                   <size>
                                    <width>0</width>
@@ -2436,22 +2358,6 @@ QTextEdit::focus {
                                </item>
                               </layout>
                              </widget>
-                            </item>
-                            <item>
-                             <spacer name="verticalSpacer_7">
-                              <property name="orientation">
-                               <enum>Qt::Vertical</enum>
-                              </property>
-                              <property name="sizeType">
-                               <enum>QSizePolicy::Minimum</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
-                               <size>
-                                <width>20</width>
-                                <height>10</height>
-                               </size>
-                              </property>
-                             </spacer>
                             </item>
                             <item>
                              <widget class="QFrame" name="frame_AccountEditInfo">
@@ -2493,7 +2399,7 @@ QTextEdit::focus {
                                 <number>10</number>
                                </property>
                                <property name="verticalSpacing">
-                                <number>5</number>
+                                <number>0</number>
                                </property>
                                <item row="1" column="0">
                                 <widget class="QLabel" name="label_Sign_1">
@@ -2560,6 +2466,9 @@ QTextEdit::focus {
                                  <property name="text">
                                   <string>About (optional)</string>
                                  </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+                                 </property>
                                  <property name="textInteractionFlags">
                                   <set>Qt::LinksAccessibleByMouse</set>
                                  </property>
@@ -2585,7 +2494,7 @@ QTextEdit::focus {
                                 </widget>
                                </item>
                                <item row="3" column="0">
-                                <widget class="QLabel" name="label_Sign_2">
+                                <widget class="QLabel" name="label_AccountEditAboutSymbols">
                                  <property name="minimumSize">
                                   <size>
                                    <width>0</width>
@@ -2619,22 +2528,6 @@ QTextEdit::focus {
                             </item>
                            </layout>
                           </widget>
-                         </item>
-                         <item>
-                          <spacer name="verticalSpacer_10">
-                           <property name="orientation">
-                            <enum>Qt::Vertical</enum>
-                           </property>
-                           <property name="sizeType">
-                            <enum>QSizePolicy::Minimum</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>20</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
                          </item>
                          <item>
                           <widget class="QLabel" name="label_AccountEditProfileWarning">
@@ -2944,10 +2837,10 @@ QTextEdit::focus {
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_AccountExit"/>
   <buttongroup name="buttonGroup_AccountTabs"/>
-  <buttongroup name="buttonGroup_MainSideBar"/>
   <buttongroup name="buttonGroup_AccountEditTabs"/>
+  <buttongroup name="buttonGroup_AccountExit"/>
   <buttongroup name="buttonGroup_MainTabs"/>
+  <buttongroup name="buttonGroup_MainSideBar"/>
  </buttongroups>
 </ui>

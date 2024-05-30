@@ -1,22 +1,22 @@
-import sys
 import filecmp
+import sys
 
 from PIL import Image, ImageFilter
+from PySide6.QtCore import QSize, Qt, QEvent, Signal
+from PySide6.QtGui import QIcon, Qt, QFontDatabase, QFont
 from PySide6.QtWidgets import QMainWindow, QWidget, QLineEdit, QApplication
-from PySide6.QtGui import QIcon
-from PySide6.QtCore import QSize, Qt, QEvent
 
-from gui.design.main.x import Ui_MainWindow
 from gui.design.login.login import Ui_form_Login
+from gui.design.main.x import Ui_MainWindow
 from gui.design.registration.reg import Ui_form_Registration
-
 from objects.ImageTools import ImageTools
 from objects.Post import Post
-from objects.server.DataBase import DataBase
 from objects.server.Authorization import Authorization
-from objects.server.UserInfo import UserInfo
+from objects.server.DataBase import DataBase
 from objects.server.FileManager import FileManager
-from objects.Widgets import DragNDrop
+from objects.server.UserInfo import UserInfo
+from src.main.objects.server.PostTools import PostTools
+from src.main.objects.widgets import DragNDrop, ProfilePictureFrame
 
 indexToWidget = {0: "home", 1: "create", 2: "account", 3: "edit"}
 widgetToIndex = {"home": 0, "create": 1, "account": 2, "edit": 3}
@@ -25,6 +25,16 @@ widgetToIndexAccountEdit = {"profile": 0, "privacy": 1, "chat": 2}
 
 
 class App(Ui_MainWindow, QMainWindow):
+
+    # photoAccountEditSet = pyqtSignal(None)
+
+    tempAccountPictureFileName = "tempAccountPicture.png"
+    tempAccountEditProfilePictureFileName = "tempAccountEditProfilePicture.png"
+    tempProfileBackgroundFileName = "tempProfileBackgroundFileName.png"
+
+    amountMaximumNameSymbols = 20
+    amountMaximumAboutSymbols = 50
+
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
@@ -34,23 +44,38 @@ class App(Ui_MainWindow, QMainWindow):
         self.__userInfo = UserInfo()
         self.__auth = Authorization()
         self.__fileManager = FileManager()
+        self.__postTools = PostTools()
 
         self.__userInfo.updateConfig()
 
         self.authForm = None
 
-        self.tempAccountPictureFileName = "tempAccountPicture.png"
-        self.tempAccountEditProfilePictureFileName = "tempAccountEditProfilePicture.png"
         self.AccountEditPhotoReset = False
 
-        self.setIconsSVG()
-        self.initSetup()
+        self.fontThin = None  # Make cls
+        self.fontMedium = None
+        self.fontRegular = None
+        self.fontBold = None
+
+        self.__setMyFont()
+        self.__setIconsSVG()
+        self.__initSetup()
         self.setAccountPage()
 
-        for _ in range(10):
-            self.addPost(Post())
+        posts = self.__postTools.getPostIds(sort_by_time=True)
+        for post in posts:
+            self.addPost([post])
 
-    def setIconsSVG(self):
+    @staticmethod
+    def getTextHTML(text, color="black", size=28, weight=None):
+
+        if weight:
+            text = f"""<p><span style="color:{color};font-size:{size}px;font-weight:{weight}">{text}</span></p>"""
+        else:
+            text = f"""<p><span style="color:{color};font-size:{size}px;">{text}</span></p>"""
+        return text
+
+    def __setIconsSVG(self):
 
         # Lets Light Line Interface Icons Collection:
         # https://www.svgrepo.com/collection/lets-light-line-interface-icons/8
@@ -87,8 +112,8 @@ class App(Ui_MainWindow, QMainWindow):
 
         icon_AccountPhotoAdd = QIcon()
         icon_AccountPhotoAdd.addFile("gui/resources/icons/AccountPhotoAdd.svg", QSize(), QIcon.Normal)
-        self.ui.button_AccountPhotoAdd.setIcon(icon_AccountPhotoAdd)
-        self.ui.button_AccountPhotoAdd.setIconSize(QSize(30, 30))
+        # self.ui.button_AccountPhotoAdd.setIcon(icon_AccountPhotoAdd)
+        # self.ui.button_AccountPhotoAdd.setIconSize(QSize(30, 30))
 
         self.ui.button_AccountEditPhotoAdd.setIcon(icon_AccountPhotoAdd)
         self.ui.button_AccountEditPhotoAdd.setIconSize(QSize(30, 30))
@@ -119,7 +144,7 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.button_AccountEditPhotoDelete.setIcon(icon_AccountEditPhotoDelete)
         self.ui.button_AccountEditPhotoDelete.setIconSize(QSize(30, 30))
 
-    def initSetup(self, bgAccount_fp="gui/resources/images/AccountBG.png"):
+    def __initSetup(self):
 
         self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["home"])
 
@@ -148,44 +173,61 @@ class App(Ui_MainWindow, QMainWindow):
 
         self.setLabelAccountEditProfileWarning(closed=True)
 
-        # self.ui.label_AccountEditSettings.setText(
-        # f'<p style="color:black;font-size:25px;font-weight:500;">Settings</p>')
-
-        width_widget = 1000  # self.ui.frame_AccountInfoContainer.sizeHint().width()
-        height_widget = 300  # self.ui.frame_AccountInfoContainer.sizeHint().height()
-        gradient = Image.linear_gradient("L")
-        gradient = gradient.resize((width_widget, height_widget))
-        alpha = Image.new("L", (width_widget, height_widget), "white")
-        alpha.paste(gradient)
-        alpha = alpha.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-        alpha.paste(gradient)
-        alpha = alpha.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-        image = Image.open(bgAccount_fp)
-        width, height = image.size
-        image = image.crop((int((width - width_widget) / 2),
-                            int((height - height_widget) / 2),
-                            width - int((width - width_widget) / 2),
-                            height - int((height - height_widget) / 2)))
-        frame = Image.open("gui/resources/images/frame.png")
-        frame = frame.crop((0, 0, width_widget, height_widget))
-        frame.save("gui/resources/images/rendered/frame.png")
-        image_rgba = Image.new("RGBA", (width_widget, height_widget), 'white')
-        image_rgba.paste(image, (0, 0))
-        image_rgba.paste(frame, (0, 0), frame)
-        # image_rgba.putalpha(alpha)
-        image_rgba.save("gui/resources/images/rendered/AccountBG.png")
-        self.ui.frame_AccountInfoContainer.setStyleSheet("""
-                                                         QFrame#frame_AccountInfoContainer {border-image:
-                                                         url(gui/resources/images/rendered/AccountBG.png)
-                                                         0 0 0 0 stretch stretch}
-                                                         """)
-
         self.ui.frame_AccountInfo.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountButtons.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountLabels_1.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountStatus.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountNickname.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountExitConfirmation.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.frame_AccountInformationContainer.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountInformationText.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountInformationID.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountInformationAccess.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+
+        self.ui.frame_AccountInfoContainer.setStyleSheet(f"QFrame#frame_AccountInfoContainer {{border-image: url("
+                                                         f":/files/images/profileBgSource.png) 0 0 0"
+                                                         f" 0 stretch stretch}};")
+
+        self.ui.line_AccountEditName.setMaxLength(self.amountMaximumNameSymbols)
+
+        self.ui.label_AccountEditNameSymbols.setText(
+            f"There are {self.amountMaximumNameSymbols - len(self.ui.line_AccountEditName.text())} characters left.")
+        self.ui.label_AccountEditAboutSymbols.setText(
+            f"There are {self.amountMaximumAboutSymbols - len(self.ui.line_AccountEditAbout.toPlainText())} "
+            f"characters left.")
+
+        # self.ui.label_AccountEditSettings.setFont(self.fontRegular)
+        #
+        # self.ui.label.setFont(self.fontThin)
+        # self.ui.label_AccountInformationAccess.setFont(self.fontThin)
+        # self.ui.label_2.setFont(self.fontThin)
+        # self.ui.label_AccountEditProfileWarning.setFont(self.fontThin)
+
+        self.ui.label_AccountNickname.setFont(self.fontBold)
+        self.ui.label_AccountInformationText.setFont(self.fontRegular)
+        self.ui.label_AccountInformationID.setFont(self.fontRegular)
+        self.ui.label_AccountInformationAccess.setFont(self.fontRegular)
+
+        self.ui.frame_HomePosts.setStyleSheet(
+            "#frame_HomePosts {border-image: url('postsBg.png') 0 0 0 0  stretch stretch}")
+
+    def __setMyFont(self):
+
+        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Bold.ttf")
+        families = QFontDatabase.applicationFontFamilies(fontId)
+        self.fontBold = QFont(families[0])
+
+        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Medium.ttf")
+        families = QFontDatabase.applicationFontFamilies(fontId)
+        self.fontMedium = QFont(families[0])
+
+        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Regular.ttf")
+        families = QFontDatabase.applicationFontFamilies(fontId)
+        self.fontRegular = QFont(families[0])
+
+        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Light.ttf")
+        families = QFontDatabase.applicationFontFamilies(fontId)
+        self.fontThin = QFont(families[0])
 
     def eventFilter(self, watched, event):
 
@@ -281,12 +323,28 @@ class App(Ui_MainWindow, QMainWindow):
 
             if event.type() == QEvent.Type.KeyPress:
 
+                if len(self.ui.line_AccountEditAbout.toPlainText()) > self.amountMaximumAboutSymbols:
+                    self.ui.line_AccountEditAbout.textCursor().deletePreviousChar()
+
+            if event.type() == QEvent.Type.KeyRelease:
+
+                if len(self.ui.line_AccountEditAbout.toPlainText()) > self.amountMaximumAboutSymbols:
+                    self.ui.line_AccountEditAbout.textCursor().deletePreviousChar()
+
+                self.ui.label_AccountEditNameSymbols.setText(
+                    f"There is {self.amountMaximumNameSymbols - len(self.ui.line_AccountEditName.text())} "
+                    f"characters left.")
+                self.ui.label_AccountEditAboutSymbols.setText(
+                    f"There is {self.amountMaximumAboutSymbols - len(self.ui.line_AccountEditAbout.toPlainText())} "
+                    f"characters left.")
+
                 if (self.ui.line_AccountEditName.text() or self.ui.line_AccountEditAbout.toPlainText()
                         or self.AccountEditPhotoReset):
 
                     self.setLabelAccountEditProfileWarning(saved=False)
 
                 else:
+
                     self.setLabelAccountEditProfileWarning(closed=True)
 
         return False
@@ -333,23 +391,29 @@ class App(Ui_MainWindow, QMainWindow):
         if self.__userInfo.userID > 0:
 
             fp = self.__fileManager.getFilePath(imageID=self.__userInfo.imageID)
-            imagePath = ImageTools.getProfilePicture(fp, self.__fileManager.tempPath, self.tempAccountPictureFileName)
+            # imagePath = ImageTools.getProfilePicture(fp, self.__fileManager.tempPath, self.tempAccountPictureFileName)
 
-            self.ui.frame_AccountPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
+            # print(imagePath)
 
-            self.ui.label_AccountNickname.setText(f'<p style="color:black;font-size:28px;font-weight:200;">'
-                                                  f'{self.__userInfo.name}</p>')
+            for i in range(self.ui.layout_AccountInfoContainer.count()):
+                if (self.ui.layout_AccountInfoContainer.itemAt(i).widget()
+                        and isinstance(self.ui.layout_AccountInfoContainer.itemAt(i).widget(), ProfilePictureFrame)):
+                    self.ui.layout_AccountInfoContainer.itemAt(i).widget().setVisible(False)
+                    self.ui.layout_AccountInfoContainer.removeWidget(
+                        self.ui.layout_AccountInfoContainer.itemAt(i).widget())
+                    break
 
-            self.ui.label_AccountStatus.setText('<p><span style="color:rgb(5,168,22);font-size:18px;">●</span></p>')
+            profilePictureFrame = ProfilePictureFrame(fp)
+            self.ui.layout_AccountInfoContainer.insertWidget(0, profilePictureFrame)
 
-            self.ui.label_AccountInformationText.setText(f'<p style="color:black;font-size:13px;font-weight:200;">'
-                                                         f'{self.__userInfo.info}</p>')
+            self.ui.label_AccountNickname.setText(self.getTextHTML(self.__userInfo.name))
 
-            self.ui.label_AccountInformationID.setText(f'<p style="color:black;font-size:10px;font-weight:100;">'
-                                                       f'ID: {self.__userInfo.userID}</p>')
+            self.ui.label_AccountStatus.setText(self.getTextHTML("●", "rgb(5,168,22)", 18))
 
-            # self.ui.label_AccountInformationAccess.setText(f'<p style="color:black;font-size:10px;font-weight:100;">'
-            #                                                f'ACCESS: {self.userInfo.access.upper()}</p>')
+            self.ui.label_AccountInformationText.setText(self.getTextHTML(self.__userInfo.info, size=13, weight=100))
+
+            self.ui.label_AccountInformationID.setText(
+                self.getTextHTML("ID: " + str(self.__userInfo.userID), size=10, weight=100))
 
         else:
             self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["home"])
@@ -391,8 +455,10 @@ class App(Ui_MainWindow, QMainWindow):
                 self.ui.layout_AccountEditImages.removeWidget(widget)
 
             drag = DragNDrop(self.ui.frame_AccountEditPhoto, self.__fileManager.tempPath,
-                             self.tempAccountEditProfilePictureFileName)
+                             "Just" + self.tempAccountEditProfilePictureFileName)
             self.ui.layout_AccountEditImages.insertWidget(self.ui.layout_AccountEditImages.count() - 1, drag)
+
+            # drag.
 
             self.ui.line_AccountEditName.setPlaceholderText(self.__userInfo.name)
             self.ui.line_AccountEditAbout.setPlaceholderText(self.__userInfo.info)
@@ -431,7 +497,7 @@ class App(Ui_MainWindow, QMainWindow):
                 imageID = 1
             else:
                 imageID = self.__fileManager.loadFile(
-                    self.__fileManager.tempPath + self.tempAccountEditProfilePictureFileName,
+                    self.__fileManager.tempPath + "Just" + self.tempAccountEditProfilePictureFileName,
                     imageID=self.__userInfo.imageID)
 
             self.__userInfo.changeImageID(imageID)
@@ -439,9 +505,17 @@ class App(Ui_MainWindow, QMainWindow):
         self.setAccountEditPage()
         self.setLabelAccountEditProfileWarning(saved=True)
 
-    def addPost(self, post=None):
+    def addPost(self, id):
 
-        self.ui.verticalLayout_3.addWidget(post)
+        postInfo = self.__postTools.getPostInfo(id)[0]
+
+        userImagePath = self.__fileManager.getFilePath(1)
+
+
+        postUI = Post("Petya", "xuesosina", userImagePath, postInfo["post_text"],
+                      postInfo["post_time"], 100, 20, 2)
+
+        self.ui.layout_Posts.addWidget(postUI)
 
     def logOut(self):
 
@@ -463,7 +537,7 @@ class App(Ui_MainWindow, QMainWindow):
 
     def refresh(self):
 
-        self.initSetup()
+        self.__initSetup()
         self.setAccountPage()
         self.authForm = None
 

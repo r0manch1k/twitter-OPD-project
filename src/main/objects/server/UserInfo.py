@@ -80,7 +80,7 @@ class UserInfo:
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            image_info = self.db.select(
+            image_info = self.__db.select(
                 f"""SELECT * FROM Images \
                     WHERE image_id = {str(new_image_id)};""")
         
