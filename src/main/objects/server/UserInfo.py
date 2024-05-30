@@ -66,8 +66,8 @@ class UserInfo:
         return None
     
     def changeInfo(self, new_info: str):
-        if len(new_info) > 30:
-            return 'INFO_ERROR: ' + "Info must be less than 30 characters long"
+        if len(new_info) > 50:
+            return 'INFO_ERROR: ' + "Info must be less than 50 characters long"
         
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'

@@ -1,21 +1,22 @@
-from urllib.request import Request, urlopen
-from PIL import Image
-import PIL
 import io
+from urllib.request import Request, urlopen
 
-from PySide6.QtWidgets import QFrame
-from PySide6.QtGui import QImage, QPixmap, QPainter, QBrush
-from PySide6.QtCore import QIODevice, QBuffer
-from PySide6.QtCore import QEvent, QRect, Qt
+import PIL
+from PIL import Image
+from PySide6.QtCore import QIODevice, QBuffer, Signal
+from PySide6.QtGui import QImage
+from PySide6.QtWidgets import QFrame, QWidget
 
 from src.main.gui.design.drag.drag import Ui_DragNDrop
 from src.main.objects.ImageTools import ImageTools
 
 
 class DragNDrop(Ui_DragNDrop, QFrame):
+    imageDropped = Signal(bool)
 
-    def __init__(self, parent: QFrame, pathToSave: str, fileName: str = None):
+    def __init__(self, parent: QWidget, pathToSave: str, fileName: str = None):
         super(Ui_DragNDrop, self).__init__()
+
         self.ui = Ui_DragNDrop()
         self.ui.setupUi(self)
 
@@ -60,8 +61,6 @@ class DragNDrop(Ui_DragNDrop, QFrame):
 
     def dropEvent(self, e):
 
-        image = None
-
         if e.mimeData().hasImage():
 
             try:
@@ -92,6 +91,7 @@ class DragNDrop(Ui_DragNDrop, QFrame):
                 except PIL.UnidentifiedImageError:
                     self.ui.label_StateInfo.setText("Is it a picture?")
                     self.setUnHovered()
+                    self.imageDropped.emit(False)
                     return
 
             else:
@@ -102,16 +102,19 @@ class DragNDrop(Ui_DragNDrop, QFrame):
                 except PIL.UnidentifiedImageError:
                     self.ui.label_StateInfo.setText("Is it a picture?")
                     self.setUnHovered()
+                    self.imageDropped.emit(False)
                     return
 
         else:
             self.ui.label_StateInfo.setText("Something went wrong...")
             self.setUnHovered()
+            self.imageDropped.emit(False)
             return
 
         if not image:
             self.ui.label_StateInfo.setText("Something went wrong...")
             self.setUnHovered()
+            self.imageDropped.emit(False)
             return
 
         self.ui.label_StateInfo.setText("Uploaded!")
@@ -127,11 +130,9 @@ class DragNDrop(Ui_DragNDrop, QFrame):
         except ValueError:
             self.ui.label_StateInfo.setText("Only URLs or PNG!")
             self.setUnHovered()
+            self.imageDropped.emit(False)
             return
 
         self.parent.setStyleSheet(f"""QFrame {{ border-image:  url({imagePath}) 0 0 0 0}}""")
         self.setUnHovered()
-
-
-
-
+        self.imageDropped.emit(True)

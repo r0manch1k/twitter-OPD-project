@@ -5,8 +5,6 @@ from PySide6.QtCore import QSize, Qt, QEvent
 from src.main.gui.design.post.post import Ui_form_Post
 from src.main.objects.widgets import ProfilePictureFrame
 
-from .ImageTools import getPicture
-
 from src.main.gui.resources import resources
 
 
@@ -199,7 +197,7 @@ class Post(Ui_form_Post, QWidget):
         comments = self.getComments(postComments)
         self.ui.label_Comments.setText(comments)
 
-        photo = ProfilePictureFrame(photoPath, 50, 50, 25)
+        photo = ProfilePictureFrame(photoPath, 50, 50, 25, shadowOffset=0)
         self.ui.layout_userName.insertWidget(0, photo)
 
 

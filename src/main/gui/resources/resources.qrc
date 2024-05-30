@@ -20,6 +20,7 @@
     <file>fonts/Roboto/Roboto-Medium.ttf</file>
     <file>fonts/Roboto/Roboto-Regular.ttf</file>
     <file>fonts/Roboto/Roboto-Light.ttf</file>
+    <file>fonts/Great_Vibes/GreatVibes-Regular.ttf</file>
     <file>images/profileBgSource.png</file>
   </qresource>
 </RCC>

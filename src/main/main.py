@@ -2,7 +2,7 @@ import filecmp
 import sys
 
 from PIL import Image, ImageFilter
-from PySide6.QtCore import QSize, Qt, QEvent, Signal
+from PySide6.QtCore import QSize, Qt, QEvent, Signal, Slot
 from PySide6.QtGui import QIcon, Qt, QFontDatabase, QFont
 from PySide6.QtWidgets import QMainWindow, QWidget, QLineEdit, QApplication
 
@@ -25,7 +25,6 @@ widgetToIndexAccountEdit = {"profile": 0, "privacy": 1, "chat": 2}
 
 
 class App(Ui_MainWindow, QMainWindow):
-
     # photoAccountEditSet = pyqtSignal(None)
 
     tempAccountPictureFileName = "tempAccountPicture.png"
@@ -51,6 +50,7 @@ class App(Ui_MainWindow, QMainWindow):
         self.authForm = None
 
         self.AccountEditPhotoReset = False
+        self.AccountEditPhotoSet = False
 
         self.fontThin = None  # Make cls
         self.fontMedium = None
@@ -67,12 +67,12 @@ class App(Ui_MainWindow, QMainWindow):
             self.addPost([post])
 
     @staticmethod
-    def getTextHTML(text, color="black", size=28, weight=None):
+    def getTextHTML(text, color="black", size=28, weight=None, style="normal"):
 
         if weight:
-            text = f"""<p><span style="color:{color};font-size:{size}px;font-weight:{weight}">{text}</span></p>"""
+            text = f"""<p><span style="color:{color};font-size:{size}px;font-weight:{weight};font-style:{style};">{text}</span></p>"""
         else:
-            text = f"""<p><span style="color:{color};font-size:{size}px;">{text}</span></p>"""
+            text = f"""<p><span style="color:{color};font-size:{size}px;font-style:{style};">{text}</span></p>"""
         return text
 
     def __setIconsSVG(self):
@@ -171,8 +171,6 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.button_AccountEditPhotoDelete.clicked.connect(self.setAccountPhotoToDefault)
         self.ui.button_AccountEditProfileCancel.clicked.connect(self.setAccountEditPage)
 
-        self.setLabelAccountEditProfileWarning(closed=True)
-
         self.ui.frame_AccountInfo.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountButtons.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountLabels_1.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
@@ -183,10 +181,6 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.label_AccountInformationText.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountInformationID.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountInformationAccess.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-
-        self.ui.frame_AccountInfoContainer.setStyleSheet(f"QFrame#frame_AccountInfoContainer {{border-image: url("
-                                                         f":/files/images/profileBgSource.png) 0 0 0"
-                                                         f" 0 stretch stretch}};")
 
         self.ui.line_AccountEditName.setMaxLength(self.amountMaximumNameSymbols)
 
@@ -204,12 +198,16 @@ class App(Ui_MainWindow, QMainWindow):
         # self.ui.label_AccountEditProfileWarning.setFont(self.fontThin)
 
         self.ui.label_AccountNickname.setFont(self.fontBold)
-        self.ui.label_AccountInformationText.setFont(self.fontRegular)
+        self.ui.label_AccountInformationText.setFont(self.fontCursive)
         self.ui.label_AccountInformationID.setFont(self.fontRegular)
         self.ui.label_AccountInformationAccess.setFont(self.fontRegular)
 
         self.ui.frame_HomePosts.setStyleSheet(
             "#frame_HomePosts {border-image: url('postsBg.png') 0 0 0 0  stretch stretch}")
+
+        self.ui.frame_AccountInfoContainer.setStyleSheet(
+            "#frame_AccountInfoContainer {border-image: url(':files/images/profileBgSource.png')"
+            " 0 0 0 0  stretch stretch}")
 
     def __setMyFont(self):
 
@@ -228,6 +226,10 @@ class App(Ui_MainWindow, QMainWindow):
         fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Light.ttf")
         families = QFontDatabase.applicationFontFamilies(fontId)
         self.fontThin = QFont(families[0])
+
+        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Great_Vibes/GreatVibes-Regular.ttf")
+        families = QFontDatabase.applicationFontFamilies(fontId)
+        self.fontCursive = QFont(families[0])
 
     def eventFilter(self, watched, event):
 
@@ -339,13 +341,13 @@ class App(Ui_MainWindow, QMainWindow):
                     f"characters left.")
 
                 if (self.ui.line_AccountEditName.text() or self.ui.line_AccountEditAbout.toPlainText()
-                        or self.AccountEditPhotoReset):
+                        or self.AccountEditPhotoSet or self.AccountEditPhotoReset):
 
-                    self.setLabelAccountEditProfileWarning(saved=False)
+                    self.setLabelAccountEditProfileWarning(open=True, save=False)
 
                 else:
 
-                    self.setLabelAccountEditProfileWarning(closed=True)
+                    self.setLabelAccountEditProfileWarning(open=False)
 
         return False
 
@@ -388,12 +390,11 @@ class App(Ui_MainWindow, QMainWindow):
 
     def setAccountPage(self):
 
+        error = self.__userInfo.updateConfig()
+
         if self.__userInfo.userID > 0:
 
             fp = self.__fileManager.getFilePath(imageID=self.__userInfo.imageID)
-            # imagePath = ImageTools.getProfilePicture(fp, self.__fileManager.tempPath, self.tempAccountPictureFileName)
-
-            # print(imagePath)
 
             for i in range(self.ui.layout_AccountInfoContainer.count()):
                 if (self.ui.layout_AccountInfoContainer.itemAt(i).widget()
@@ -403,38 +404,43 @@ class App(Ui_MainWindow, QMainWindow):
                         self.ui.layout_AccountInfoContainer.itemAt(i).widget())
                     break
 
-            profilePictureFrame = ProfilePictureFrame(fp)
+            profilePictureFrame = ProfilePictureFrame(fp, frame=2)
             self.ui.layout_AccountInfoContainer.insertWidget(0, profilePictureFrame)
 
-            self.ui.label_AccountNickname.setText(self.getTextHTML(self.__userInfo.name))
+            self.ui.label_AccountNickname.setText(self.getTextHTML(self.__userInfo.name, color="white", weight=700))
 
             self.ui.label_AccountStatus.setText(self.getTextHTML("●", "rgb(5,168,22)", 18))
 
-            self.ui.label_AccountInformationText.setText(self.getTextHTML(self.__userInfo.info, size=13, weight=100))
+            self.ui.label_AccountInformationText.setText(
+                self.getTextHTML(self.__userInfo.info, color="rgb(229,235,238)", size=20, weight=100))
 
-            self.ui.label_AccountInformationID.setText(
-                self.getTextHTML("ID: " + str(self.__userInfo.userID), size=10, weight=100))
+            # self.ui.label_AccountInformationID.setText(
+            #     self.getTextHTML("ID: " + str(self.__userInfo.userID), size=10, weight=100))
 
         else:
             self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["home"])
 
-    def setLabelAccountEditProfileWarning(self, saved=False, closed=False):
+    def setLabelAccountEditProfileWarning(self, open=False, save=False):
 
-        if not closed:
-            if saved:
+        if open:
+            if save:
                 self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(0,210,0);")
                 self.ui.label_AccountEditProfileWarning.setText("Saved successfully!")
+                self.AccountEditPhotoSet = False
+                self.AccountEditPhotoReset = False
             else:
                 self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(255,0,0);")
                 self.ui.label_AccountEditProfileWarning.setText("You have unsaved changes!")
         else:
             self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(0,210,0);")
             self.ui.label_AccountEditProfileWarning.setText("")
+            self.AccountEditPhotoSet = False
+            self.AccountEditPhotoReset = False
 
     def setAccountEditPage(self):
 
         self.AccountEditPhotoReset = False
-        self.setLabelAccountEditProfileWarning(closed=True)
+        self.setLabelAccountEditProfileWarning(open=False)
         self.ui.line_AccountEditName.setText("")
         self.ui.line_AccountEditAbout.setText("")
 
@@ -455,8 +461,9 @@ class App(Ui_MainWindow, QMainWindow):
                 self.ui.layout_AccountEditImages.removeWidget(widget)
 
             drag = DragNDrop(self.ui.frame_AccountEditPhoto, self.__fileManager.tempPath,
-                             "Just" + self.tempAccountEditProfilePictureFileName)
+                             self.tempAccountEditProfilePictureFileName)
             self.ui.layout_AccountEditImages.insertWidget(self.ui.layout_AccountEditImages.count() - 1, drag)
+            drag.imageDropped.connect(self.isAccountEditProfilePhotoSet)
 
             # drag.
 
@@ -472,8 +479,15 @@ class App(Ui_MainWindow, QMainWindow):
 
             self.ui.frame_AccountEditPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
 
+            self.AccountEditPhotoSet = True
             self.AccountEditPhotoReset = True
-            self.setLabelAccountEditProfileWarning(saved=False)
+            self.setLabelAccountEditProfileWarning(save=False)
+
+    @Slot(bool)
+    def isAccountEditProfilePhotoSet(self, value):
+
+        self.AccountEditPhotoSet = value
+        self.setLabelAccountEditProfileWarning(open=True)
 
     def saveProfileChanges(self):
 
@@ -484,13 +498,12 @@ class App(Ui_MainWindow, QMainWindow):
             self.__userInfo.changeName(newName)
 
         if newAbout:
-            self.__userInfo.changeInfo(newAbout)
+            print(self.__userInfo.changeInfo(newAbout))
 
         if not self.__db.connect():
             return
 
-        if not filecmp.cmp(self.__fileManager.tempPath + self.tempAccountEditProfilePictureFileName,
-                           self.__fileManager.tempPath + self.tempAccountPictureFileName):
+        if self.AccountEditPhotoSet:
 
             if self.AccountEditPhotoReset:
                 self.__fileManager.deleteFile(self.__userInfo.imageID)
@@ -503,14 +516,13 @@ class App(Ui_MainWindow, QMainWindow):
             self.__userInfo.changeImageID(imageID)
 
         self.setAccountEditPage()
-        self.setLabelAccountEditProfileWarning(saved=True)
+        self.setLabelAccountEditProfileWarning(open=True, save=True)
 
     def addPost(self, id):
 
         postInfo = self.__postTools.getPostInfo(id)[0]
 
         userImagePath = self.__fileManager.getFilePath(1)
-
 
         postUI = Post("Petya", "xuesosina", userImagePath, postInfo["post_text"],
                       postInfo["post_time"], 100, 20, 2)

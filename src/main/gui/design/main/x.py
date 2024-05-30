@@ -324,7 +324,7 @@ class Ui_MainWindow(object):
         self.layout_Posts = QVBoxLayout(self.frame_HomePosts)
         self.layout_Posts.setSpacing(20)
         self.layout_Posts.setObjectName(u"layout_Posts")
-        self.layout_Posts.setContentsMargins(150, 10, 150, 10)
+        self.layout_Posts.setContentsMargins(150, 20, 150, 10)
 
         self.verticalLayout_4.addWidget(self.frame_HomePosts)
 
@@ -560,9 +560,13 @@ class Ui_MainWindow(object):
         self.frame_AccountInfo.setFrameShape(QFrame.StyledPanel)
         self.frame_AccountInfo.setFrameShadow(QFrame.Raised)
         self.verticalLayout_2 = QVBoxLayout(self.frame_AccountInfo)
-        self.verticalLayout_2.setSpacing(10)
+        self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(10, 0, 10, 0)
+        self.verticalSpacer_2 = QSpacerItem(20, 30, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_2.addItem(self.verticalSpacer_2)
+
         self.frame_AccountLabels_1 = QFrame(self.frame_AccountInfo)
         self.frame_AccountLabels_1.setObjectName(u"frame_AccountLabels_1")
         self.frame_AccountLabels_1.setMinimumSize(QSize(0, 30))
@@ -611,10 +615,6 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout_2.addWidget(self.frame_AccountLabels_1)
-
-        self.verticalSpacer_2 = QSpacerItem(20, 30, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_2.addItem(self.verticalSpacer_2)
 
         self.frame_AccountButtons = QFrame(self.frame_AccountInfo)
         self.frame_AccountButtons.setObjectName(u"frame_AccountButtons")
@@ -673,13 +673,13 @@ class Ui_MainWindow(object):
 
         self.label_AccountInformationText = QLabel(self.frame_AccountInformationContainer)
         self.label_AccountInformationText.setObjectName(u"label_AccountInformationText")
-        self.label_AccountInformationText.setMinimumSize(QSize(200, 20))
-        self.label_AccountInformationText.setMaximumSize(QSize(50, 70))
+        self.label_AccountInformationText.setMinimumSize(QSize(250, 20))
+        self.label_AccountInformationText.setMaximumSize(QSize(250, 70))
         font4 = QFont()
         font4.setItalic(False)
         self.label_AccountInformationText.setFont(font4)
         self.label_AccountInformationText.setStyleSheet(u"")
-        self.label_AccountInformationText.setAlignment(Qt.AlignBottom|Qt.AlignLeading|Qt.AlignLeft)
+        self.label_AccountInformationText.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.label_AccountInformationText.setWordWrap(True)
         self.label_AccountInformationText.setIndent(0)
         self.label_AccountInformationText.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByMouse)
@@ -1306,7 +1306,7 @@ class Ui_MainWindow(object):
         self.button_AccountExit.toggled.connect(self.frame_AccountExitConfirmation.setVisible)
         self.button_AccountExitNo.toggled.connect(self.button_AccountExit.setVisible)
 
-        self.stacked_Pages.setCurrentIndex(0)
+        self.stacked_Pages.setCurrentIndex(2)
         self.stacked_AccountEditTabs.setCurrentIndex(0)
 
 
@@ -1314,7 +1314,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"X", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"R&R", None))
         self.button_Logo.setText("")
         self.line_SearchBar.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search...", None))
         self.button_CreatePost.setText("")
@@ -1330,7 +1330,7 @@ class Ui_MainWindow(object):
         self.label_AccountNickname.setText(QCoreApplication.translate("MainWindow", u"Nickname", None))
         self.label_AccountStatus.setText("")
         self.button_AccountExit.setText("")
-        self.label_AccountInformationID.setText(QCoreApplication.translate("MainWindow", u"ID: 38  Status: Pro100y", None))
+        self.label_AccountInformationID.setText("")
         self.label_AccountInformationText.setText(QCoreApplication.translate("MainWindow", u"\u0413\u0435\u043d\u0438\u0439, \u043c\u0438\u043b\u043b\u0438\u0430\u0440\u0434\u0435\u0440, \u043f\u043b\u044d\u0439\u0431\u043e\u0439, \u0444\u0438\u043b\u0430\u043d\u0442\u0440\u043e\u043f...", None))
         self.label_AccountInformationAccess.setText("")
         self.button_AccountExitYes.setText("")
