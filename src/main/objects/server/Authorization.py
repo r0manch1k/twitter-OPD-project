@@ -2,27 +2,37 @@ import hashlib
 from src.main.objects.server.UserInfo import UserInfo
 from src.main.objects.server.DataBase import DataBase
 from src.main.objects.server.Static import getConfigInfo, setConfigInfo
+from src.main.objects.server.Validator import validateEmail, validateName, validateUsername, validatePassword
 
 
 class Authorization:
     def __init__(self):
         self.__db = DataBase()
 
-    def signIn(self, in_login: str, in_password: str, in_name: str):
-        if self.validateLogin(in_login):
-            return 'LOGIN_ERROR: ' + self.validateLogin(in_login)
+    def signIn(self, in_email: str, in_username: str, in_password: str, in_name: str):
+        if validateEmail(in_email):
+            return 'EMAIL_ERROR: ' + validateEmail(in_email)
         
-        if self.validatePassword(in_password):
-            return 'PASSWORD_ERROR: ' + self.validatePassword(in_password)
+        if validatePassword(in_password):
+            return 'PASSWORD_ERROR: ' + validatePassword(in_password)
         
-        if len(in_name) < 4 or len(in_name) > 20:
-            return 'NAME_ERROR: ' + "Name must be between 4 and 20 characters long"
+        if validateUsername(in_username):
+            return 'USERNAME_ERROR: ' + validateUsername(in_username)
+        
+        if validateName(in_name):
+            return 'NAME_ERROR: ' + validateName(in_name)
         
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            if self.__db.select(f"""SELECT * FROM Users WHERE login = '{in_login}';""") != ():
-                return 'LOGIN_ERROR: ' + "This login is already taken"
+            if self.__db.select(f"""SELECT * FROM Users WHERE email = '{in_email}';""") != ():
+                return 'EMAIL_ERROR: ' + "Account with such an email already exists"
+            
+        if not self.__db.connect():
+            return 'CONNECTION_ERROR: Check your internet connection'
+        else:
+            if self.__db.select(f"""SELECT * FROM Users WHERE username = '{in_username}';""") != ():
+                return 'USERNAME_ERROR: ' + "Account with such an username already exists"
 
         salt = getConfigInfo('salt', 'salt')
         password = hashlib.md5((in_password + salt).encode()).hexdigest()
@@ -30,21 +40,21 @@ class Authorization:
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
             self.__db.insert(
-            f"""INSERT INTO Users (login, password, name, access) \
-                VALUES  ('{in_login}', '{password}', '{in_name}', 'user');""")
+            f"""INSERT INTO Users (email, username, password, name, access, image_id) \
+                VALUES  ('{in_email}', '{in_username}', '{password}', '{in_name}', 'user', 1);""")
 
-        setConfigInfo('current_user', 'login', in_login)
+        setConfigInfo('current_user', 'email', in_email)
         UserInfo().updateConfig()
 
         return None
 
-    def logIn(self, in_login: str, in_password: str):
+    def logIn(self, in_email: str, in_password: str):
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            user_info = self.__db.select(f"""SELECT * FROM Users WHERE login = '{in_login}';""")
+            user_info = self.__db.select(f"""SELECT password FROM Users WHERE email = '{in_email}';""")
             if user_info == ():
-                return 'LOGIN_ERROR: ' + "Login is not found"
+                return 'EMAIL_ERROR: ' + "Email is not found"
             else:
                 user_info = user_info[0]
 
@@ -53,7 +63,7 @@ class Authorization:
         if user_info['password'] != hashed_in_password:
             return 'PASSWORD_ERROR: ' + "Wrong password"
 
-        setConfigInfo('current_user', 'login', in_login)
+        setConfigInfo('current_user', 'email', in_email)
         UserInfo().updateConfig()
 
         return None
@@ -61,74 +71,17 @@ class Authorization:
     @staticmethod
     def logOut():
         setConfigInfo('current_user', 'user_id', '-1')
-        setConfigInfo('current_user', 'login', '-1')
+        setConfigInfo('current_user', 'email', '-1')
+        setConfigInfo('current_user', 'username', '-1')
         setConfigInfo('current_user', 'name', '-1')
+        setConfigInfo('current_user', 'image_id', '-1')
         setConfigInfo('current_user', 'access', '-1')
         setConfigInfo('current_user', 'info', '-1')
-
-    @staticmethod
-    def validateLogin(login):
-        lowercase_letters = [chr(i) for i in range(ord('a'), ord('z') + 1)]
-        uppercase_letters = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
-        digits = [str(i) for i in range(10)]
-        other_symbols = ['_', '$']
-
-        if len(login) < 2 or len(login) > 16:
-            return "Login must be between 2 and 16 characters long"
-
-        for i in login:
-            if (i not in lowercase_letters and i not in uppercase_letters
-                    and i not in digits and i not in other_symbols):
-                return "Password contains an invalid character -> " + i
-
-        return ""
-
-    @staticmethod
-    def validatePassword(password):
-        if len(password) < 8 or len(password) > 16:
-            return "Password must be between 8 and 16 characters long"
-
-        flag = False
-        for i in [chr(i) for i in range(ord('a'), ord('z') + 1)]:
-            if password.find(i) > 0:
-                flag = True
-                break
-        if not flag:
-            return "Password must contain Latin lowercase letters"
-
-        flag = False
-        for i in [chr(i) for i in range(ord('A'), ord('Z') + 1)]:
-            if password.find(i) > 0:
-                flag = True
-                break
-        if not flag:
-            return "Password must contain Latin uppercase letters"
-
-        flag = False
-        for i in [str(i) for i in range(0, 10)]:
-            if password.find(i) > 0:
-                flag = True
-                break
-        if not flag:
-            return "Password must contain digits"
-
-        flag = False
-        for i in "[_@$]":
-            if password.find(i) > 0:
-                flag = True
-                break
-        if not flag:
-            return "Password must contain special characters -> []_@$"
-
-        for i in r"-+={}<>!#£%^&*()~` '?/|\:;":
-            if password.find(i) > 0:
-                return "Password contains an invalid character -> " + i
-
-        return ""
 
 
 # testing connection
 
 # auth = Authorization()
-# print(auth.logIn("GunDon", "1234WaSd@@@@@@"))
+# print(auth.signIn("kutorgin2002@gmail.com", "GunDon", "1234WaSd@@@@@@", "rUsIk"))
 # auth.logOut()
+# "GunDon", "1234WaSd@@@@@@"
