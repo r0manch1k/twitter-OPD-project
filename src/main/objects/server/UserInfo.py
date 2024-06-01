@@ -61,18 +61,18 @@ class UserInfo:
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            self.__db.insert(f"""UPDATE Users SET name = '{new_name}' WHERE user_id = {self.userID};""")
+            self.__db.insert(f"""UPDATE Users SET name = '{new_name}' WHERE user_id = {str(self.userID)};""")
         setConfigInfo('current_user', 'name', new_name)
         return None
     
     def changeInfo(self, new_info: str):
-        if len(new_info) > 50:
-            return 'INFO_ERROR: ' + "Info must be less than 50 characters long"
+        if len(new_info) > 30:
+            return 'INFO_ERROR: ' + "Info must be less than 30 characters long"
         
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            self.__db.insert(f"""UPDATE Users SET info = '{new_info}' WHERE user_id = {self.userID};""")
+            self.__db.insert(f"""UPDATE Users SET info = '{new_info}' WHERE user_id = {str(self.userID)};""")
         setConfigInfo('current_user', 'info', new_info)
         return None
     
@@ -80,7 +80,7 @@ class UserInfo:
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            image_info = self.__db.select(
+            image_info = self.db.select(
                 f"""SELECT * FROM Images \
                     WHERE image_id = {str(new_image_id)};""")
         

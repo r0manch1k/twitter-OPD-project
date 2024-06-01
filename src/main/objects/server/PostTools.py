@@ -55,12 +55,11 @@ class PostTools:
         return ids
 
     def getPostInfo(self, post_ids):
-
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
             posts_info = self.__db.select(f"""SELECT * FROM Posts \
-                                          WHERE post_id IN ({', '.join([str(i) for i in list(post_ids)])});""")
+                                          WHERE post_id IN ({', '.join([str(i) for i in post_ids])});""")
 
         for i in range(len(posts_info)):
             server_datetime = utc.localize(datetime.strptime(posts_info[i]['post_time'], "%Y-%m-%d %H:%M:%S"))
