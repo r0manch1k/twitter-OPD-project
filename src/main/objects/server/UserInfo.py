@@ -61,7 +61,7 @@ class UserInfo:
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            self.__db.insert(f"""UPDATE Users SET name = '{new_name}' WHERE user_id = {str(self.userID)};""")
+            self.__db.insert(f"""UPDATE Users SET name = '{new_name}' WHERE user_id = {self.userID};""")
         setConfigInfo('current_user', 'name', new_name)
         return None
     
@@ -72,7 +72,7 @@ class UserInfo:
         if not self.__db.connect():
             return 'CONNECTION_ERROR: Check your internet connection'
         else:
-            self.__db.insert(f"""UPDATE Users SET info = '{new_info}' WHERE user_id = {str(self.userID)};""")
+            self.__db.insert(f"""UPDATE Users SET info = '{new_info}' WHERE user_id = {self.userID};""")
         setConfigInfo('current_user', 'info', new_info)
         return None
     

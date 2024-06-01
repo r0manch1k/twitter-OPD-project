@@ -1,26 +1,13 @@
 <RCC>
-  <qresource prefix="files">
-    <file>fonts/Poppins/Poppins-SemiBold.ttf</file>
-    <file>fonts/Poppins/Poppins-Light.ttf</file>
-    <file>fonts/Poppins/Poppins-Medium.ttf</file>
-    <file>fonts/Poppins/Poppins-Regular.ttf</file>
-    <file>fonts/Poppins/Poppins-Thin.ttf</file>
-    <file>fonts/Evolve Sans/MADE Evolve Sans Bold.otf</file>
-    <file>fonts/Evolve Sans/MADE Evolve Sans Light.otf</file>
-    <file>fonts/Evolve Sans/MADE Evolve Sans Medium.otf</file>
-    <file>fonts/Evolve Sans/MADE Evolve Sans Regular.otf</file>
-    <file>fonts/Evolve Sans/MADE Evolve Sans Thin.otf</file>
-    <file>fonts/Wix Madefor Display/WixMadeforDisplay-Bold.ttf</file>
-    <file>fonts/Wix Madefor Display/WixMadeforDisplay-Medium.ttf</file>
-    <file>fonts/Wix Madefor Display/WixMadeforDisplay-Regular.ttf</file>
-    <file>fonts/Wix Madefor Display/WixMadeforDisplay-VariableFont_wght.ttf</file>
-    <file>fonts/soyuz-grotesk/Soyuz Grotesk Bold.otf</file>
-    <file>fonts/Roboto/Roboto-Black.ttf</file>
-    <file>fonts/Roboto/Roboto-Bold.ttf</file>
-    <file>fonts/Roboto/Roboto-Medium.ttf</file>
+  <qresource prefix="fonts">
     <file>fonts/Roboto/Roboto-Regular.ttf</file>
-    <file>fonts/Roboto/Roboto-Light.ttf</file>
     <file>fonts/Great_Vibes/GreatVibes-Regular.ttf</file>
+  </qresource>
+  <qresource prefix="icons">
+    <file>icons/Account.svg</file>
+
+  </qresource>
+  <qresource prefix="images">
     <file>images/profileBgSource.png</file>
   </qresource>
 </RCC>

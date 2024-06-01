@@ -69,6 +69,10 @@ class Ui_MainWindow(object):
 "	background-color: rgb(184,191,195);\n"
 "}\n"
 "\n"
+"QPushButton::menu-indicator {\n"
+"	width: 0px;\n"
+"}\n"
+"\n"
 "/* ------ ------- */\n"
 "\n"
 "QScrollBar:vertical {\n"
@@ -82,12 +86,12 @@ class Ui_MainWindow(object):
 "        border-radius: 4px;\n"
 "}\n"
 "\n"
-"QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
+"QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:v"
+                        "ertical {\n"
 "        background: none;\n"
 "}\n"
 "\n"
-"QScroll"
-                        "Bar::add-page:vertical, QScrollBar::sub-page:vertical {\n"
+"QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {\n"
 "        background: none;\n"
 "}")
         self.frame_Main.setFrameShape(QFrame.StyledPanel)
@@ -103,6 +107,13 @@ class Ui_MainWindow(object):
         self.frame_MainBar.setStyleSheet(u"QFrame {\n"
 "	border: 0;		\n"
 "	border-bottom: 1px solid rgb(235, 237, 239);\n"
+"} \n"
+"\n"
+"QFrame#frame_ButtonHomeFilterPosts {\n"
+"	background-color:  rgb(235, 237, 239);\n"
+"	border-top-right-radius: 20px;\n"
+"	border-bottom-right-radius: 20px;\n"
+"	\n"
 "}\n"
 "\n"
 "QPushButton {\n"
@@ -125,9 +136,10 @@ class Ui_MainWindow(object):
 "QLineEdit {\n"
 "	height: 40px;\n"
 "	color: black;\n"
-"	border-radius: 20px;\n"
 "	background-color:  rgb(235, 237, 239);\n"
 "	padding-left: 10px;\n"
+"	border-top-left-radius: 20px;\n"
+"	border-bottom-left-radius: 20px;\n"
 "}\n"
 "\n"
 "QLineEdit:hover {\n"
@@ -143,14 +155,28 @@ class Ui_MainWindow(object):
 "	background-color:  white;\n"
 "}\n"
 "\n"
-"QPushButton:pressed#button_Logo {\n"
+""
+                        "QPushButton:pressed#button_Logo {\n"
 "	background-color: white;\n"
 "}\n"
 "\n"
 "QPushButton#button_Notifications:checked, \n"
 "QPushButton#button_Chat:checked  {\n"
 "	background-color:  rgb(226,231,233);\n"
-"}")
+"}\n"
+"\n"
+"QPushButton#button_HomeFilterPosts {\n"
+"	width: 30px;\n"
+"	height: 30px;\n"
+"	border-radius: 10px;\n"
+"	background-color:  rgb(235, 237, 239);\n"
+"}\n"
+"\n"
+"QPushButton#button_HomeFilterPosts::hover {\n"
+"	background-color:  rgb(226,231,233);\n"
+"}\n"
+"\n"
+"")
         self.frame_MainBar.setFrameShape(QFrame.StyledPanel)
         self.frame_MainBar.setFrameShadow(QFrame.Raised)
         self.horizontalLayout = QHBoxLayout(self.frame_MainBar)
@@ -166,23 +192,56 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.button_Logo)
 
-        self.line_SearchBar = QLineEdit(self.frame_MainBar)
+        self.frame_SearchBar = QFrame(self.frame_MainBar)
+        self.frame_SearchBar.setObjectName(u"frame_SearchBar")
+        self.frame_SearchBar.setMinimumSize(QSize(50, 0))
+        self.frame_SearchBar.setStyleSheet(u"")
+        self.frame_SearchBar.setFrameShape(QFrame.StyledPanel)
+        self.frame_SearchBar.setFrameShadow(QFrame.Raised)
+        self.layout_SearchBar = QHBoxLayout(self.frame_SearchBar)
+        self.layout_SearchBar.setSpacing(0)
+        self.layout_SearchBar.setObjectName(u"layout_SearchBar")
+        self.layout_SearchBar.setContentsMargins(0, 0, 0, 0)
+        self.line_SearchBar = QLineEdit(self.frame_SearchBar)
         self.line_SearchBar.setObjectName(u"line_SearchBar")
         self.line_SearchBar.setMaximumSize(QSize(16777215, 40))
 
-        self.horizontalLayout.addWidget(self.line_SearchBar)
+        self.layout_SearchBar.addWidget(self.line_SearchBar)
 
-        self.button_CreatePost = QPushButton(self.frame_MainBar)
-        self.buttonGroup_MainTabs.addButton(self.button_CreatePost)
-        self.button_CreatePost.setObjectName(u"button_CreatePost")
-        self.button_CreatePost.setStyleSheet(u"")
-        self.button_CreatePost.setCheckable(True)
+        self.frame_ButtonHomeFilterPosts = QFrame(self.frame_SearchBar)
+        self.frame_ButtonHomeFilterPosts.setObjectName(u"frame_ButtonHomeFilterPosts")
+        self.frame_ButtonHomeFilterPosts.setMinimumSize(QSize(40, 40))
+        self.frame_ButtonHomeFilterPosts.setMaximumSize(QSize(50, 40))
+        self.frame_ButtonHomeFilterPosts.setFrameShape(QFrame.StyledPanel)
+        self.frame_ButtonHomeFilterPosts.setFrameShadow(QFrame.Raised)
+        self.gridLayout_3 = QGridLayout(self.frame_ButtonHomeFilterPosts)
+        self.gridLayout_3.setSpacing(0)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setContentsMargins(5, 5, 5, 5)
+        self.button_HomeFilterPosts = QPushButton(self.frame_ButtonHomeFilterPosts)
+        self.button_HomeFilterPosts.setObjectName(u"button_HomeFilterPosts")
+        self.button_HomeFilterPosts.setMinimumSize(QSize(20, 20))
+        self.button_HomeFilterPosts.setMaximumSize(QSize(20, 20))
 
-        self.horizontalLayout.addWidget(self.button_CreatePost)
+        self.gridLayout_3.addWidget(self.button_HomeFilterPosts, 0, 0, 1, 1)
 
-        self.button_Chat = QPushButton(self.frame_MainBar)
+
+        self.layout_SearchBar.addWidget(self.frame_ButtonHomeFilterPosts)
+
+
+        self.horizontalLayout.addWidget(self.frame_SearchBar)
+
+        self.button_Hashtag = QPushButton(self.frame_MainBar)
         self.buttonGroup_MainSideBar = QButtonGroup(MainWindow)
         self.buttonGroup_MainSideBar.setObjectName(u"buttonGroup_MainSideBar")
+        self.buttonGroup_MainSideBar.addButton(self.button_Hashtag)
+        self.button_Hashtag.setObjectName(u"button_Hashtag")
+        self.button_Hashtag.setStyleSheet(u"")
+        self.button_Hashtag.setCheckable(True)
+
+        self.horizontalLayout.addWidget(self.button_Hashtag)
+
+        self.button_Chat = QPushButton(self.frame_MainBar)
         self.buttonGroup_MainSideBar.addButton(self.button_Chat)
         self.button_Chat.setObjectName(u"button_Chat")
         self.button_Chat.setCheckable(True)
@@ -205,7 +264,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.button_Account)
 
 
-        self.gridLayout.addWidget(self.frame_MainBar, 0, 0, 1, 3)
+        self.gridLayout.addWidget(self.frame_MainBar, 0, 0, 1, 4)
 
         self.frame_Error = QFrame(self.frame_Main)
         self.frame_Error.setObjectName(u"frame_Error")
@@ -240,7 +299,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.addWidget(self.button_ErrorRefresh)
 
 
-        self.gridLayout.addWidget(self.frame_Error, 1, 0, 2, 3)
+        self.gridLayout.addWidget(self.frame_Error, 1, 0, 1, 4)
 
         self.stacked_Pages = QStackedWidget(self.frame_Main)
         self.stacked_Pages.setObjectName(u"stacked_Pages")
@@ -266,17 +325,25 @@ class Ui_MainWindow(object):
         self.scrollArea_HomePosts.setWidgetResizable(True)
         self.scrollAreaWidget_Posts = QWidget()
         self.scrollAreaWidget_Posts.setObjectName(u"scrollAreaWidget_Posts")
-        self.scrollAreaWidget_Posts.setGeometry(QRect(0, 0, 600, 460))
+        self.scrollAreaWidget_Posts.setGeometry(QRect(0, 0, 850, 460))
         self.scrollAreaWidget_Posts.setStyleSheet(u"")
         self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidget_Posts)
         self.verticalLayout_4.setSpacing(0)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.frame_HomeToolbarPosts = QFrame(self.scrollAreaWidget_Posts)
-        self.frame_HomeToolbarPosts.setObjectName(u"frame_HomeToolbarPosts")
-        self.frame_HomeToolbarPosts.setMinimumSize(QSize(0, 60))
-        self.frame_HomeToolbarPosts.setMaximumSize(QSize(16777215, 60))
-        self.frame_HomeToolbarPosts.setStyleSheet(u"QFrame {\n"
+        self.frame_HomePostsContainer = QFrame(self.scrollAreaWidget_Posts)
+        self.frame_HomePostsContainer.setObjectName(u"frame_HomePostsContainer")
+        self.frame_HomePostsContainer.setFrameShape(QFrame.StyledPanel)
+        self.frame_HomePostsContainer.setFrameShadow(QFrame.Raised)
+        self.layout_PostsContainer = QVBoxLayout(self.frame_HomePostsContainer)
+        self.layout_PostsContainer.setSpacing(40)
+        self.layout_PostsContainer.setObjectName(u"layout_PostsContainer")
+        self.layout_PostsContainer.setContentsMargins(10, 0, 10, 0)
+        self.frame_HomeCreatePost = QFrame(self.frame_HomePostsContainer)
+        self.frame_HomeCreatePost.setObjectName(u"frame_HomeCreatePost")
+        self.frame_HomeCreatePost.setMinimumSize(QSize(0, 60))
+        self.frame_HomeCreatePost.setMaximumSize(QSize(16777215, 60))
+        self.frame_HomeCreatePost.setStyleSheet(u"QFrame {\n"
 "	border: 0;\n"
 "	border-bottom: 1px solid rgb(235, 237, 239);\n"
 "	background-color: white;\n"
@@ -299,34 +366,29 @@ class Ui_MainWindow(object):
 "	background-color: rgb(190, 194, 196);\n"
 "}\n"
 "")
-        self.frame_HomeToolbarPosts.setFrameShape(QFrame.StyledPanel)
-        self.frame_HomeToolbarPosts.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_2 = QHBoxLayout(self.frame_HomeToolbarPosts)
+        self.frame_HomeCreatePost.setFrameShape(QFrame.StyledPanel)
+        self.frame_HomeCreatePost.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame_HomeCreatePost)
         self.horizontalLayout_2.setSpacing(10)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(10, 0, 10, 0)
-        self.button_HomeFilterPosts = QPushButton(self.frame_HomeToolbarPosts)
-        self.button_HomeFilterPosts.setObjectName(u"button_HomeFilterPosts")
 
-        self.horizontalLayout_2.addWidget(self.button_HomeFilterPosts)
+        self.layout_PostsContainer.addWidget(self.frame_HomeCreatePost)
 
-        self.spacer_HomeFilterPosts = QSpacerItem(613, 12, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_2.addItem(self.spacer_HomeFilterPosts)
-
-
-        self.verticalLayout_4.addWidget(self.frame_HomeToolbarPosts)
-
-        self.frame_HomePosts = QFrame(self.scrollAreaWidget_Posts)
+        self.frame_HomePosts = QFrame(self.frame_HomePostsContainer)
         self.frame_HomePosts.setObjectName(u"frame_HomePosts")
+        self.frame_HomePosts.setMinimumSize(QSize(0, 0))
         self.frame_HomePosts.setFrameShape(QFrame.StyledPanel)
         self.frame_HomePosts.setFrameShadow(QFrame.Raised)
         self.layout_Posts = QVBoxLayout(self.frame_HomePosts)
         self.layout_Posts.setSpacing(20)
         self.layout_Posts.setObjectName(u"layout_Posts")
-        self.layout_Posts.setContentsMargins(150, 20, 150, 10)
+        self.layout_Posts.setContentsMargins(90, 0, 90, 20)
 
-        self.verticalLayout_4.addWidget(self.frame_HomePosts)
+        self.layout_PostsContainer.addWidget(self.frame_HomePosts)
+
+
+        self.verticalLayout_4.addWidget(self.frame_HomePostsContainer)
 
         self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -337,9 +399,6 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.scrollArea_HomePosts)
 
         self.stacked_Pages.addWidget(self.page_Home)
-        self.page_CreatePost = QWidget()
-        self.page_CreatePost.setObjectName(u"page_CreatePost")
-        self.stacked_Pages.addWidget(self.page_CreatePost)
         self.page_Account = QWidget()
         self.page_Account.setObjectName(u"page_Account")
         self.page_Account.setStyleSheet(u"")
@@ -353,7 +412,7 @@ class Ui_MainWindow(object):
         self.scrollArea_Account.setWidgetResizable(True)
         self.scrollAreaWidget_Account = QWidget()
         self.scrollAreaWidget_Account.setObjectName(u"scrollAreaWidget_Account")
-        self.scrollAreaWidget_Account.setGeometry(QRect(0, 0, 600, 1068))
+        self.scrollAreaWidget_Account.setGeometry(QRect(0, 0, 850, 1068))
         self.scrollAreaWidget_Account.setStyleSheet(u"")
         self.gridLayout_4 = QGridLayout(self.scrollAreaWidget_Account)
         self.gridLayout_4.setSpacing(0)
@@ -530,14 +589,30 @@ class Ui_MainWindow(object):
 "	border-radius: 20px;\n"
 "}\n"
 "\n"
-"QPushButton#button_AccountExit:pressed {\n"
+"QPushButton#button_AccountEdit,\n"
+"QPushButton#button_AccountExit,\n"
+"QPushButton#button_AccountExitYes,\n"
+"QPushButton#button_AccountExitNo {\n"
+"	background-color: white;\n"
+"}\n"
+"\n"
+"QPushButton#button_AccountEdit::hover {\n"
+"	background-color: rgb(235, 237, 239);\n"
+"}\n"
+"\n"
+"QPushButton#button_AccountEdit::pressed {\n"
+"	background-color: rgb(184,191,195);\n"
+"}\n"
+"\n"
+"\n"
+"QPushButton#button_AccountExit:pressed "
+                        "{\n"
 "	background-color: rgb(240,0,0);\n"
 "}\n"
 "\n"
 "QPushButton#button_AccountExitYes {\n"
 "	border-top-right-radius: 0;\n"
 "	border-bottom-right-radius: 0;\n"
-"	background-color: rgb(229,235,238);\n"
 "}\n"
 "\n"
 "QPushButton#button_AccountExitYes:pressed {\n"
@@ -546,9 +621,7 @@ class Ui_MainWindow(object):
 "\n"
 "QPushButton#button_AccountExitNo {\n"
 "	border-top-left-radius: 0;\n"
-"	border-bo"
-                        "ttom-left-radius: 0;\n"
-"	background-color: rgb(229,235,238);\n"
+"	border-bottom-left-radius: 0;\n"
 "}\n"
 "\n"
 "QPushButton#button_AccountExitNo:pressed {\n"
@@ -768,7 +841,7 @@ class Ui_MainWindow(object):
         self.scrollArea_AccountEdit.setWidgetResizable(True)
         self.scrollAreaWidget_AccountEdit = QWidget()
         self.scrollAreaWidget_AccountEdit.setObjectName(u"scrollAreaWidget_AccountEdit")
-        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, 0, 580, 651))
+        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, 0, 830, 651))
         self.scrollAreaWidget_AccountEdit.setStyleSheet(u"")
         self.verticalLayout_8 = QVBoxLayout(self.scrollAreaWidget_AccountEdit)
         self.verticalLayout_8.setSpacing(10)
@@ -1267,25 +1340,25 @@ class Ui_MainWindow(object):
 
         self.stacked_Pages.addWidget(self.page_AccountEdit)
 
-        self.gridLayout.addWidget(self.stacked_Pages, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.stacked_Pages, 2, 0, 1, 1)
 
-        self.frame_SideBarNotifications = QFrame(self.frame_Main)
-        self.frame_SideBarNotifications.setObjectName(u"frame_SideBarNotifications")
-        self.frame_SideBarNotifications.setMinimumSize(QSize(200, 0))
-        self.frame_SideBarNotifications.setMaximumSize(QSize(200, 16777215))
-        self.frame_SideBarNotifications.setStyleSheet(u"")
-        self.frame_SideBarNotifications.setFrameShape(QFrame.StyledPanel)
-        self.frame_SideBarNotifications.setFrameShadow(QFrame.Raised)
-        self.label_2 = QLabel(self.frame_SideBarNotifications)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(50, 30, 121, 20))
+        self.frame_SideBarHashtag = QFrame(self.frame_Main)
+        self.frame_SideBarHashtag.setObjectName(u"frame_SideBarHashtag")
+        self.frame_SideBarHashtag.setMinimumSize(QSize(50, 0))
+        self.frame_SideBarHashtag.setMaximumSize(QSize(16777215, 16777215))
+        self.frame_SideBarHashtag.setStyleSheet(u"")
+        self.frame_SideBarHashtag.setFrameShape(QFrame.StyledPanel)
+        self.frame_SideBarHashtag.setFrameShadow(QFrame.Raised)
+        self.label_5 = QLabel(self.frame_SideBarHashtag)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setGeometry(QRect(50, 30, 121, 20))
 
-        self.gridLayout.addWidget(self.frame_SideBarNotifications, 3, 2, 1, 1)
+        self.gridLayout.addWidget(self.frame_SideBarHashtag, 2, 1, 1, 1)
 
         self.frame_SideBarChat = QFrame(self.frame_Main)
         self.frame_SideBarChat.setObjectName(u"frame_SideBarChat")
-        self.frame_SideBarChat.setMinimumSize(QSize(200, 0))
-        self.frame_SideBarChat.setMaximumSize(QSize(200, 16777215))
+        self.frame_SideBarChat.setMinimumSize(QSize(50, 0))
+        self.frame_SideBarChat.setMaximumSize(QSize(16777215, 16777215))
         self.frame_SideBarChat.setStyleSheet(u"")
         self.frame_SideBarChat.setFrameShape(QFrame.StyledPanel)
         self.frame_SideBarChat.setFrameShadow(QFrame.Raised)
@@ -1293,7 +1366,20 @@ class Ui_MainWindow(object):
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(60, 20, 60, 16))
 
-        self.gridLayout.addWidget(self.frame_SideBarChat, 3, 1, 1, 1)
+        self.gridLayout.addWidget(self.frame_SideBarChat, 2, 2, 1, 1)
+
+        self.frame_SideBarNotifications = QFrame(self.frame_Main)
+        self.frame_SideBarNotifications.setObjectName(u"frame_SideBarNotifications")
+        self.frame_SideBarNotifications.setMinimumSize(QSize(50, 0))
+        self.frame_SideBarNotifications.setMaximumSize(QSize(16777215, 16777215))
+        self.frame_SideBarNotifications.setStyleSheet(u"")
+        self.frame_SideBarNotifications.setFrameShape(QFrame.StyledPanel)
+        self.frame_SideBarNotifications.setFrameShadow(QFrame.Raised)
+        self.label_2 = QLabel(self.frame_SideBarNotifications)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setGeometry(QRect(50, 30, 121, 20))
+
+        self.gridLayout.addWidget(self.frame_SideBarNotifications, 2, 3, 1, 1)
 
 
         self.gridLayout_2.addWidget(self.frame_Main, 0, 0, 1, 1)
@@ -1301,12 +1387,11 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.central_widget)
 
         self.retranslateUi(MainWindow)
-        self.button_Notifications.toggled.connect(self.frame_SideBarNotifications.setVisible)
+        self.button_Hashtag.toggled.connect(self.frame_SideBarHashtag.setVisible)
         self.button_Chat.toggled.connect(self.frame_SideBarChat.setVisible)
-        self.button_AccountExit.toggled.connect(self.frame_AccountExitConfirmation.setVisible)
-        self.button_AccountExitNo.toggled.connect(self.button_AccountExit.setVisible)
+        self.button_Notifications.toggled.connect(self.frame_SideBarNotifications.setVisible)
 
-        self.stacked_Pages.setCurrentIndex(2)
+        self.stacked_Pages.setCurrentIndex(0)
         self.stacked_AccountEditTabs.setCurrentIndex(0)
 
 
@@ -1317,16 +1402,16 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"R&R", None))
         self.button_Logo.setText("")
         self.line_SearchBar.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search...", None))
-        self.button_CreatePost.setText("")
+        self.button_HomeFilterPosts.setText("")
+        self.button_Hashtag.setText("")
         self.button_Chat.setText("")
         self.button_Notifications.setText("")
         self.button_Account.setText("")
         self.label_ErrorText.setText(QCoreApplication.translate("MainWindow", u"ERROR! CONNECTION TO SERVER IS LOST!", None))
         self.button_ErrorRefresh.setText("")
-        self.button_HomeFilterPosts.setText("")
         self.button_AccountTabsPosts.setText(QCoreApplication.translate("MainWindow", u"Posts", None))
         self.button_AccountTabsComments.setText(QCoreApplication.translate("MainWindow", u"Comments", None))
-        self.button_AccountTabsFriend.setText(QCoreApplication.translate("MainWindow", u"Friends", None))
+        self.button_AccountTabsFriend.setText(QCoreApplication.translate("MainWindow", u"Follows", None))
         self.label_AccountNickname.setText(QCoreApplication.translate("MainWindow", u"Nickname", None))
         self.label_AccountStatus.setText("")
         self.button_AccountExit.setText("")
@@ -1355,7 +1440,8 @@ class Ui_MainWindow(object):
         self.label_AccountEditProfileWarning.setText(QCoreApplication.translate("MainWindow", u"There are unsaved changes!", None))
         self.button_AccountEditProfileCancel.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
         self.button_AccountEditProfileSave.setText(QCoreApplication.translate("MainWindow", u"Save Changes", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Notifications", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Notifications", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Chat", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Notifications", None))
     # retranslateUi
 

@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect
-from PySide6.QtGui import QIcon, QFontDatabase, QFont, QColor
+from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect, QMenu, QMainWindow
+from PySide6.QtGui import QIcon, QFontDatabase, QFont, QColor, QAction
 from PySide6.QtCore import QSize, Qt, QEvent
 
 from src.main.gui.design.post.post import Ui_form_Post
@@ -38,6 +38,10 @@ class Post(Ui_form_Post, QWidget):
         self.ui = Ui_form_Post()
         self.ui.setupUi(self)
 
+        self.userLogin = userLogin
+
+        self.menuParentStyle = QMainWindow()
+
         fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Bold.ttf")
         families = QFontDatabase.applicationFontFamilies(fontId)
         self.fontBold = QFont(families[0])
@@ -71,6 +75,18 @@ class Post(Ui_form_Post, QWidget):
         self.setGraphicsEffect(shadow)
 
         self.ui.button_More.installEventFilter(self)
+
+        menu_More = QMenu(self.menuParentStyle)
+
+        action_FollowUser = QAction(f"&Follow @{self.userLogin}", self)
+        action_FollowUser.triggered.connect(self.followUser)
+        menu_More.addAction(action_FollowUser)
+
+        action_Report = QAction(f"&Report @{self.userLogin}", self)
+        action_Report.triggered.connect(self.reportUser)
+        menu_More.addAction(action_Report)
+
+        self.ui.button_More.setMenu(menu_More)
 
     def __setIconsSVG(self):
 
@@ -199,5 +215,11 @@ class Post(Ui_form_Post, QWidget):
 
         photo = ProfilePictureFrame(photoPath, 50, 50, 25, shadowOffset=0)
         self.ui.layout_userName.insertWidget(0, photo)
+
+    def followUser(self):
+        pass
+
+    def reportUser(self):
+        pass
 
 

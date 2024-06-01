@@ -69,6 +69,11 @@ QPushButton#button_More {
 	border-radius: 15px;
 }
 
+QPushButton#button_More::pressed {
+	background-color:  rgb(235, 237, 239);
+}
+
+
 
 
 QComboBox {

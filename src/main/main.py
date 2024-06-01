@@ -1,10 +1,9 @@
-import filecmp
 import sys
 
 from PIL import Image, ImageFilter
-from PySide6.QtCore import QSize, Qt, QEvent, Signal, Slot
-from PySide6.QtGui import QIcon, Qt, QFontDatabase, QFont
-from PySide6.QtWidgets import QMainWindow, QWidget, QLineEdit, QApplication
+from PySide6.QtCore import QSize, Qt, QEvent, Slot
+from PySide6.QtGui import QIcon, Qt, QFontDatabase, QFont, QAction
+from PySide6.QtWidgets import QMainWindow, QWidget, QLineEdit, QApplication, QMenu, QToolButton
 
 from gui.design.login.login import Ui_form_Login
 from gui.design.main.x import Ui_MainWindow
@@ -18,8 +17,8 @@ from objects.server.UserInfo import UserInfo
 from src.main.objects.server.PostTools import PostTools
 from src.main.objects.widgets import DragNDrop, ProfilePictureFrame
 
-indexToWidget = {0: "home", 1: "create", 2: "account", 3: "edit"}
-widgetToIndex = {"home": 0, "create": 1, "account": 2, "edit": 3}
+indexToWidget = {0: "home", 1: "account", 2: "edit"}
+widgetToIndex = {"home": 0, "account": 1, "edit": 2}
 
 widgetToIndexAccountEdit = {"profile": 0, "privacy": 1, "chat": 2}
 
@@ -85,10 +84,10 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.button_Logo.setIcon(icon_Logo)
         self.ui.button_Logo.setIconSize(QSize(60, 40))
 
-        icon_Add = QIcon()
-        icon_Add.addFile("gui/resources/icons/Add.svg", QSize(), QIcon.Normal)
-        self.ui.button_CreatePost.setIcon(icon_Add)
-        self.ui.button_CreatePost.setIconSize(QSize(30, 30))
+        icon_Hashtag = QIcon()
+        icon_Hashtag.addFile("gui/resources/icons/Hashtag.svg", QSize(), QIcon.Normal)
+        self.ui.button_Hashtag.setIcon(icon_Hashtag)
+        self.ui.button_Hashtag.setIconSize(QSize(22, 22))
 
         icon_Chat = QIcon()
         icon_Chat.addFile("gui/resources/icons/Chat.svg", QSize(), QIcon.Normal)
@@ -108,12 +107,10 @@ class App(Ui_MainWindow, QMainWindow):
         icon_FilterPosts = QIcon()
         icon_FilterPosts.addFile("gui/resources/icons/FilterPosts.svg", QSize(), QIcon.Normal)
         self.ui.button_HomeFilterPosts.setIcon(icon_FilterPosts)
-        self.ui.button_HomeFilterPosts.setIconSize(QSize(30, 30))
+        self.ui.button_HomeFilterPosts.setIconSize(QSize(15, 15))
 
         icon_AccountPhotoAdd = QIcon()
         icon_AccountPhotoAdd.addFile("gui/resources/icons/AccountPhotoAdd.svg", QSize(), QIcon.Normal)
-        # self.ui.button_AccountPhotoAdd.setIcon(icon_AccountPhotoAdd)
-        # self.ui.button_AccountPhotoAdd.setIconSize(QSize(30, 30))
 
         self.ui.button_AccountEditPhotoAdd.setIcon(icon_AccountPhotoAdd)
         self.ui.button_AccountEditPhotoAdd.setIconSize(QSize(30, 30))
@@ -156,6 +153,7 @@ class App(Ui_MainWindow, QMainWindow):
 
         self.ui.frame_SideBarChat.setHidden(True)
         self.ui.frame_SideBarNotifications.setHidden(True)
+        self.ui.frame_SideBarHashtag.setHidden(True)
         self.ui.frame_AccountExitConfirmation.setHidden(True)
         self.ui.frame_Error.setHidden(True)
 
@@ -165,6 +163,7 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.button_AccountEditPhotoDelete.installEventFilter(self)
         self.ui.line_AccountEditName.installEventFilter(self)
         self.ui.line_AccountEditAbout.installEventFilter(self)
+        self.ui.line_SearchBar.installEventFilter(self)
 
         self.ui.button_AccountExitYes.clicked.connect(self.logOut)
         self.ui.button_AccountEditProfileSave.clicked.connect(self.saveProfileChanges)
@@ -174,10 +173,11 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.frame_AccountInfo.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountButtons.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountLabels_1.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.label_AccountStatus.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.label_AccountNickname.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountExitConfirmation.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountInformationContainer.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.frame_HomePosts.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountStatus.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountNickname.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountInformationText.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountInformationID.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountInformationAccess.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
@@ -190,42 +190,41 @@ class App(Ui_MainWindow, QMainWindow):
             f"There are {self.amountMaximumAboutSymbols - len(self.ui.line_AccountEditAbout.toPlainText())} "
             f"characters left.")
 
-        # self.ui.label_AccountEditSettings.setFont(self.fontRegular)
-        #
-        # self.ui.label.setFont(self.fontThin)
-        # self.ui.label_AccountInformationAccess.setFont(self.fontThin)
-        # self.ui.label_2.setFont(self.fontThin)
-        # self.ui.label_AccountEditProfileWarning.setFont(self.fontThin)
-
-        self.ui.label_AccountNickname.setFont(self.fontBold)
+        self.ui.label_AccountNickname.setFont(self.fontRegular)
         self.ui.label_AccountInformationText.setFont(self.fontCursive)
         self.ui.label_AccountInformationID.setFont(self.fontRegular)
         self.ui.label_AccountInformationAccess.setFont(self.fontRegular)
 
-        self.ui.frame_HomePosts.setStyleSheet(
-            "#frame_HomePosts {border-image: url('postsBg.png') 0 0 0 0  stretch stretch}")
+        self.ui.frame_HomePostsContainer.setStyleSheet(
+            "#frame_HomePostsContainer {border-image: url('postsBg.png') 0 0 0 0  stretch stretch}")
 
         self.ui.frame_AccountInfoContainer.setStyleSheet(
             "#frame_AccountInfoContainer {border-image: url(':files/images/profileBgSource.png')"
             " 0 0 0 0  stretch stretch}")
 
+        menu_FilterPosts = QMenu(self)
+
+        action_Sort = QMenu("&Sort", self)
+
+        action_SortByTime = QAction("&By Time", self)
+        action_SortByTime.setShortcut("Ctrl+T")
+        action_SortByTime.triggered.connect(self.sortByTime)
+        action_Sort.addAction(action_SortByTime)
+
+        action_SortByLikes = QAction("&By Likes", self)
+        action_SortByLikes.setShortcut("Ctrl+L")
+        action_SortByLikes.triggered.connect(self.sortByLikes)
+        action_Sort.addAction(action_SortByLikes)
+
+        menu_FilterPosts.addMenu(action_Sort)
+
+        self.ui.button_HomeFilterPosts.setMenu(menu_FilterPosts)
+
     def __setMyFont(self):
-
-        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Bold.ttf")
-        families = QFontDatabase.applicationFontFamilies(fontId)
-        self.fontBold = QFont(families[0])
-
-        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Medium.ttf")
-        families = QFontDatabase.applicationFontFamilies(fontId)
-        self.fontMedium = QFont(families[0])
 
         fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Regular.ttf")
         families = QFontDatabase.applicationFontFamilies(fontId)
         self.fontRegular = QFont(families[0])
-
-        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Light.ttf")
-        families = QFontDatabase.applicationFontFamilies(fontId)
-        self.fontThin = QFont(families[0])
 
         fontId = QFontDatabase.addApplicationFont(":/files/fonts/Great_Vibes/GreatVibes-Regular.ttf")
         families = QFontDatabase.applicationFontFamilies(fontId)
@@ -242,7 +241,7 @@ class App(Ui_MainWindow, QMainWindow):
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(25, 25))
 
-                watched.setStyleSheet("background-color: rgb(255, 0, 0)")
+                watched.setStyleSheet("background-color: rgb(255, 0, 0);")
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
@@ -252,7 +251,7 @@ class App(Ui_MainWindow, QMainWindow):
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(25, 25))
 
-                watched.setStyleSheet("background-color: rgb(229, 235, 238)")
+                watched.setStyleSheet("background-color: white;")
                 return True
 
         elif watched == self.ui.button_AccountExitNo:
@@ -264,7 +263,7 @@ class App(Ui_MainWindow, QMainWindow):
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(25, 25))
 
-                watched.setStyleSheet("background-color: #208b3a")
+                watched.setStyleSheet("background-color: #208b3a;")
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
@@ -274,7 +273,7 @@ class App(Ui_MainWindow, QMainWindow):
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(25, 25))
 
-                watched.setStyleSheet("background-color: rgb(229, 235, 238)")
+                watched.setStyleSheet("background-color: white;")
                 return True
 
         elif watched == self.ui.button_AccountExit:
@@ -296,7 +295,7 @@ class App(Ui_MainWindow, QMainWindow):
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(22, 22))
 
-                watched.setStyleSheet("background-color: rgb(229,235,238)")
+                watched.setStyleSheet("background-color: white;")
                 return True
 
         elif watched == self.ui.button_AccountEditPhotoDelete:
@@ -321,17 +320,33 @@ class App(Ui_MainWindow, QMainWindow):
                 watched.setStyleSheet("background-color: rgb(229,235,238)")
                 return True
 
+        elif watched == self.ui.line_SearchBar:
+
+            if event.type() == QEvent.Type.HoverEnter:
+
+                self.ui.frame_ButtonHomeFilterPosts.setStyleSheet("QFrame { background-color: rgb(226,231,233); }")
+
+            elif event.type() == QEvent.Type.HoverLeave:
+
+                self.ui.frame_ButtonHomeFilterPosts.setStyleSheet("QFrame { background-color: rgb(235, 237, 239); }")
+
         elif watched == self.ui.line_AccountEditName or watched == self.ui.line_AccountEditAbout:
-
-            if event.type() == QEvent.Type.KeyPress:
-
-                if len(self.ui.line_AccountEditAbout.toPlainText()) > self.amountMaximumAboutSymbols:
-                    self.ui.line_AccountEditAbout.textCursor().deletePreviousChar()
 
             if event.type() == QEvent.Type.KeyRelease:
 
-                if len(self.ui.line_AccountEditAbout.toPlainText()) > self.amountMaximumAboutSymbols:
+                if len(self.ui.line_AccountEditAbout.toPlainText()) - self.amountMaximumAboutSymbols == 1:
                     self.ui.line_AccountEditAbout.textCursor().deletePreviousChar()
+
+                if len(self.ui.line_AccountEditAbout.toPlainText()) - self.amountMaximumAboutSymbols > 1:
+                    self.ui.line_AccountEditAbout.setText("Ты кого на*** решил? 50 символов максимум!")
+
+                if self.ui.line_AccountEditAbout.toPlainText().find(
+                        "'") > 0 or self.ui.line_AccountEditAbout.toPlainText().find('"') > 0:
+                    self.ui.line_AccountEditAbout.setText("Do not use quotes!")
+
+                if self.ui.line_AccountEditName.text().find(
+                        "'") > 0 or self.ui.line_AccountEditName.text().find('"') > 0:
+                    self.ui.line_AccountEditName.setText("Do not use quotes!")
 
                 self.ui.label_AccountEditNameSymbols.setText(
                     f"There is {self.amountMaximumNameSymbols - len(self.ui.line_AccountEditName.text())} "
@@ -343,11 +358,11 @@ class App(Ui_MainWindow, QMainWindow):
                 if (self.ui.line_AccountEditName.text() or self.ui.line_AccountEditAbout.toPlainText()
                         or self.AccountEditPhotoSet or self.AccountEditPhotoReset):
 
-                    self.setLabelAccountEditProfileWarning(open=True, save=False)
+                    self.setLabelAccountEditProfileWarning(show=True, save=False)
 
                 else:
 
-                    self.setLabelAccountEditProfileWarning(open=False)
+                    self.setLabelAccountEditProfileWarning(show=False)
 
         return False
 
@@ -356,8 +371,8 @@ class App(Ui_MainWindow, QMainWindow):
         if self.sender() == self.ui.button_Logo:
             self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["home"])
 
-        elif self.sender() == self.ui.button_CreatePost:
-            self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["create"])
+        elif self.sender() == self.ui.button_Hashtag:
+            self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["hashtag"])
 
         elif self.sender() == self.ui.button_Account:
 
@@ -412,7 +427,7 @@ class App(Ui_MainWindow, QMainWindow):
             self.ui.label_AccountStatus.setText(self.getTextHTML("●", "rgb(5,168,22)", 18))
 
             self.ui.label_AccountInformationText.setText(
-                self.getTextHTML(self.__userInfo.info, color="rgb(229,235,238)", size=20, weight=100))
+                self.getTextHTML(self.__userInfo.info, color="rgb(229,235,238)", size=19, weight=100))
 
             # self.ui.label_AccountInformationID.setText(
             #     self.getTextHTML("ID: " + str(self.__userInfo.userID), size=10, weight=100))
@@ -420,9 +435,9 @@ class App(Ui_MainWindow, QMainWindow):
         else:
             self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["home"])
 
-    def setLabelAccountEditProfileWarning(self, open=False, save=False):
+    def setLabelAccountEditProfileWarning(self, show=False, save=False):
 
-        if open:
+        if show:
             if save:
                 self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(0,210,0);")
                 self.ui.label_AccountEditProfileWarning.setText("Saved successfully!")
@@ -440,7 +455,7 @@ class App(Ui_MainWindow, QMainWindow):
     def setAccountEditPage(self):
 
         self.AccountEditPhotoReset = False
-        self.setLabelAccountEditProfileWarning(open=False)
+        self.setLabelAccountEditProfileWarning(show=False)
         self.ui.line_AccountEditName.setText("")
         self.ui.line_AccountEditAbout.setText("")
 
@@ -487,7 +502,7 @@ class App(Ui_MainWindow, QMainWindow):
     def isAccountEditProfilePhotoSet(self, value):
 
         self.AccountEditPhotoSet = value
-        self.setLabelAccountEditProfileWarning(open=True)
+        self.setLabelAccountEditProfileWarning(show=True)
 
     def saveProfileChanges(self):
 
@@ -516,7 +531,7 @@ class App(Ui_MainWindow, QMainWindow):
             self.__userInfo.changeImageID(imageID)
 
         self.setAccountEditPage()
-        self.setLabelAccountEditProfileWarning(open=True, save=True)
+        self.setLabelAccountEditProfileWarning(show=True, save=True)
 
     def addPost(self, id):
 
@@ -528,6 +543,12 @@ class App(Ui_MainWindow, QMainWindow):
                       postInfo["post_time"], 100, 20, 2)
 
         self.ui.layout_Posts.addWidget(postUI)
+
+    def sortByTime(self):
+        pass
+
+    def sortByLikes(self):
+        pass
 
     def logOut(self):
 
