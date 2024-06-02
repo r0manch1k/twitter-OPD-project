@@ -21,7 +21,7 @@ def validateUsername(username):
 
     for i in username:
         if (i in [chr(j) for j in range(ord('a'), ord('z') + 1)]) or \
-        (i in [chr(j) for j in range(ord('A'), ord('Z') + 1)]):
+        (i in [chr(j) for j in range(ord('A'), ord('Z') + 1)]) or (i in [chr(j) for j in range(10)]):
             pass
         else:
             return "Username must contain Latin letters"
@@ -41,7 +41,7 @@ def validatePassword(password):
         return "Password must contain 8 -> 16 symbols"
 
     flag = False
-    for i in [chr(i) for i in range(ord('a'), ord('z') + 1)]:
+    for i in [chr(j) for j in range(ord('a'), ord('z') + 1)]:
         if password.find(i) > 0:
             flag = True
             break
@@ -49,7 +49,7 @@ def validatePassword(password):
         return "Password must contain lower letters"
 
     flag = False
-    for i in [chr(i) for i in range(ord('A'), ord('Z') + 1)]:
+    for i in [chr(j) for j in range(ord('A'), ord('Z') + 1)]:
         if password.find(i) > 0:
             flag = True
             break
@@ -57,8 +57,8 @@ def validatePassword(password):
         return "Password must contain upper letters"
 
     flag = False
-    for i in [str(i) for i in range(0, 10)]:
-        if password.find(i) > 0:
+    for i in [str(j) for j in range(10)]:
+        if password.find(i) >= 0:
             flag = True
             break
     if not flag:

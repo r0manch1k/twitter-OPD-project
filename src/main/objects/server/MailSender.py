@@ -592,7 +592,7 @@ class MailSender:
                                                                                             style="margin:0;Margin:0;font-family:Fira Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:25px;font-weight:400;font-style:normal;font-size:16px;text-decoration:none;text-transform:none;direction:ltr;color:#BBBBBB;text-align:center;mso-line-height-rule:exactly;mso-text-raise:3px;">
                                                                                             Do not share your personal
                                                                                             code with anyone. The code
-                                                                                            will be valid for 3 minutes
+                                                                                            will be valid for 1.5 minutes
                                                                                             from the time of the
                                                                                             request.</p>
                                                                                     </td>

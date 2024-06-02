@@ -1,6 +1,8 @@
+from pytz import utc
+from datetime import datetime
 from src.main.objects.server.DataBase import DataBase
-from src.main.objects.server.Authorization import Authorization
 from src.main.objects.server.Static import getConfigInfo
+from src.main.objects.server.Authorization import Authorization
 from src.main.objects.server.Validator import validateName, validateUsername, validateInfo
 
 
@@ -15,10 +17,6 @@ class UserInfo:
     
     @property
     def email(self):
-        message = Authorization().checkAuthorization()
-        if message:
-            return message
-             
         if not self.__db.connect():
             return 'Check your internet connection'
         else:
@@ -26,10 +24,6 @@ class UserInfo:
     
     @property
     def username(self):
-        message = Authorization().checkAuthorization()
-        if message:
-            return message
-        
         if not self.__db.connect():
             return 'Check your internet connection'
         else:
@@ -37,10 +31,6 @@ class UserInfo:
     
     @property
     def name(self):
-        message = Authorization().checkAuthorization()
-        if message:
-            return message
-        
         if not self.__db.connect():
             return 'Check your internet connection'
         else:
@@ -48,10 +38,6 @@ class UserInfo:
 
     @property
     def imageID(self):
-        message = Authorization().checkAuthorization()
-        if message:
-            return message
-        
         if not self.__db.connect():
             return 'Check your internet connection'
         else:
@@ -59,10 +45,6 @@ class UserInfo:
     
     @property
     def access(self):
-        message = Authorization().checkAuthorization()
-        if message:
-            return message
-        
         if not self.__db.connect():
             return 'Check your internet connection'
         else:
@@ -70,10 +52,6 @@ class UserInfo:
         
     @property
     def info(self):
-        message = Authorization().checkAuthorization()
-        if message:
-            return message
-        
         if not self.__db.connect():
             return 'Check your internet connection'
         else:
@@ -81,10 +59,6 @@ class UserInfo:
     
     @property
     def postIds(self):
-        message = Authorization().checkAuthorization()
-        if message:
-            return message
-        
         if not self.__db.connect():
             return 'Check your internet connection'
         else:
@@ -101,10 +75,6 @@ class UserInfo:
     
     @property
     def commentIds(self):
-        message = Authorization().checkAuthorization()
-        if message:
-            return message
-        
         if not self.__db.connect():
             return 'Check your internet connection'
         else:
@@ -118,6 +88,20 @@ class UserInfo:
             ids.append(i['comment_id'])
 
         return ids
+    
+    def checkOnline(self):
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            recent_activity = self.__db.select(f"""SELECT time FROM Online WHERE user_id = {self.userID};""")[0]['time']
+
+        time1 = datetime.strptime(recent_activity, "%Y-%m-%d %H:%M:%S")
+        time2 = datetime.strptime(datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
+        difference = time2 - time1
+        difference_seconds = difference.total_seconds()
+        if difference_seconds <= 900:
+            return True
+        return False
     
 
 class CurrentUserInfo(UserInfo):
@@ -194,7 +178,7 @@ class CurrentUserInfo(UserInfo):
             return "This id is not found" 
         else:
             image_info = image_info[0]
-
+        
         if not self.__db.connect():
             return 'Check your internet connection'
         else:
@@ -203,7 +187,16 @@ class CurrentUserInfo(UserInfo):
                     WHERE user_id = {str(self.userID)};""")
 
         return None
-
-
-# u = CurrentUserInfo()
-# print(u.changeInfo("""i l'o'v"e abdukh'kim"""))
+    
+    def updateOnline(self):
+        message = Authorization().checkAuthorization()
+        if message:
+            return message
+        
+        utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            self.__db.insert(
+                f"""UPDATE Online SET time = '{str(utc_time)}' \
+                    WHERE user_id = {str(self.userID)};""")
