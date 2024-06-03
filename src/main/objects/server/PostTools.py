@@ -181,6 +181,28 @@ class PostTools:
                                     WHERE {index} = {str(insert_value)};""")
 
         return None
+    
+    def checkReaction(self, post_id=-1, comment_id=-1):
+        user_id = CurrentUserInfo().userID
+        if post_id != -1:
+            index = "post_id"
+            insert_value = post_id
+        if comment_id != -1:
+            index = "comment_id"
+            insert_value = comment_id
+        
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            reaction = self.__db.select(
+                f"""SELECT reaction FROM Reactions 
+                    WHERE user_id = {user_id} AND {index} = {insert_value};""")
+        
+        if reaction == ():
+            return "No reactions on this object"
+        else:
+            return reaction[0]['reaction']
+            
 
     def getPostIds(self, sort_by_time=False, sort_by_likes=False, search_by_key=None):
         if sort_by_time:
@@ -281,7 +303,7 @@ class PostTools:
 
 # EXAMPLES FOR USING
 
-# post_tools = PostTools()
+post_tools = PostTools()
 
 # CREATE POST
 # post_tools.createPost(post_text="всем хай", image_id=666, video_id=69)
@@ -300,6 +322,10 @@ class PostTools:
 # post_tools.createReaction(post_id=1, is_dislike=True) -> for set dislike on post
 # post_tools.createReaction(comment_id=1, is_like=True) -> for set like on comment
 # post_tools.createReaction(comment_id=1, is_dislike=True) -> for set dislike on comment
+
+# CHECK REACTION
+# post_tools.checkReaction(post_id=1) -> for check if there is a reaction to this post from current user
+# post_tools.checkReaction(comment_id=1) -> for check if there is a reaction to this comment from current user
 
 # GET POST IDS
 # post_tools.getPostIds() -> for get all post ids without filters
