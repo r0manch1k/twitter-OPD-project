@@ -34,7 +34,7 @@ class DataBase(Singleton):
                     cursorclass=pymysql.cursors.DictCursor)
                 self.cursor = self.connection.cursor()
             return True
-        except Exception:
+        except:
             return False
 
     def select(self, query):

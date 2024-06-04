@@ -1,99 +1,202 @@
+from pytz import utc
+from datetime import datetime
 from src.main.objects.server.DataBase import DataBase
-from src.main.objects.server.Static import getConfigInfo, setConfigInfo
+from src.main.objects.server.Static import getConfigInfo
+from src.main.objects.server.Authorization import Authorization
+from src.main.objects.server.Validator import validateName, validateUsername, validateInfo
 
 
 class UserInfo:
-    def __init__(self):
+    def __init__(self, user_id):
         self.__db = DataBase()
-
-    def updateConfig(self):
-        login = self.login
-        if login == "-1":
-            return
-        
-        if not self.__db.connect():
-            return 'CONNECTION_ERROR: Check your internet connection'
-        else:
-            user_info = self.__db.select(f"""SELECT * FROM Users WHERE login = '{login}';""")[0]
-        
-        setConfigInfo('current_user', 'user_id', str(user_info['user_id']))
-        setConfigInfo('current_user', 'name', str(user_info['name']))
-        setConfigInfo('current_user', 'access', str(user_info['access']))
-        setConfigInfo('current_user', 'image_id', str(user_info['image_id']))
-        setConfigInfo('current_user', 'info', str(user_info['info']))
-
-    def getOtherInfo(self, login):
-        if not self.__db.connect():
-            return 'CONNECTION_ERROR: Check your internet connection'
-        else:
-            user_info = self.__db.select(f"""SELECT * FROM Users WHERE login = '{login}';""")[0]
-        
-        return user_info
+        self.__user_id = user_id
     
     @property
     def userID(self):
-        return int(getConfigInfo('current_user', 'user_id'))
+        return int(self.__user_id)
     
     @property
-    def login(self):
-        return getConfigInfo('current_user', 'login')
+    def email(self):
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            return self.__db.select(f"""SELECT email FROM Users WHERE user_id = {self.userID};""")[0]['email']
+    
+    @property
+    def username(self):
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            return self.__db.select(f"""SELECT username FROM Users WHERE user_id = {self.userID};""")[0]['username']
     
     @property
     def name(self):
-        return getConfigInfo('current_user', 'name')
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            return self.__db.select(f"""SELECT name FROM Users WHERE user_id = {self.userID};""")[0]['name']
 
     @property
     def imageID(self):
-        return int(getConfigInfo('current_user', 'image_id'))
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            return int(self.__db.select(f"""SELECT image_id FROM Users WHERE user_id = {self.userID};""")[0]['image_id'])
     
     @property
     def access(self):
-        return getConfigInfo('current_user', 'access')
-    
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            return self.__db.select(f"""SELECT access FROM Users WHERE user_id = {self.userID};""")[0]['access']
+        
     @property
     def info(self):
-        return getConfigInfo('current_user', 'info')
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            return self.__db.select(f"""SELECT info FROM Users WHERE user_id = {self.userID};""")[0]['info']
+    
+    @property
+    def postIds(self):
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            post_ids = self.__db.select(f"""SELECT post_id FROM Posts WHERE user_id = {self.userID};""")
+        
+        if post_ids == ():
+            return 'Posts were not found'
+
+        ids = []
+        for i in post_ids:
+            ids.append(i['post_id'])
+
+        return ids
+    
+    @property
+    def commentIds(self):
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            post_ids = self.__db.select(f"""SELECT comment_id FROM Comments WHERE user_id = {self.userID};""")
+        
+        if post_ids == ():
+            return 'Comments were not found'
+
+        ids = []
+        for i in post_ids:
+            ids.append(i['comment_id'])
+
+        return ids
+    
+    def checkOnline(self):
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            recent_activity = self.__db.select(f"""SELECT time FROM Online WHERE user_id = {self.userID};""")[0]['time']
+
+        time1 = datetime.strptime(recent_activity, "%Y-%m-%d %H:%M:%S")
+        time2 = datetime.strptime(datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
+        difference = time2 - time1
+        difference_seconds = difference.total_seconds()
+        if difference_seconds <= 900:
+            return True
+        return False
+    
+
+class CurrentUserInfo(UserInfo):
+    def __init__(self):
+        super().__init__(user_id=getConfigInfo('current_user', 'user_id'))
+        self.__db = DataBase()
     
     def changeName(self, new_name: str):
-        if len(new_name) < 4 or len(new_name) > 20:
-            return 'NAME_ERROR: ' + "Name must be between 4 and 20 characters long"       
+        message = Authorization().checkAuthorization()
+        if message:
+            return message
+
+        if validateName(new_name):
+            return self.validateName(new_name)      
+        
+        fixed_name = new_name.replace("'", "''")
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            self.__db.insert(f"""UPDATE Users SET name = '{fixed_name}' WHERE user_id = {str(self.userID)};""")
+        
+        return None
+
+    def changeUsername(self, new_username: str):
+        message = Authorization().checkAuthorization()
+        if message:
+            return message
+        
+        if validateUsername(new_username):
+            return self.validateUsername(new_username)  
+
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            if self.__db.select(f"""SELECT * FROM Users WHERE username = '{new_username}';""") != ():
+                return "This username is already occupied"   
         
         if not self.__db.connect():
-            return 'CONNECTION_ERROR: Check your internet connection'
+            return 'Check your internet connection'
         else:
-            self.__db.insert(f"""UPDATE Users SET name = '{new_name}' WHERE user_id = {str(self.userID)};""")
-        setConfigInfo('current_user', 'name', new_name)
+            self.__db.insert(f"""UPDATE Users SET username = '{new_username}' WHERE user_id = {str(self.userID)};""")
+
         return None
     
     def changeInfo(self, new_info: str):
-        if len(new_info) > 30:
-            return 'INFO_ERROR: ' + "Info must be less than 30 characters long"
+        message = Authorization().checkAuthorization()
+        if message:
+            return message
         
+        if validateInfo(new_info):
+            return self.changeInfo(new_info)
+        
+        fixed_info = new_info.replace("'", "''")
         if not self.__db.connect():
-            return 'CONNECTION_ERROR: Check your internet connection'
+            return 'Check your internet connection'
         else:
-            self.__db.insert(f"""UPDATE Users SET info = '{new_info}' WHERE user_id = {str(self.userID)};""")
-        setConfigInfo('current_user', 'info', new_info)
+            self.__db.insert(f"""UPDATE Users SET info = '{fixed_info}' WHERE user_id = {str(self.userID)};""")
+
         return None
     
     def changeImageID(self, new_image_id: int):
+        message = Authorization().checkAuthorization()
+        if message:
+            return message
+        
         if not self.__db.connect():
-            return 'CONNECTION_ERROR: Check your internet connection'
+            return 'Check your internet connection'
         else:
-            image_info = self.db.select(
+            image_info = self.__db.select(
                 f"""SELECT * FROM Images \
                     WHERE image_id = {str(new_image_id)};""")
         
         if image_info == ():
-            return 'IMAGE_ID_ERROR: ' + "This id is not found" 
+            return "This id is not found" 
         else:
             image_info = image_info[0]
-
+        
         if not self.__db.connect():
-            return 'CONNECTION_ERROR: Check your internet connection'
+            return 'Check your internet connection'
         else:
             self.__db.insert(
                 f"""UPDATE Users SET image_id = '{str(new_image_id)}' \
                     WHERE user_id = {str(self.userID)};""")
-        setConfigInfo('current_user', 'image_id', str(new_image_id))
+
         return None
+    
+    def updateOnline(self):
+        message = Authorization().checkAuthorization()
+        if message:
+            return message
+        
+        utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
+        if not self.__db.connect():
+            return 'Check your internet connection'
+        else:
+            self.__db.insert(
+                f"""UPDATE Online SET time = '{str(utc_time)}' \
+                    WHERE user_id = {str(self.userID)};""")
