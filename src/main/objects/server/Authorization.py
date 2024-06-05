@@ -286,7 +286,7 @@ class Authorization:
         time2 = datetime.strptime(datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
         difference = time2 - time1
         difference_seconds = difference.total_seconds()
-        if difference_seconds > int(getConfigInfo("const", "difference_time")):
+        if difference_seconds > int(getConfigInfo("const", "difference_time_code")):
             self.closeVerificationSession(verification_id)
             return False
         else:

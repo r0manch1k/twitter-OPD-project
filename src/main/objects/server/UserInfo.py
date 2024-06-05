@@ -161,7 +161,7 @@ class User:
         time2 = datetime.strptime(datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
         difference = time2 - time1
         difference_seconds = difference.total_seconds()
-        if difference_seconds <= getConfigInfo('const', 'difference_time'):
+        if difference_seconds <= int(getConfigInfo('const', 'difference_time_online')):
             return generateResult(data=True)
         return generateResult(data=False)
     
