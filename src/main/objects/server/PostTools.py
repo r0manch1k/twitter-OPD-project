@@ -38,18 +38,40 @@ class PostTools:
         else:
             if self.__db.select(f"""SELECT * FROM Posts WHERE post_id = {post_id};""") == ():
                 return generateResult("This object isn't found", "format")
-            
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            comment_ids = self.__db.select(
+                f"""SELECT comment_id FROM Comments 
+                    WHERE post_id = {post_id};""")
+            ids = []
+            for i in comment_ids:
+                ids.append(i['comment_id'])
+        
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
             self.__db.insert(
-            f"""DELETE FROM Posts WHERE post_id = {post_id};""")
-
+            f"""DELETE FROM Reactions WHERE comment_id IN ({', '.join([str(i) for i in ids])});""")
+        
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
             self.__db.insert(
             f"""DELETE FROM Comments WHERE post_id = {post_id};""")
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            self.__db.insert(
+            f"""DELETE FROM Reactions WHERE post_id = {post_id};""")
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            self.__db.insert(
+            f"""DELETE FROM Posts WHERE post_id = {post_id};""")
 
         return generateResult()
 
@@ -79,6 +101,12 @@ class PostTools:
         else:
             if self.__db.select(f"""SELECT * FROM Comments WHERE comment_id = {comment_id};""") == ():
                 return generateResult("This object isn't found", "format")
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            self.__db.insert(
+            f"""DELETE FROM Reactions WHERE comment_id = {comment_id};""")
             
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")

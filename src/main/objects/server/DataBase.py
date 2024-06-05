@@ -60,6 +60,7 @@ class DataBase(Singleton):
                 if query[i] == " ":
                     end = i
                     break
+
             table_name = query[begin : end]
             identity_ids = {'Users': 'user_id', 
                             'Verifications': 'verification_id', 
@@ -72,10 +73,22 @@ class DataBase(Singleton):
                             'Images': 'image_id',
                             'Messages': 'message_id',
                             'Videos': 'video_id'}
-            max_id = self.select(f"""SELECT MAX({identity_ids[table_name]}) FROM {table_name};""")[0][f"""MAX({identity_ids[table_name]})"""]
-            if max_id is None:
-                max_id = 0
+            table_primary_ids = self.select(f"""SELECT {identity_ids[table_name]} FROM {table_name};""")
+            
+            ids = list()
+            new_id = int()
+            if table_primary_ids == ():
+                new_id = 0
+            else:
+                ids = []
+                for i in table_primary_ids:
+                    ids.append(i[identity_ids[table_name]])
+                ids.sort()
+                new_id = max(ids)
+                for i in range(1, len(ids)):
+                    if ids[i - 1] + 1 != ids[i]:
+                        new_id = ids[i - 1]
     
-            self.cursor.execute(f"""ALTER TABLE {table_name} AUTO_INCREMENT = {max_id};""")
+            self.cursor.execute(f"""ALTER TABLE {table_name} AUTO_INCREMENT = {new_id};""")
             self.connection.commit()
         return 
