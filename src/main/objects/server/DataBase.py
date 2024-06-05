@@ -47,5 +47,35 @@ class DataBase(Singleton):
             return info
 
     def insert(self, query):
+        self.update_id(query)
+            
         self.cursor.execute(query)
         self.connection.commit()
+    
+    def update_id(self, query):
+        if query[:11] == "INSERT INTO":
+            begin = 12
+            end = -1
+            for i in range(begin, len(query)):
+                if query[i] == " ":
+                    end = i
+                    break
+            table_name = query[begin : end]
+            identity_ids = {'Users': 'user_id', 
+                            'Verifications': 'verification_id', 
+                            'Reactions': 'reaction_id', 
+                            'Posts': 'post_id', 
+                            'Online': 'user_id', 
+                            'Chats': 'chat_id',
+                            'Comments': 'comment_id',
+                            'Friends': 'friends_id', 
+                            'Images': 'image_id',
+                            'Messages': 'message_id',
+                            'Videos': 'video_id'}
+            max_id = self.select(f"""SELECT MAX({identity_ids[table_name]}) FROM {table_name};""")[0][f"""MAX({identity_ids[table_name]})"""]
+            if max_id is None:
+                max_id = 0
+    
+            self.cursor.execute(f"""ALTER TABLE {table_name} AUTO_INCREMENT = {max_id};""")
+            self.connection.commit()
+        return 

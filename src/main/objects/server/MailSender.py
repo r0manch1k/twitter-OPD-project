@@ -641,4 +641,3 @@ class MailSender:
 </body>
 
 </html>"""
-

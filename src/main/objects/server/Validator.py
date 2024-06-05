@@ -21,7 +21,7 @@ def validateUsername(username):
 
     for i in username:
         if (i in [chr(j) for j in range(ord('a'), ord('z') + 1)]) or \
-        (i in [chr(j) for j in range(ord('A'), ord('Z') + 1)]) or (i in [chr(j) for j in range(10)]):
+        (i in [chr(j) for j in range(ord('A'), ord('Z') + 1)]) or (i in [str(j) for j in range(10)]):
             pass
         else:
             return "Username must contain Latin letters"

@@ -2,8 +2,9 @@ import tzlocal
 from datetime import datetime
 from pytz import timezone, utc
 from src.main.objects.server.DataBase import DataBase
+from src.main.objects.server.UserInfo import CurrentUser
+from src.main.objects.server.Result import generateResult
 from src.main.objects.server.Validator import validateText
-from src.main.objects.server.UserInfo import CurrentUserInfo
 from src.main.objects.server.Authorization import Authorization
 
 
@@ -13,85 +14,107 @@ class PostTools:
 
     def createPost(self, post_text: str, image_id: int, video_id: int):
         message = Authorization().checkAuthorization()
-        if message:
+        if message["errors"]:
             return message
 
         if validateText(post_text):
-            return self.validateText(post_text)
+            return generateResult(validateText(post_text), "format")
 
         utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
         fixed_post_text = post_text.replace("'", "''")
-        user_id = CurrentUserInfo().userID
+        user_id = CurrentUser().userID['data']
 
         if not self.__db.connect():
-            return 'Check your internet connection'
+            return generateResult("Check your internet connection", "connection")
         else:
             self.__db.insert(
                 f"""INSERT INTO Posts (user_id, image_id, video_id, post_text, likes, dislikes, post_time) \
                     VALUES  ({user_id}, {image_id}, {video_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
-        return None
+        return generateResult()
 
     def deletePost(self, post_id: int):
         if not self.__db.connect():
-            return 'Check your internet connection'
+            return generateResult("Check your internet connection", "connection")
+        else:
+            if self.__db.select(f"""SELECT * FROM Posts WHERE post_id = {post_id};""") == ():
+                return generateResult("This object isn't found", "format")
+            
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
         else:
             self.__db.insert(
             f"""DELETE FROM Posts WHERE post_id = {post_id};""")
 
         if not self.__db.connect():
-            return 'Check your internet connection'
+            return generateResult("Check your internet connection", "connection")
         else:
             self.__db.insert(
             f"""DELETE FROM Comments WHERE post_id = {post_id};""")
 
-        return None
+        return generateResult()
 
     def createComment(self, comment_text: str, post_id: int):
         message = Authorization().checkAuthorization()
-        if message:
+        if message["errors"]:
             return message
 
         if validateText(comment_text):
-            return self.validateText(comment_text)
+            return generateResult(validateText(comment_text), "format")
 
         utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
         fixed_comment_text = comment_text.replace("'", "''")
-        user_id = CurrentUserInfo().userID
+        user_id = CurrentUser().userID['data']
 
         if not self.__db.connect():
-            return 'Check your internet connection'
+            return generateResult("Check your internet connection", "connection")
         else:
             self.__db.insert(
                 f"""INSERT INTO Comments (post_id, user_id, comment_time, comment_text, likes, dislikes) \
                     VALUES  ({post_id}, {user_id}, '{utc_time}', '{fixed_comment_text}', 0, 0);""")
-        return None
+        return generateResult()
 
     def deleteComment(self, comment_id: int):
         if not self.__db.connect():
-            return 'Check your internet connection'
+            return generateResult("Check your internet connection", "connection")
+        else:
+            if self.__db.select(f"""SELECT * FROM Comments WHERE comment_id = {comment_id};""") == ():
+                return generateResult("This object isn't found", "format")
+            
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
         else:
             self.__db.insert(
             f"""DELETE FROM Comments WHERE comment_id = {comment_id};""")
 
-        return None
+        return generateResult()
 
     def createReaction(self, post_id=-1, comment_id=-1, is_like=False, is_dislike=False):
         message = Authorization().checkAuthorization()
-        if message:
+        if message["errors"]:
             return message
         
-        user_id = CurrentUserInfo().userID
+        user_id = CurrentUser().userID['data']
         if post_id != -1:
             table_name = "Posts"
             index = "post_id"
             insert_value = post_id
-        if comment_id != -1:
+        elif comment_id != -1:
             table_name = "Comments"
             index = "comment_id"
             insert_value = comment_id
+        else:
+            return generateResult("The index was not entered", "format")
+        if not is_like and not is_dislike:
+            return generateResult("The type of reaction was not entered", "format")
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            if self.__db.select(f"""SELECT * FROM {table_name} WHERE {index} = {insert_value};""") == ():
+                return generateResult("This object isn't found", "format")
 
         if not self.__db.connect():
-            return 'Check your internet connection'
+            return generateResult("Check your internet connection", "connection")
         else:
             server_reaction = self.__db.select(
                 f"""SELECT reaction FROM Reactions
@@ -99,26 +122,26 @@ class PostTools:
             if server_reaction == ():
                 if is_like:
                     if not self.__db.connect():
-                        return 'Check your internet connection'
+                        return generateResult("Check your internet connection", "connection")
                     else:
                         self.__db.insert(
                             f"""INSERT INTO Reactions (user_id, {index}, reaction) \
                                 VALUES  ({str(user_id)}, {str(insert_value)}, '{"like"}');""")
                     if not self.__db.connect():
-                        return 'Check your internet connection'
+                        return generateResult("Check your internet connection", "connection")
                     else:
                         self.__db.insert(
                             f"""UPDATE {table_name} SET likes = likes + 1 \
                                 WHERE {index} = {str(insert_value)};""")
                 if is_dislike:
                     if not self.__db.connect():
-                        return 'Check your internet connection'
+                        return generateResult("Check your internet connection", "connection")
                     else:
                         self.__db.insert(
                             f"""INSERT INTO Reactions (user_id, {index}, reaction) \
                                 VALUES  ({str(user_id)}, {str(insert_value)}, '{"dislike"}');""")
                     if not self.__db.connect():
-                        return 'Check your internet connection'
+                        return generateResult("Check your internet connection", "connection")
                     else:
                         self.__db.insert(
                             f"""UPDATE {table_name} SET dislikes = dislikes + 1 \
@@ -128,26 +151,26 @@ class PostTools:
                 if is_like:
                     if server_reaction == "like":
                         if not self.__db.connect():
-                            return 'Check your internet connection'
+                            return generateResult("Check your internet connection", "connection")
                         else:
                             self.__db.insert(
                                 f"""DELETE FROM Reactions
                                     WHERE user_id = {str(user_id)} AND {index} = {str(insert_value)};""")
                         if not self.__db.connect():
-                            return 'Check your internet connection'
+                            return generateResult("Check your internet connection", "connection")
                         else:
                             self.__db.insert(
                                 f"""UPDATE {table_name} SET likes = likes - 1 \
                                     WHERE {index} = {str(insert_value)};""")
                     if server_reaction == "dislike":
                         if not self.__db.connect():
-                            return 'Check your internet connection'
+                            return generateResult("Check your internet connection", "connection")
                         else:
                             self.__db.insert(
                                 f"""UPDATE Reactions SET reaction = '{"like"}'
                                     WHERE user_id = {str(user_id)} AND {index} = {str(insert_value)};""")
                         if not self.__db.connect():
-                            return 'Check your internet connection'
+                            return generateResult("Check your internet connection", "connection")
                         else:
                             self.__db.insert(
                                 f"""UPDATE {table_name} SET dislikes = dislikes - 1, likes = likes + 1 \
@@ -155,89 +178,98 @@ class PostTools:
                 if is_dislike:
                     if server_reaction == "dislike":
                         if not self.__db.connect():
-                            return 'Check your internet connection'
+                            return generateResult("Check your internet connection", "connection")
                         else:
                             self.__db.insert(
                                 f"""DELETE FROM Reactions
                                     WHERE user_id = {str(user_id)} AND {index} = {str(insert_value)};""")
                         if not self.__db.connect():
-                            return 'Check your internet connection'
+                            return generateResult("Check your internet connection", "connection")
                         else:
                             self.__db.insert(
                                 f"""UPDATE {table_name} SET dislikes = dislikes - 1 \
                                     WHERE {index} = {str(insert_value)};""")
                     if server_reaction == "like":
                         if not self.__db.connect():
-                            return 'Check your internet connection'
+                            return generateResult("Check your internet connection", "connection")
                         else:
                             self.__db.insert(
                                 f"""UPDATE Reactions SET reaction = '{"dislike"}'
                                     WHERE user_id = {str(user_id)} AND {index} = {str(insert_value)};""")
                         if not self.__db.connect():
-                            return 'Check your internet connection'
+                            return generateResult("Check your internet connection", "connection")
                         else:
                             self.__db.insert(
                                 f"""UPDATE {table_name} SET likes = likes - 1, dislikes = dislikes + 1 \
                                     WHERE {index} = {str(insert_value)};""")
-
-        return None
+        return generateResult()
     
     def checkReaction(self, post_id=-1, comment_id=-1):
-        user_id = CurrentUserInfo().userID
+        user_id = CurrentUser().userID['data']
         if post_id != -1:
             index = "post_id"
+            table_name = "Posts"
             insert_value = post_id
-        if comment_id != -1:
+        elif comment_id != -1:
             index = "comment_id"
+            table_name = "Comments"
             insert_value = comment_id
+        else:
+            return generateResult("The index was not entered", "format")
         
         if not self.__db.connect():
-            return 'Check your internet connection'
+            return generateResult("Check your internet connection", "connection")
+        else:
+            if self.__db.select(f"""SELECT * FROM {table_name} WHERE {index} = {insert_value};""") == ():
+                return generateResult("This object isn't found", "format")
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
         else:
             reaction = self.__db.select(
                 f"""SELECT reaction FROM Reactions 
                     WHERE user_id = {user_id} AND {index} = {insert_value};""")
         
         if reaction == ():
-            return "No reactions on this object"
+            return generateResult("No reactions on this object", "format")
         else:
-            return reaction[0]['reaction']
+            return generateResult(data=reaction[0]['reaction'])
             
 
     def getPostIds(self, sort_by_time=False, sort_by_likes=False, search_by_key=None):
         if sort_by_time:
             if not self.__db.connect():
-                return 'Check your internet connection'
+                return generateResult("Check your internet connection", "connection")
             else:
                 post_ids = self.__db.select("""SELECT post_id FROM Posts ORDER BY (post_time) DESC;""")
         elif sort_by_likes:
             if not self.__db.connect():
-                return 'Check your internet connection'
+                return generateResult("Check your internet connection", "connection")
             else:
                 post_ids = self.__db.select("""SELECT post_id FROM Posts ORDER BY (likes) DESC;""")
         elif search_by_key is not None:
             if not self.__db.connect():
-                return 'Check your internet connection'
+                return generateResult("Check your internet connection", "connection")
             else:
                 post_ids = self.__db.select(f"""SELECT post_id FROM Posts WHERE post_text LIKE '%{search_by_key}%';""")
         else:
             if not self.__db.connect():
-                return 'Check your internet connection'
+                return generateResult("Check your internet connection", "connection")
             else:
                 post_ids = self.__db.select("""SELECT post_id FROM Posts;""")
 
         if post_ids == ():
-            return 'Posts were not found'
+            return generateResult("Posts were not found", "format")
 
         ids = []
         for i in post_ids:
             ids.append(i['post_id'])
 
-        return ids
+        return generateResult(data=ids)
 
     def getPostsInfo(self, post_ids: list):
         if not self.__db.connect():
-            return 'Check your internet connection'
+            return generateResult("Check your internet connection", "connection")
         else:
             posts_info = self.__db.select(
                 f"""SELECT Posts.post_id, \
@@ -256,7 +288,7 @@ class PostTools:
                     WHERE Posts.post_id IN ({', '.join([str(i) for i in post_ids])});""")
 
         if not self.__db.connect():
-            return 'Check your internet connection'
+            return generateResult("Check your internet connection", "connection")
         else:
             comments_info = self.__db.select(
                 f"""SELECT Comments.comment_id, \
@@ -298,12 +330,12 @@ class PostTools:
                 else:
                     dict_posts_info[i]['comments'] = None
 
-        return dict_posts_info
+        return generateResult(data=dict_posts_info)
 
 
 # EXAMPLES FOR USING
 
-post_tools = PostTools()
+# post_tools = PostTools()
 
 # CREATE POST
 # post_tools.createPost(post_text="всем хай", image_id=666, video_id=69)
