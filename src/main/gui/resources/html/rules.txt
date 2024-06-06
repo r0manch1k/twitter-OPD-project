@@ -1,0 +1,1 @@
+<p>By counting, you agree to our <a target="_blank" rel="noopener noreferrer" href="gui/resources/html/userAgreement.txt">User Agreement</a> and acknowledged that you understand the <a target="_blank" rel="noopener noreferrer" href="gui/resources/html/privacyPolicy.txt">Privacy Policy</a>.&nbsp;</p>

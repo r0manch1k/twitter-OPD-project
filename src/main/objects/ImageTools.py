@@ -1,14 +1,17 @@
 import random
 import string
 
-from PIL import Image, ImageQt, ImageDraw
-from PySide6.QtGui import QPixmap
+from PIL import Image, ImageDraw
+from PySide6.QtCore import QRect
+from PySide6.QtGui import QPixmap, Qt, QImage, QBrush, QPainter, QWindow
 
 
 class ImageTools:
-
     profilePictureWidth = 500
     profilePictureHeight = 500
+
+    profileBackgroundPictureWidth = 1000
+    profileBackgroundPictureHeight = 500
 
     @staticmethod
     def getRandomString(length: int = 8) -> str:
@@ -33,12 +36,10 @@ class ImageTools:
             raise ValueError("Image must be PNG!")
 
         if imageWidth < cls.profilePictureWidth:
-
             image = image.resize((cls.profilePictureWidth, int(imageHeight * cls.profilePictureWidth / imageWidth)))
             imageWidth, imageHeight = image.size
 
         if imageHeight < cls.profilePictureHeight:
-
             image = image.resize((int(imageWidth * cls.profilePictureHeight / imageHeight), cls.profilePictureHeight))
             imageWidth, imageHeight = image.size
 
@@ -46,7 +47,10 @@ class ImageTools:
                             int((imageHeight - cls.profilePictureHeight) / 2),
                             int(imageWidth - (imageWidth - cls.profilePictureWidth) / 2),
                             int(imageHeight - (imageHeight - cls.profilePictureHeight) / 2)))
-        image = image.resize((cls.profilePictureWidth, cls.profilePictureHeight))
+        image = image.resize(
+            (cls.profilePictureWidth, cls.profilePictureHeight))  # Resizing 'cause crop doesn't work perfectly
+
+        image.save(pathToSave + "Just" + fileName)
 
         imageFrame = Image.new("L", (cls.profilePictureWidth, cls.profilePictureHeight), 0)
         drawFrame_1 = ImageDraw.Draw(imageFrame)
@@ -56,64 +60,78 @@ class ImageTools:
 
         drawFrame_2 = ImageDraw.Draw(image)
         drawFrame_2.ellipse((0, 0, cls.profilePictureWidth, cls.profilePictureHeight),
-                            outline=(235, 237, 239), width=30)
+                            outline=(235, 237, 239), width=15)
 
         image.save(pathToSave + fileName)
 
         return pathToSave + fileName
 
+    @classmethod
+    def getProfilePicturePixmap(cls, filePath: str, width: int, height: int) -> QPixmap:
 
-def getPicture(fp):
+        if not filePath.endswith(".png"):
+            raise TypeError("File Name must contain '.png' extension!")
 
-    frame_width = 500
-    frame_height = 500
-    background = Image.open(fp)
-    b_width, b_height = background.size
+        with open(filePath, "rb") as imageData:
+            image = QImage.fromData(imageData.read(), ".png")
+        image.convertToFormat(QImage.Format_ARGB32)
 
-    background = background.crop((int((b_width - frame_width) / 2),
-                                 int((b_height - frame_height) / 2),
-                                 int(b_width - (b_width - frame_width) / 2),
-                                 int(b_height - (b_height - frame_height) / 2)))
+        outImage = QImage(image.width(), image.height(), QImage.Format_ARGB32)
+        outImage.fill(Qt.GlobalColor.transparent)
 
-    img_frame = Image.new("L", (frame_width, frame_height), 0)
-    draw = ImageDraw.Draw(img_frame)
-    draw.ellipse((50, 50, frame_width - 50, frame_height - 50), fill=255)
+        brush = QBrush(image)
+        painter = QPainter(outImage)
+        painter.setBrush(brush)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.drawEllipse(0, 0, image.width(), image.height())
+        painter.end()
 
-    background.putalpha(img_frame)
+        pixelRatio = QWindow().devicePixelRatio()
+        pixMap = QPixmap.fromImage(outImage)
+        pixMap.setDevicePixelRatio(pixelRatio)
+        width *= pixelRatio
+        height *= pixelRatio
 
-    draw_frame = ImageDraw.Draw(background)
-    draw_frame.ellipse((30, 30, frame_width - 30, frame_height - 30), outline=(235, 237, 239), width=10)
+        pixMap = pixMap.scaled(width, height, Qt.AspectRatioMode.KeepAspectRatio,
+                               Qt.TransformationMode.SmoothTransformation)
 
-    background.save("gui/resources/images/rendered/image.png")
+        return pixMap
 
-    imgQT = ImageQt.ImageQt(background)
-    imgQT = QPixmap.fromImage(imgQT)
-    return imgQT
+    @classmethod
+    def getPictureForWidget(cls, widgetWidth: int, widgetHeight: int, offsetY: int, filePath: str, pathToSave: str,
+                            fileName: str = None) -> str:
 
+        if not filePath.endswith(".png"):
+            raise ValueError("File Name must contain '.png' extension!")
 
-def getPicture_1(fp: str, name: str):
+        if not fileName:
+            fileName = cls.getRandomString() + ".png"
 
-    frame_width = 500
-    frame_height = 500
-    background = Image.open(fp)
-    b_width, b_height = background.size
+        image = Image.open(filePath)
+        imageWidth, imageHeight = image.size
 
-    background = background.crop((int((b_width - frame_width) / 2),
-                                  int((b_height - frame_height) / 2),
-                                  int(b_width - (b_width - frame_width) / 2),
-                                  int(b_height - (b_height - frame_height) / 2)))
+        pixelPatio = QWindow().devicePixelRatio()
+        width = widgetWidth * pixelPatio
+        height = widgetHeight * pixelPatio
 
-    img_frame = Image.new("L", (frame_width, frame_height), 0)
-    draw = ImageDraw.Draw(img_frame)
-    draw.ellipse((0, 0, frame_width, frame_height), fill=255)
+        if height + offsetY > imageHeight:
+            raise ValueError("offsetY must be lesser than image size!")
 
-    background.putalpha(img_frame)
+        if imageWidth < width:
+            image = image.resize((width, int(imageHeight * width / imageWidth)))
+            imageWidth, imageHeight = image.size
 
-    draw_frame = ImageDraw.Draw(background)
-    draw_frame.ellipse((0, 0, frame_width, frame_height), outline=(235, 237, 239), width=30)
+        if imageHeight < height:
+            image = image.resize((int(imageWidth * height / imageHeight), height))
+            imageWidth, imageHeight = image.size
 
-    background.save("gui/resources/images/rendered/" + name)
+        image = image.crop((int((imageWidth - width) / 2),
+                            offsetY,
+                            int(imageWidth - (imageWidth - width) / 2),
+                            offsetY + height))
+        image = image.resize((width, height))
 
-    imgQT = ImageQt.ImageQt(background)
-    imgQT = QPixmap.fromImage(imgQT)
-    return imgQT
+        image.save(pathToSave + fileName)
+
+        return pathToSave + fileName

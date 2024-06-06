@@ -1,0 +1,1 @@
+<p>We will send a verification code to your email for confirmation.</p>

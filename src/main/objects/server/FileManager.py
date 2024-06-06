@@ -6,6 +6,8 @@ import shutil
 import tempfile
 from ftplib import FTP
 from functools import partial
+
+from .Result import generateResult
 from .Static import getConfigInfo
 from src.main.objects.server.DataBase import DataBase
 
@@ -46,7 +48,7 @@ class FileManager(Singleton):
 
         self.__tempDir = os.path.abspath(tempfile.mkdtemp(dir="../../", prefix="."))
 
-    def getFilePath(self, imageID: int = None, videoID: int = None) -> str:
+    def getFilePath(self, imageID: int = None, videoID: int = None) -> dict:
 
         if not imageID and videoID:
             raise ValueError("Wrong parameters: imageID, videoID are both null!")
@@ -58,13 +60,14 @@ class FileManager(Singleton):
         if not self.__tempDir:
             self.__createTempDir()
 
-        self.__db.connect()
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
 
         if imageID:
-            row = self.__db.select(f"SELECT path FROM `Images` WHERE image_id = {imageID}")[0]
+            row = self.__db.select(f"SELECT path FROM Images WHERE image_id = {imageID}")[0]
             UUID = row["path"].split(".")[0]
         else:
-            row = self.__db.select(f"SELECT path FROM `Videos` WHERE video_id = {videoID}")[0]
+            row = self.__db.select(f"SELECT path FROM Videos WHERE video_id = {videoID}")[0]
             UUID = row["path"].split(".")[0]
 
         if imageID:
@@ -78,7 +81,9 @@ class FileManager(Singleton):
         makeDirectory(self.__tempDir + path)
 
         try:
-            _ = open(self.__tempDir + path + UUID + fileType)
+
+            with open(self.__tempDir + path + UUID + fileType, "rb") as _:
+                pass
 
         except FileNotFoundError:
 
@@ -94,9 +99,9 @@ class FileManager(Singleton):
 
             self.__ftp.quit()
 
-        return self.__tempDir + path + UUID + fileType
+        return generateResult(data=self.__tempDir + path + UUID + fileType)
 
-    def loadFile(self, fp: str, imageID: int = None, videoID: int = None) -> int:
+    def loadFile(self, fp: str, imageID: int = None, videoID: int = None) -> dict:
         """Takes imageID/videoID as argument. If imageID/videoID equals '1' it will add a new image/video to the tabel.
          Otherwise, it will replace an existing one.
          P.S. You won't change image with imageID = 1 using this function!"""
@@ -111,14 +116,18 @@ class FileManager(Singleton):
         try:
             with open(fp, "rb") as _:
                 pass
+
         except FileNotFoundError:
-            raise FileNotFoundError(f"No such file in this directory: '{fp}'!")
+            return generateResult("Invalid path to image", "format")
+
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
 
         if imageID and imageID > 1:
-            row = self.__db.select(f"SELECT path FROM `Images` WHERE image_id = {imageID}")[0]
+            row = self.__db.select(f"SELECT path FROM Images WHERE image_id = {imageID}")[0]
             UUID = row["path"].split(".")[0]
         elif videoID and videoID > 1:
-            row = self.__db.select(f"SELECT path FROM `Videos` WHERE video_id = {videoID}")[0]
+            row = self.__db.select(f"SELECT path FROM Videos WHERE video_id = {videoID}")[0]
             UUID = row["path"].split(".")[0]
         else:
             UUID = str(uuid.uuid4())
@@ -163,25 +172,23 @@ class FileManager(Singleton):
 
         self.__ftp.quit()
 
-        self.__db.connect()
-
         if imageID and imageID > 1:
-            self.__db.insert(f"""UPDATE `Images` SET path = '{UUID + fileType}' WHERE image_id = {str(imageID)};""")
+            self.__db.insert(f"""UPDATE Images SET path = '{UUID + fileType}' WHERE image_id = {str(imageID)};""")
         elif imageID and imageID == 1:
-            self.__db.insert(f"INSERT INTO `Images` (path) VALUES ('{UUID + fileType}')")
-            imageID = self.__db.select(f"SELECT image_id FROM `Images` WHERE path = '{UUID + fileType}'")["image_id"]
+            self.__db.insert(f"INSERT INTO Images (path) VALUES ('{UUID + fileType}')")
+            imageID = self.__db.select(f"SELECT image_id FROM Images WHERE path = '{UUID + fileType}'")[0]["image_id"]
 
         if videoID and videoID > 1:
-            self.__db.insert(f"""UPDATE `Videos` SET path = '{UUID + fileType}' WHERE image_id = {str(videoID)};""")
+            self.__db.insert(f"""UPDATE Videos SET path = '{UUID + fileType}' WHERE image_id = {str(videoID)};""")
         elif videoID and videoID == 1:
-            self.__db.insert(f"INSERT INTO `Videos` (path) VALUES ('{UUID + fileType}')")
-            videoID = self.__db.select(f"SELECT video_id FROM `Videos` WHERE path = '{UUID + fileType}'")["video_id"]
+            self.__db.insert(f"INSERT INTO Videos (path) VALUES ('{UUID + fileType}')")
+            videoID = self.__db.select(f"SELECT video_id FROM Videos WHERE path = '{UUID + fileType}'")[0]["video_id"]
 
         if imageID:
-            return imageID
-        return videoID
+            return generateResult(data=imageID)
+        return generateResult(data=videoID)
 
-    def deleteFile(self, imageID: int = None, videoID: int = None):
+    def deleteFile(self, imageID: int = None, videoID: int = None) -> dict:
 
         if not imageID and videoID:
             raise ValueError("Wrong parameters: imageID, videoID both null!")
@@ -190,14 +197,17 @@ class FileManager(Singleton):
         elif (imageID and imageID < 1) or (videoID and videoID < 1):
             raise ValueError("Wrong parameters: ID must be positive number!")
 
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+
         if imageID and imageID > 1:
-            row = self.__db.select(f"SELECT path FROM `Images` WHERE image_id = {imageID}")[0]
+            row = self.__db.select(f"SELECT path FROM Images WHERE image_id = {imageID}")[0]
             UUID = row["path"].split(".")[0]
         elif videoID and videoID > 1:
-            row = self.__db.select(f"SELECT path FROM `Videos` WHERE video_id = {videoID}")[0]
+            row = self.__db.select(f"SELECT path FROM Videos WHERE video_id = {videoID}")[0]
             UUID = row["path"].split(".")[0]
         else:
-            raise ValueError("Can't delete default imageID/videID!")
+            raise ValueError("Can't delete default imageID/videoID!")
 
         if imageID:
             fileType = ".png"
@@ -223,15 +233,20 @@ class FileManager(Singleton):
 
         self.__ftp.quit()
 
-        self.__db.connect()
-
         if imageID:
-            self.__db.insert(f"DELETE FROM `Images` WHERE image_id = {imageID};")
-            self.__db.insert(f"UPDATE `Users` SET image_id = 1 WHERE image_id IS NULL")
+            self.__db.insert(f"DELETE FROM Images WHERE image_id = {imageID};")
+            self.__db.insert(f"UPDATE Users SET image_id = 1 WHERE image_id IS NULL")
         else:
-            self.__db.insert(f"DELETE FROM `Videos` WHERE video_id = {str(videoID)};")
-            self.__db.insert(f"UPDATE `Users` SET video_id = 1 WHERE video_id IS NULL")
+            self.__db.insert(f"DELETE FROM Videos WHERE video_id = {videoID};")
+            self.__db.insert(f"UPDATE Users SET video_id = 1 WHERE video_id IS NULL")
+
+        return generateResult(data=1)
 
     def __clear(self) -> None:
+        if self.__tempDir:
+            shutil.rmtree(self.__tempDir, ignore_errors=True)
+
+    def __del__(self):
+        print("__del__ in FileManager has called")
         if self.__tempDir:
             shutil.rmtree(self.__tempDir, ignore_errors=True)

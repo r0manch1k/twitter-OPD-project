@@ -1,0 +1,40 @@
+<RCC>
+  <qresource prefix="fonts">
+    <file>fonts/Roboto/Roboto-Regular.ttf</file>
+    <file>fonts/Great_Vibes/GreatVibes-Regular.ttf</file>
+  </qresource>
+  <qresource prefix="icons">
+    <file>icons/Account.svg</file>
+    <file>icons/AccountEdit.svg</file>
+    <file>icons/AccountEditPhotoDeleteBlack.svg</file>
+    <file>icons/AccountEditPhotoDeleteWhite.svg</file>
+    <file>icons/AccountExitBlack.svg</file>
+    <file>icons/AccountExitWhite.svg</file>
+    <file>icons/AccountExitNoBlack.svg</file>
+    <file>icons/AccountExitNoWhite.svg</file>
+    <file>icons/AccountExitYesBlack.svg</file>
+    <file>icons/AccountExitYesWhite.svg</file>
+    <file>icons/AccountPhotoAdd.svg</file>
+    <file>icons/Add.svg</file>
+    <file>icons/AuthBack.svg</file>
+    <file>icons/Chat.svg</file>
+    <file>icons/Comments.svg</file>
+    <file>icons/Dislike.svg</file>
+    <file>icons/FilterPosts.svg</file>
+    <file>icons/Hashtag.svg</file>
+    <file>icons/Like.svg</file>
+    <file>icons/Logo.svg</file>
+    <file>icons/MoreBlack.svg</file>
+    <file>icons/MoreGrey.svg</file>
+    <file>icons/Notifications.svg</file>
+    <file>icons/PasswordVisibilityOff.svg</file>
+    <file>icons/PasswordVisibilityOn.svg</file>
+    <file>icons/Refresh.svg</file>
+    <file>icons/Time.svg</file>
+    <file>icons/SendCode.svg</file>
+    <file>icons/CodeSent.svg</file>
+  </qresource>
+  <qresource prefix="images">
+    <file>images/profileBgSource.png</file>
+  </qresource>
+</RCC>

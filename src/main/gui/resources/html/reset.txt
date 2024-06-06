@@ -1,0 +1,1 @@
+<p><a href="gui/resources/html/reset.txt" target="_blank" rel="noopener noreferrer">Forgot Password</a>.</p>

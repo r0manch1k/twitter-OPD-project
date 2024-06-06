@@ -1,127 +1,130 @@
+import os.path
 import sys
-import filecmp
 
-from PIL import Image, ImageFilter
-from PySide6.QtWidgets import QMainWindow, QWidget, QLineEdit, QApplication
-from PySide6.QtGui import QIcon
-from PySide6.QtCore import QSize, Qt, QEvent
+from PySide6.QtCore import QSize, Qt, QEvent, Slot, QPoint, QThread, QTimer
+from PySide6.QtGui import QIcon, Qt, QFontDatabase, QFont, QAction
+from PySide6.QtWidgets import QMainWindow, QApplication, QMenu
 
 from gui.design.main.x import Ui_MainWindow
-from gui.design.login.login import Ui_form_Login
-from gui.design.registration.reg import Ui_form_Registration
-
 from objects.ImageTools import ImageTools
-from objects.Post import Post
-from objects.server.DataBase import DataBase
+from objects.forms import LogInForm, SignUpForm
 from objects.server.Authorization import Authorization
-from objects.server.UserInfo import UserInfo
+from objects.server.DataBase import DataBase
 from objects.server.FileManager import FileManager
-from objects.Widgets import DragNDrop
-
-indexToWidget = {0: "home", 1: "create", 2: "account", 3: "edit"}
-widgetToIndex = {"home": 0, "create": 1, "account": 2, "edit": 3}
-
-widgetToIndexAccountEdit = {"profile": 0, "privacy": 1, "chat": 2}
+from objects.server.UserInfo import User, CurrentUser
+from src.main.objects.server.PostTools import PostTools
+from src.main.objects.widgets import DragNDrop, ProfilePictureFrame
+from src.main.objects.widgets.Post import Post
 
 
 class App(Ui_MainWindow, QMainWindow):
+    widgetToIndex = {"home": 0, "account": 1, "edit": 2}
+    widgetToIndexAccountEdit = {"profile": 0, "privacy": 1, "chat": 2}
+
+    tempAccountPictureFileName = "tempAccountPicture.png"
+    tempAccountEditProfilePictureFileName = "tempAccountEditProfilePicture.png"
+    tempProfileBackgroundFileName = "tempProfileBackground.png"
+
+    amountMaximumNameSymbols = 20
+    amountMaximumUsernameSymbols = 32
+    amountMaximumAboutSymbols = 50
+
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.__db = DataBase()
-        self.__userInfo = UserInfo()
         self.__auth = Authorization()
+        self.__currentUser = CurrentUser()
         self.__fileManager = FileManager()
+        self.__postTools = PostTools()
 
-        self.__userInfo.updateConfig()
+        self.logInForm = None
+        self.signUpForm = None
 
-        self.authForm = None
-
-        self.tempAccountPictureFileName = "tempAccountPicture.png"
-        self.tempAccountEditProfilePictureFileName = "tempAccountEditProfilePicture.png"
         self.AccountEditPhotoReset = False
+        self.AccountEditPhotoSet = False
 
-        self.setIconsSVG()
-        self.initSetup()
-        self.setAccountPage()
+        self.fontThin = None  # Make cls
+        self.fontMedium = None
+        self.fontRegular = None
+        self.fontBold = None
 
-        for _ in range(10):
-            self.addPost(Post())
+        self.__setMyFont()
+        self.__setIconsSVG()
+        self.__initSetup()
 
-    def setIconsSVG(self):
+    def __setIconsSVG(self):
 
         # Lets Light Line Interface Icons Collection:
         # https://www.svgrepo.com/collection/lets-light-line-interface-icons/8
 
         icon_Logo = QIcon()
-        icon_Logo.addFile("gui/resources/icons/Logo.svg", QSize(), QIcon.Normal)
+        icon_Logo.addFile(":icons/icons/Logo.svg", QSize(), QIcon.Normal)
         self.ui.button_Logo.setIcon(icon_Logo)
         self.ui.button_Logo.setIconSize(QSize(60, 40))
 
-        icon_Add = QIcon()
-        icon_Add.addFile("gui/resources/icons/Add.svg", QSize(), QIcon.Normal)
-        self.ui.button_CreatePost.setIcon(icon_Add)
-        self.ui.button_CreatePost.setIconSize(QSize(30, 30))
+        icon_Hashtag = QIcon()
+        icon_Hashtag.addFile("gui/resources/icons/Hashtag.svg", QSize(), QIcon.Normal)
+        self.ui.button_Hashtag.setIcon(icon_Hashtag)
+        self.ui.button_Hashtag.setIconSize(QSize(22, 22))
 
         icon_Chat = QIcon()
-        icon_Chat.addFile("gui/resources/icons/Chat.svg", QSize(), QIcon.Normal)
+        icon_Chat.addFile(":icons/icons/Chat.svg", QSize(), QIcon.Normal)
         self.ui.button_Chat.setIcon(icon_Chat)
         self.ui.button_Chat.setIconSize(QSize(30, 30))
 
         icon_Notifications = QIcon()
-        icon_Notifications.addFile("gui/resources/icons/Notifications.svg", QSize(), QIcon.Normal)
+        icon_Notifications.addFile(":icons/icons/Notifications.svg", QSize(), QIcon.Normal)
         self.ui.button_Notifications.setIcon(icon_Notifications)
         self.ui.button_Notifications.setIconSize(QSize(30, 30))
 
         icon_Account = QIcon()
-        icon_Account.addFile("gui/resources/icons/Account.svg", QSize(), QIcon.Normal)
+        icon_Account.addFile(":icons/icons/Account.svg", QSize(), QIcon.Normal)
         self.ui.button_Account.setIcon(icon_Account)
         self.ui.button_Account.setIconSize(QSize(30, 30))
 
         icon_FilterPosts = QIcon()
-        icon_FilterPosts.addFile("gui/resources/icons/FilterPosts.svg", QSize(), QIcon.Normal)
+        icon_FilterPosts.addFile(":icons/icons/FilterPosts.svg", QSize(), QIcon.Normal)
         self.ui.button_HomeFilterPosts.setIcon(icon_FilterPosts)
-        self.ui.button_HomeFilterPosts.setIconSize(QSize(30, 30))
+        self.ui.button_HomeFilterPosts.setIconSize(QSize(20, 20))
 
         icon_AccountPhotoAdd = QIcon()
-        icon_AccountPhotoAdd.addFile("gui/resources/icons/AccountPhotoAdd.svg", QSize(), QIcon.Normal)
-        self.ui.button_AccountPhotoAdd.setIcon(icon_AccountPhotoAdd)
-        self.ui.button_AccountPhotoAdd.setIconSize(QSize(30, 30))
+        icon_AccountPhotoAdd.addFile(":icons/icons/AccountPhotoAdd.svg", QSize(), QIcon.Normal)
 
         self.ui.button_AccountEditPhotoAdd.setIcon(icon_AccountPhotoAdd)
         self.ui.button_AccountEditPhotoAdd.setIconSize(QSize(30, 30))
 
         icon_AccountEdit = QIcon()
-        icon_AccountEdit.addFile("gui/resources/icons/AccountEdit.svg", QSize(), QIcon.Normal)
+        icon_AccountEdit.addFile(":icons/icons/AccountEdit.svg", QSize(), QIcon.Normal)
         self.ui.button_AccountEdit.setIcon(icon_AccountEdit)
         self.ui.button_AccountEdit.setIconSize(QSize(25, 25))
 
         icon_AccountExit = QIcon()
-        icon_AccountExit.addFile("gui/resources/icons/AccountExitBlack.svg", QSize(), QIcon.Normal)
+        icon_AccountExit.addFile(":icons/icons/AccountExitBlack.svg", QSize(), QIcon.Normal)
         self.ui.button_AccountExit.setIcon(icon_AccountExit)
         self.ui.button_AccountExit.setIconSize(QSize(22, 22))
 
         icon_AccountExitNo = QIcon()
-        icon_AccountExitNo.addFile("gui/resources/icons/AccountExitNoBlack.svg", QSize(), QIcon.Normal)
+        icon_AccountExitNo.addFile(":icons/icons/AccountExitNoBlack.svg", QSize(), QIcon.Normal)
         self.ui.button_AccountExitNo.setIcon(icon_AccountExitNo)
         self.ui.button_AccountExitNo.setIconSize(QSize(25, 25))
 
         icon_AccountExitYes = QIcon()
-        icon_AccountExitYes.addFile("gui/resources/icons/AccountExitYesBlack.svg", QSize(), QIcon.Normal)
+        icon_AccountExitYes.addFile(":icons/icons/AccountExitYesBlack.svg", QSize(), QIcon.Normal)
         self.ui.button_AccountExitYes.setIcon(icon_AccountExitYes)
         self.ui.button_AccountExitYes.setIconSize(QSize(25, 25))
 
         icon_AccountEditPhotoDelete = QIcon()
-        icon_AccountEditPhotoDelete.addFile("gui/resources/icons/AccountEditPhotoDeleteBlack.svg", QSize(),
+        icon_AccountEditPhotoDelete.addFile(":icons/icons/AccountEditPhotoDeleteBlack.svg", QSize(),
                                             QIcon.Normal)
         self.ui.button_AccountEditPhotoDelete.setIcon(icon_AccountEditPhotoDelete)
         self.ui.button_AccountEditPhotoDelete.setIconSize(QSize(30, 30))
 
-    def initSetup(self, bgAccount_fp="gui/resources/images/AccountBG.png"):
+    def __initSetup(self):
 
-        self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["home"])
+        self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
 
         for button in self.ui.buttonGroup_MainTabs.buttons():
             button.clicked.connect(self.switchPage)
@@ -131,6 +134,7 @@ class App(Ui_MainWindow, QMainWindow):
 
         self.ui.frame_SideBarChat.setHidden(True)
         self.ui.frame_SideBarNotifications.setHidden(True)
+        self.ui.frame_SideBarHashtag.setHidden(True)
         self.ui.frame_AccountExitConfirmation.setHidden(True)
         self.ui.frame_Error.setHidden(True)
 
@@ -140,52 +144,73 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.button_AccountEditPhotoDelete.installEventFilter(self)
         self.ui.line_AccountEditName.installEventFilter(self)
         self.ui.line_AccountEditAbout.installEventFilter(self)
+        self.ui.line_SearchBar.installEventFilter(self)
+        self.ui.line_AccountEditUsername.installEventFilter(self)
 
         self.ui.button_AccountExitYes.clicked.connect(self.logOut)
         self.ui.button_AccountEditProfileSave.clicked.connect(self.saveProfileChanges)
         self.ui.button_AccountEditPhotoDelete.clicked.connect(self.setAccountPhotoToDefault)
         self.ui.button_AccountEditProfileCancel.clicked.connect(self.setAccountEditPage)
-
-        self.setLabelAccountEditProfileWarning(closed=True)
-
-        # self.ui.label_AccountEditSettings.setText(
-        # f'<p style="color:black;font-size:25px;font-weight:500;">Settings</p>')
-
-        width_widget = 1000  # self.ui.frame_AccountInfoContainer.sizeHint().width()
-        height_widget = 300  # self.ui.frame_AccountInfoContainer.sizeHint().height()
-        gradient = Image.linear_gradient("L")
-        gradient = gradient.resize((width_widget, height_widget))
-        alpha = Image.new("L", (width_widget, height_widget), "white")
-        alpha.paste(gradient)
-        alpha = alpha.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-        alpha.paste(gradient)
-        alpha = alpha.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-        image = Image.open(bgAccount_fp)
-        width, height = image.size
-        image = image.crop((int((width - width_widget) / 2),
-                            int((height - height_widget) / 2),
-                            width - int((width - width_widget) / 2),
-                            height - int((height - height_widget) / 2)))
-        frame = Image.open("gui/resources/images/frame.png")
-        frame = frame.crop((0, 0, width_widget, height_widget))
-        frame.save("gui/resources/images/rendered/frame.png")
-        image_rgba = Image.new("RGBA", (width_widget, height_widget), 'white')
-        image_rgba.paste(image, (0, 0))
-        image_rgba.paste(frame, (0, 0), frame)
-        # image_rgba.putalpha(alpha)
-        image_rgba.save("gui/resources/images/rendered/AccountBG.png")
-        self.ui.frame_AccountInfoContainer.setStyleSheet("""
-                                                         QFrame#frame_AccountInfoContainer {border-image:
-                                                         url(gui/resources/images/rendered/AccountBG.png)
-                                                         0 0 0 0 stretch stretch}
-                                                         """)
+        self.ui.button_ErrorClose.clicked.connect(self.closeError)
 
         self.ui.frame_AccountInfo.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountButtons.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountLabels_1.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.frame_AccountExitConfirmation.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.frame_AccountInformationContainer.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.frame_HomePosts.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.frame_AccountUsernameContainer.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountStatus.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountNickname.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.frame_AccountExitConfirmation.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountInformationText.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountInformationID.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountInformationAccess.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountUsername.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+
+        self.ui.line_AccountEditName.setMaxLength(self.amountMaximumNameSymbols)
+
+        self.ui.label_AccountEditNameSymbols.setText(
+            f"There are {self.amountMaximumNameSymbols - len(self.ui.line_AccountEditName.text())} characters left.")
+        self.ui.label_AccountEditAboutSymbols.setText(
+            f"There are {self.amountMaximumAboutSymbols - len(self.ui.line_AccountEditAbout.toPlainText())} "
+            f"characters left.")
+
+        self.ui.label_AccountNickname.setFont(self.fontRegular)
+        self.ui.label_AccountInformationText.setFont(self.fontCursive)
+        self.ui.label_AccountInformationID.setFont(self.fontRegular)
+        self.ui.label_AccountInformationAccess.setFont(self.fontRegular)
+
+        self.ui.frame_AccountInfoContainer.setStyleSheet(
+            "#frame_AccountInfoContainer {border-image: url(':files/images/profileBgSource.png')"
+            " 0 0 0 0  stretch stretch}")
+
+        menu_FilterPosts = QMenu(self)
+
+        action_Sort = QMenu("&Sort", self)
+
+        action_SortByTime = QAction("&By Time", self)
+        action_SortByTime.setShortcut("Ctrl+T")
+        action_SortByTime.triggered.connect(self.sortByTime)
+        action_Sort.addAction(action_SortByTime)
+
+        action_SortByLikes = QAction("&By Likes", self)
+        action_SortByLikes.setShortcut("Ctrl+L")
+        action_SortByLikes.triggered.connect(self.sortByLikes)
+        action_Sort.addAction(action_SortByLikes)
+
+        menu_FilterPosts.addMenu(action_Sort)
+
+        self.ui.button_HomeFilterPosts.setMenu(menu_FilterPosts)
+
+    def __setMyFont(self):
+
+        fontId = QFontDatabase.addApplicationFont(":/fonts/fonts/Roboto/Roboto-Regular.ttf")
+        families = QFontDatabase.applicationFontFamilies(fontId)
+        self.fontRegular = QFont(families[0])
+
+        fontId = QFontDatabase.addApplicationFont(":/fonts/fonts/Great_Vibes/GreatVibes-Regular.ttf")
+        families = QFontDatabase.applicationFontFamilies(fontId)
+        self.fontCursive = QFont(families[0])
 
     def eventFilter(self, watched, event):
 
@@ -194,21 +219,21 @@ class App(Ui_MainWindow, QMainWindow):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/AccountExitYesWhite.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitYesWhite.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(25, 25))
 
-                watched.setStyleSheet("background-color: rgb(255, 0, 0)")
+                watched.setStyleSheet("background-color: rgb(255, 0, 0);")
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/AccountExitYesBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitYesBlack.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(25, 25))
 
-                watched.setStyleSheet("background-color: rgb(229, 235, 238)")
+                watched.setStyleSheet("background-color: white;")
                 return True
 
         elif watched == self.ui.button_AccountExitNo:
@@ -216,21 +241,21 @@ class App(Ui_MainWindow, QMainWindow):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/AccountExitNoWhite.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitNoWhite.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(25, 25))
 
-                watched.setStyleSheet("background-color: #208b3a")
+                watched.setStyleSheet("background-color: #208b3a;")
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/AccountExitNoBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitNoBlack.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(25, 25))
 
-                watched.setStyleSheet("background-color: rgb(229, 235, 238)")
+                watched.setStyleSheet("background-color: white;")
                 return True
 
         elif watched == self.ui.button_AccountExit:
@@ -238,7 +263,7 @@ class App(Ui_MainWindow, QMainWindow):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/AccountExitWhite.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitWhite.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(22, 22))
 
@@ -248,11 +273,11 @@ class App(Ui_MainWindow, QMainWindow):
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/AccountExitBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitBlack.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(22, 22))
 
-                watched.setStyleSheet("background-color: rgb(229,235,238)")
+                watched.setStyleSheet("background-color: white;")
                 return True
 
         elif watched == self.ui.button_AccountEditPhotoDelete:
@@ -260,7 +285,7 @@ class App(Ui_MainWindow, QMainWindow):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/AccountEditPhotoDeleteWhite.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountEditPhotoDeleteWhite.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(30, 30))
 
@@ -270,426 +295,446 @@ class App(Ui_MainWindow, QMainWindow):
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/AccountEditPhotoDeleteBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountEditPhotoDeleteBlack.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(30, 30))
 
                 watched.setStyleSheet("background-color: rgb(229,235,238)")
                 return True
 
-        elif watched == self.ui.line_AccountEditName or watched == self.ui.line_AccountEditAbout:
+        elif watched == self.ui.line_SearchBar:
 
-            if event.type() == QEvent.Type.KeyPress:
+            if event.type() == QEvent.Type.HoverEnter:
+
+                self.ui.frame_ButtonHomeFilterPosts.setStyleSheet("QFrame { background-color: rgb(226,231,233); }")
+
+            elif event.type() == QEvent.Type.HoverLeave:
+
+                self.ui.frame_ButtonHomeFilterPosts.setStyleSheet("QFrame { background-color: rgb(235, 237, 239); }")
+
+        elif (watched == self.ui.line_AccountEditName or watched == self.ui.line_AccountEditUsername
+              or watched == self.ui.line_AccountEditAbout):
+
+            if event.type() == QEvent.Type.KeyRelease:
+
+                if len(self.ui.line_AccountEditAbout.toPlainText()) - self.amountMaximumAboutSymbols == 1:
+                    self.ui.line_AccountEditAbout.textCursor().deletePreviousChar()
+
+                if len(self.ui.line_AccountEditAbout.toPlainText()) - self.amountMaximumAboutSymbols > 1:
+                    self.ui.line_AccountEditAbout.setText("")
+
+                self.ui.label_AccountEditNameSymbols.setText(
+                    f"There is {self.amountMaximumNameSymbols - len(self.ui.line_AccountEditName.text())} "
+                    f"characters left.")
+                self.ui.label_AccountEditUsernameSymbols.setText(
+                    f"There is {self.amountMaximumUsernameSymbols - len(self.ui.line_AccountEditUsername.text())} "
+                    f"characters left.")
+                self.ui.label_AccountEditAboutSymbols.setText(
+                    f"There is {self.amountMaximumAboutSymbols - len(self.ui.line_AccountEditAbout.toPlainText())} "
+                    f"characters left.")
 
                 if (self.ui.line_AccountEditName.text() or self.ui.line_AccountEditAbout.toPlainText()
+                        or self.ui.line_AccountEditUsername.text() or self.AccountEditPhotoSet
                         or self.AccountEditPhotoReset):
 
-                    self.setLabelAccountEditProfileWarning(saved=False)
+                    self.setLabelAccountEditProfileWarning(show=True, save=False)
 
                 else:
-                    self.setLabelAccountEditProfileWarning(closed=True)
+
+                    self.setLabelAccountEditProfileWarning(show=False)
 
         return False
+
+    @staticmethod
+    def getTextHTML(text, color: str = "black", size: int = 28, weight: int = None, style: str = "normal") -> str:
+
+        if weight:
+            text = f"""<p><span style="color:{color};font-size:{size}px;font-weight:{weight};font-style:{style};
+                ">{text}</span></p>"""
+        else:
+            text = f"""<p><span style="color:{color};font-size:{size}px;font-style:{style};">{text}</span></p>"""
+        return text
+
+    def getOnlineCircle(self, online: bool) -> str:
+
+        if online:
+            onlineCircle = self.getTextHTML("●", "rgb(5,168,22)", 18)
+        else:
+            onlineCircle = self.getTextHTML("●", "rgb(184,191,195)", 18)
+
+        return onlineCircle
+
+    def showConnectionError(self, error: str):
+
+        self.ui.label_ErrorText.setText(error)
+        self.ui.frame_Error.setVisible(True)
+
+    def closeError(self):
+
+        self.ui.frame_Error.setHidden(True)
+
+    def isConnected(self) -> bool:
+
+        execute = self.__currentUser.updateOnline()
+
+        if execute["error"]:
+
+            if execute["error"]["connection"]:
+
+                self.showConnectionError(execute["error"]["connection"])
+
+            elif execute["error"]["format"]:
+                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
+                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
+
+            self.ui.frame_Error.setHidden(True)
+
+            return False
+
+        return True
 
     def switchPage(self):
 
         if self.sender() == self.ui.button_Logo:
-            self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["home"])
 
-        elif self.sender() == self.ui.button_CreatePost:
-            self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["create"])
+            self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
 
         elif self.sender() == self.ui.button_Account:
 
             self.ui.button_AccountExitNo.setChecked(True)
 
-            if self.__userInfo.userID < 0:
-                self.openAuthForm()
+            if not self.isConnected():
+                return
 
             self.setAccountPage()
 
-            self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["account"])
+            self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["account"])
 
         elif self.sender() == self.ui.button_AccountEdit:
 
+            if not self.isConnected():
+                return
+
             self.setAccountEditPage()
 
-            self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["edit"])
+            self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["edit"])
 
         elif self.sender() == self.ui.button_AccountEditTabsProfile:
 
-            self.ui.stacked_AccountEditTabs.setCurrentIndex(widgetToIndexAccountEdit["profile"])
+            if not self.isConnected():
+                return
+
+            self.ui.stacked_AccountEditTabs.setCurrentIndex(self.widgetToIndexAccountEdit["profile"])
 
         elif self.sender() == self.ui.button_AccountEditTabsPrivacy:
 
-            self.ui.stacked_AccountEditTabs.setCurrentIndex(widgetToIndexAccountEdit["privacy"])
+            if not self.isConnected():
+                return
+
+            self.ui.stacked_AccountEditTabs.setCurrentIndex(self.widgetToIndexAccountEdit["privacy"])
 
         elif self.sender() == self.ui.button_AccountEditTabsChat:
 
-            self.ui.stacked_AccountEditTabs.setCurrentIndex(widgetToIndexAccountEdit["chat"])
+            if not self.isConnected():
+                return
+
+            self.ui.stacked_AccountEditTabs.setCurrentIndex(self.widgetToIndexAccountEdit["chat"])
 
     def setAccountPage(self):
 
-        if self.__userInfo.userID > 0:
+        infoExe = self.__currentUser.userInfo
 
-            fp = self.__fileManager.getFilePath(imageID=self.__userInfo.imageID)
-            imagePath = ImageTools.getProfilePicture(fp, self.__fileManager.tempPath, self.tempAccountPictureFileName)
+        if infoExe["error"]:
+            if infoExe["error"]["connection"]:
+                self.showConnectionError(infoExe["error"]["connection"])
+                return
+        self.ui.frame_Error.setHidden(True)
 
-            self.ui.frame_AccountPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
+        imageId = infoExe["data"]["image_id"]
+        name = infoExe["data"]["name"]
+        username = infoExe["data"]["username"]
+        about = infoExe["data"]["about"]
+        online = infoExe["data"]["online"]
 
-            self.ui.label_AccountNickname.setText(f'<p style="color:black;font-size:28px;font-weight:200;">'
-                                                  f'{self.__userInfo.name}</p>')
+        profileBgPicturePath = ImageTools.getPictureForWidget(self.ui.frame_AccountInfoContainer.maximumWidth(),
+                                                              self.ui.frame_AccountInfoContainer.maximumHeight(),
+                                                              0,
+                                                              os.path.abspath(
+                                                                  "gui/resources/images/profileBgSource.png"),
+                                                              self.__fileManager.tempPath,
+                                                              self.tempProfileBackgroundFileName)
 
-            self.ui.label_AccountStatus.setText('<p><span style="color:rgb(5,168,22);font-size:18px;">●</span></p>')
+        self.ui.frame_AccountInfoContainer.setStyleSheet(
+            f"QFrame#frame_AccountInfoContainer {{border-image: url('{profileBgPicturePath}') 0 0 0 0  stretch stretch}}")
 
-            self.ui.label_AccountInformationText.setText(f'<p style="color:black;font-size:13px;font-weight:200;">'
-                                                         f'{self.__userInfo.info}</p>')
+        execute = self.__fileManager.getFilePath(imageID=imageId)
+        if execute["error"]:
+            if execute["error"]["connection"]:
+                self.showConnectionError(execute["error"]["connection"])
+            elif execute["error"]["format"]:
+                self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
+            return
 
-            self.ui.label_AccountInformationID.setText(f'<p style="color:black;font-size:10px;font-weight:100;">'
-                                                       f'ID: {self.__userInfo.userID}</p>')
+        for i in range(self.ui.layout_AccountInfoContainer.count()):
+            if (self.ui.layout_AccountInfoContainer.itemAt(i).widget()
+                    and isinstance(self.ui.layout_AccountInfoContainer.itemAt(i).widget(), ProfilePictureFrame)):
+                self.ui.layout_AccountInfoContainer.itemAt(i).widget().setVisible(False)
+                self.ui.layout_AccountInfoContainer.removeWidget(
+                    self.ui.layout_AccountInfoContainer.itemAt(i).widget())
+                break
 
-            # self.ui.label_AccountInformationAccess.setText(f'<p style="color:black;font-size:10px;font-weight:100;">'
-            #                                                f'ACCESS: {self.userInfo.access.upper()}</p>')
+        profilePictureFrame = ProfilePictureFrame(execute["data"], frame=2)
+        self.ui.layout_AccountInfoContainer.insertWidget(0, profilePictureFrame)
 
-        else:
-            self.ui.stacked_Pages.setCurrentIndex(widgetToIndex["home"])
+        self.ui.label_AccountNickname.setText(self.getTextHTML(name, color="white", weight=700))
 
-    def setLabelAccountEditProfileWarning(self, saved=False, closed=False):
+        self.ui.label_AccountUsername.setText(
+            self.getTextHTML(f"@{username}", size=15, color="rgb(193,193,193)", weight=200))
 
-        if not closed:
-            if saved:
+        self.ui.label_AccountStatus.setText(self.getTextHTML(self.getOnlineCircle(online)))
+
+        self.ui.label_AccountInformationText.setText(
+            self.getTextHTML(about, color="rgb(229,235,238)", size=19, weight=100))
+
+    def setLabelAccountEditProfileWarning(self, show=False, save=False, error=None):
+
+        if show:
+            if save:
                 self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(0,210,0);")
                 self.ui.label_AccountEditProfileWarning.setText("Saved successfully!")
+                self.AccountEditPhotoSet = False
+                self.AccountEditPhotoReset = False
+
+            elif error:
+                self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(255,0,0);")
+                self.ui.label_AccountEditProfileWarning.setText(error)
+
             else:
                 self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(255,0,0);")
                 self.ui.label_AccountEditProfileWarning.setText("You have unsaved changes!")
         else:
             self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(0,210,0);")
             self.ui.label_AccountEditProfileWarning.setText("")
+            self.AccountEditPhotoSet = False
+            self.AccountEditPhotoReset = False
 
     def setAccountEditPage(self):
 
         self.AccountEditPhotoReset = False
-        self.setLabelAccountEditProfileWarning(closed=True)
+        self.setLabelAccountEditProfileWarning(show=False)
         self.ui.line_AccountEditName.setText("")
         self.ui.line_AccountEditAbout.setText("")
 
-        if self.__userInfo.userID >= 0:
-            fp = self.__fileManager.getFilePath(imageID=self.__userInfo.imageID)
-            imagePath = ImageTools.getProfilePicture(fp, self.__fileManager.tempPath,
-                                                     self.tempAccountEditProfilePictureFileName)
+        infoExe = self.__currentUser.userInfo
 
-            self.ui.frame_AccountEditPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
+        if infoExe["error"]:
+            if infoExe["error"]["connection"]:
+                self.showConnectionError(infoExe["error"]["connection"])
+                return
+        self.ui.frame_Error.setHidden(True)
 
-            widgetsToDelete = []
-            for i in range(self.ui.layout_AccountEditImages.count()):
-                if (self.ui.layout_AccountEditImages.itemAt(i).widget()
-                        and self.ui.layout_AccountEditImages.itemAt(i).widget() != self.ui.frame_AccountEditPhoto):
-                    widgetsToDelete.append(self.ui.layout_AccountEditImages.itemAt(i).widget())
-            for widget in widgetsToDelete:
-                widget.setVisible(False)
-                self.ui.layout_AccountEditImages.removeWidget(widget)
+        imageId = infoExe["data"]["image_id"]
+        name = infoExe["data"]["name"]
+        username = infoExe["data"]["username"]
+        about = infoExe["data"]["about"]
 
-            drag = DragNDrop(self.ui.frame_AccountEditPhoto, self.__fileManager.tempPath,
-                             self.tempAccountEditProfilePictureFileName)
-            self.ui.layout_AccountEditImages.insertWidget(self.ui.layout_AccountEditImages.count() - 1, drag)
+        execute = self.__fileManager.getFilePath(imageID=imageId)
+        if execute["error"]:
+            if execute["error"]["connection"]:
+                self.showConnectionError(execute["error"]["connection"])
+            elif execute["error"]["format"]:
+                self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
+            return
 
-            self.ui.line_AccountEditName.setPlaceholderText(self.__userInfo.name)
-            self.ui.line_AccountEditAbout.setPlaceholderText(self.__userInfo.info)
+        imagePath = ImageTools.getProfilePicture(execute["data"], self.__fileManager.tempPath,
+                                                 self.tempAccountEditProfilePictureFileName)
+
+        self.ui.frame_AccountEditPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
+
+        widgetsToDelete = []
+        for i in range(self.ui.layout_AccountEditImages.count()):
+            if (self.ui.layout_AccountEditImages.itemAt(i).widget()
+                    and self.ui.layout_AccountEditImages.itemAt(i).widget() != self.ui.frame_AccountEditPhoto):
+                widgetsToDelete.append(self.ui.layout_AccountEditImages.itemAt(i).widget())
+        for widget in widgetsToDelete:
+            widget.setVisible(False)
+            self.ui.layout_AccountEditImages.removeWidget(widget)
+
+        drag = DragNDrop(self.ui.frame_AccountEditPhoto, self.__fileManager.tempPath,
+                         self.tempAccountEditProfilePictureFileName)
+        self.ui.layout_AccountEditImages.insertWidget(self.ui.layout_AccountEditImages.count() - 1, drag)
+        drag.imageDropped.connect(self.isAccountEditProfilePhotoSet)
+
+        self.ui.line_AccountEditName.setPlaceholderText(name)
+        self.ui.line_AccountEditUsername.setPlaceholderText(username)
+        self.ui.line_AccountEditAbout.setPlaceholderText(about)
 
     def setAccountPhotoToDefault(self):
 
-        if self.__userInfo.imageID > 1:
-            fp = self.__fileManager.getFilePath(imageID=1)
-            imagePath = ImageTools.getProfilePicture(fp, self.__fileManager.tempPath,
+        if not self.isConnected():
+            return
+
+        imageIdExe = self.__currentUser.imageID
+        if imageIdExe["error"]:
+            if imageIdExe["error"]["connection"]:
+                self.showConnectionError(imageIdExe["error"]["connection"])
+                return
+        self.ui.frame_Error.setHidden(True)
+        imageId = imageIdExe["data"]
+
+        if imageId > 1:
+            execute = self.__fileManager.getFilePath(imageID=1)
+            if execute["error"]:
+                if execute["error"]["connection"]:
+                    self.showConnectionError(execute["error"]["connection"])
+                elif execute["error"]["format"]:
+                    self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
+                return
+
+            imagePath = ImageTools.getProfilePicture(execute["data"], self.__fileManager.tempPath,
                                                      self.tempAccountEditProfilePictureFileName)
 
             self.ui.frame_AccountEditPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
-
+            self.AccountEditPhotoSet = True
             self.AccountEditPhotoReset = True
-            self.setLabelAccountEditProfileWarning(saved=False)
+            self.setLabelAccountEditProfileWarning(show=True, save=False)
+
+    @Slot(bool)
+    def isAccountEditProfilePhotoSet(self, value: bool):
+
+        self.AccountEditPhotoSet = value
+        self.setLabelAccountEditProfileWarning(show=True, save=False)
 
     def saveProfileChanges(self):
 
+        if not self.isConnected():
+            return
+
         newName = self.ui.line_AccountEditName.text()
+        newUsername = self.ui.line_AccountEditUsername.text()
         newAbout = self.ui.line_AccountEditAbout.toPlainText()
 
         if newName:
-            self.__userInfo.changeName(newName)
+            formatError = self.__currentUser.changeName(newName)
+            if formatError["error"]:
+                if formatError["error"]["connection"]:
+                    self.showConnectionError(formatError["error"]["connection"])
+                elif formatError["error"]["format"]:
+                    self.setLabelAccountEditProfileWarning(show=True, error=formatError)
+                return
+
+        if newUsername:
+            formatError = self.__currentUser.changeUsername(newUsername)
+            if formatError["error"]:
+                if formatError["error"]["connection"]:
+                    self.showConnectionError(formatError["error"]["connection"])
+                elif formatError["error"]["format"]:
+                    self.setLabelAccountEditProfileWarning(show=True, error=formatError)
+                return
 
         if newAbout:
-            self.__userInfo.changeInfo(newAbout)
+            formatError = self.__currentUser.changeAbout(newAbout)
+            if formatError["error"]:
+                if formatError["error"]["connection"]:
+                    self.showConnectionError(formatError["error"]["connection"])
+                elif formatError["error"]["format"]:
+                    self.setLabelAccountEditProfileWarning(show=True, error=formatError)
+                return
 
-        if not self.__db.connect():
-            return
+        imageIdExe = self.__currentUser.imageID
+        if imageIdExe["error"]:
+            if imageIdExe["error"]["connection"]:
+                self.showConnectionError(imageIdExe["error"]["connection"])
+                return
+        self.ui.frame_Error.setHidden(True)
+        imageId = imageIdExe["data"]
 
-        if not filecmp.cmp(self.__fileManager.tempPath + self.tempAccountEditProfilePictureFileName,
-                           self.__fileManager.tempPath + self.tempAccountPictureFileName):
+        if self.AccountEditPhotoSet:
 
             if self.AccountEditPhotoReset:
-                self.__fileManager.deleteFile(self.__userInfo.imageID)
-                imageID = 1
+                execute = self.__fileManager.deleteFile(imageId)
             else:
-                imageID = self.__fileManager.loadFile(
-                    self.__fileManager.tempPath + self.tempAccountEditProfilePictureFileName,
-                    imageID=self.__userInfo.imageID)
+                execute = self.__fileManager.loadFile(
+                    self.__fileManager.tempPath + "Just" + self.tempAccountEditProfilePictureFileName,
+                    imageID=imageId)
 
-            self.__userInfo.changeImageID(imageID)
+            if execute["error"]:
+                if execute["error"]["connection"]:
+                    self.showConnectionError(execute["error"]["connection"])
+                elif execute["error"]["format"]:
+                    self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
+                return
+
+            execute = self.__currentUser.changeImageID(execute["data"])
+            if execute["error"]:
+                if execute["error"]["connection"]:
+                    self.showConnectionError(execute["error"]["connection"])
+                elif execute["error"]["format"]:
+                    self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
+                return
 
         self.setAccountEditPage()
-        self.setLabelAccountEditProfileWarning(saved=True)
+        self.setLabelAccountEditProfileWarning(show=True, save=True)
 
-    def addPost(self, post=None):
+    # def addPost(self, id):
+    #
+    #     postInfo = self.__postTools.getPostInfo(id)[0]
+    #
+    #     userImagePath = self.__fileManager.getFilePath(1)
+    #
+    #     postUI = Post("Petya", "xuesosina", userImagePath, postInfo["post_text"],
+    #                   postInfo["post_time"], 100, 20, 2)
+    #
+    #     self.ui.layout_Posts.addWidget(postUI)
 
-        self.ui.verticalLayout_3.addWidget(post)
+    def sortByTime(self):
+        pass
+
+    def sortByLikes(self):
+        pass
 
     def logOut(self):
 
         self.__auth.logOut()
         self.refresh()
-        self.ui.stacked_Pages.setCurrentIndex(0)
+        self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
 
-    def openAuthForm(self, form="login"):
+    @Slot(str, QPoint)
+    def changeForm(self, form: str, pos: QPoint = None):
+        """If form=='login' then Log In form sets
+           If form=='signup' then SIgn Up form sets
+           If form=='home' then Main App form sets"""
+
+        if form not in {"login", "signup", "home"}:
+            return
+
+        if self.isVisible():
+            self.hide()
 
         if form == "login":
-            self.authForm = LoginForm(self)
+            self.logInForm = LogInForm(self.__auth, self.__fileManager)
+            self.logInForm.formChangedSignal.connect(self.changeForm)
+            self.logInForm.exitSignal.connect(self.changeForm)
+            self.logInForm.move(pos)
+            self.logInForm.show()
 
-        elif form == "reg":
-            self.authForm = RegistrationForm(self)
+        elif form == "signup":
+            self.signUpForm = SignUpForm(self.__auth, self.__fileManager)
+            self.signUpForm.formChangedSignal.connect(self.changeForm)
+            self.signUpForm.exitSignal.connect(self.changeForm)
+            self.signUpForm.move(pos)
+            self.signUpForm.show()
 
-        self.hide()
-        self.authForm.move(self.pos().x(), self.pos().y())
-        self.authForm.show()
+        elif form == "home":
+            self.refresh()
+            if pos:
+                self.move(pos)
+            if not self.isVisible():
+                self.show()
 
     def refresh(self):
 
-        self.initSetup()
-        self.setAccountPage()
-        self.authForm = None
-
-
-class RegistrationForm(Ui_form_Registration, QWidget):
-    def __init__(self, parent: App):
-        super(Ui_form_Registration, self).__init__()
-        self.login = None
-        self.ui = Ui_form_Registration()
-        self.ui.setupUi(self)
-
-        self.db = DataBase()
-        self.auth = Authorization()
-
-        self.parent = parent
-        self.button_IconPasswordVisibility = {}
-
-        self.setIconsSVG()
-        self.initSetup()
-
-    def setIconsSVG(self):
-
-        icon_Back = QIcon()
-        icon_Back.addFile("gui/resources/icons/AuthBack.svg", QSize(), QIcon.Normal)
-        self.ui.button_ControlBack.setIcon(icon_Back)
-        self.ui.button_ControlBack.setIconSize(QSize(30, 30))
-
-        icon_PasswordVisibilityOn = QIcon()
-        icon_PasswordVisibilityOn.addFile("gui/resources/icons/PasswordVisibilityOn.svg", QSize(), QIcon.Normal)
-        self.ui.button_PasswordVisibility.setIcon(icon_PasswordVisibilityOn)
-        self.ui.button_PasswordVisibility.setIconSize(QSize(25, 25))
-
-        icon_PasswordVisibilityOff = QIcon()
-        icon_PasswordVisibilityOff.addFile("gui/resources/icons/PasswordVisibilityOff.svg", QSize(), QIcon.Normal)
-
-        self.button_IconPasswordVisibility[True] = icon_PasswordVisibilityOn
-        self.button_IconPasswordVisibility[False] = icon_PasswordVisibilityOff
-
-    def setPasswordVisibility(self):
-
-        if self.sender().isChecked():
-            self.ui.line_Password.setEchoMode(QLineEdit.EchoMode.Normal)
-            self.ui.button_PasswordVisibility.setIcon(self.button_IconPasswordVisibility[False])
-        else:
-            self.ui.line_Password.setEchoMode(QLineEdit.EchoMode.Password)
-            self.ui.button_PasswordVisibility.setIcon(self.button_IconPasswordVisibility[True])
-        self.ui.button_PasswordVisibility.setIconSize(QSize(25, 25))
-
-    def initSetup(self, bg_fp="gui/resources/images/RegistrationForm.png"):
-
-        window_width = 1000
-        window_height = 550
-        image = Image.open(bg_fp)
-        image_width, image_height = image.size
-        image = image.filter(ImageFilter.SMOOTH)
-        for _ in range(10):
-            image = image.filter(ImageFilter.SMOOTH_MORE)
-        image = image.crop((int((image_width - window_width) / 2), int((image_height - window_height) / 2),
-                            int(image_width - (image_width - window_width) / 2),
-                            int(image_height - (image_height - window_height) / 2)))
-        image.save("gui/resources/images/rendered/RegistrationForm.png")
-        self.ui.frame_Main.setStyleSheet("""
-                                         QFrame#frame_Main {border-image: url(
-                                         gui/resources/images/rendered/RegistrationForm.png) 0 0 0 0 stretch stretch}
-                                         """)
-
-        self.ui.label_FormatError.setHidden(True)
-        self.ui.button_PasswordVisibility.toggled.connect(self.setPasswordVisibility)
-
-        self.ui.textBrowser_Rules.setAcceptRichText(True)
-        with open("gui/resources/html/AuthRules") as f:
-            self.ui.textBrowser_Rules.append(f.read())
-        self.ui.textBrowser_Rules.document().setDocumentMargin(0)
-
-        self.ui.textBrowser_LogIn.setAcceptRichText(True)
-        with open("gui/resources/html/AuthToLogin") as f:
-            self.ui.textBrowser_LogIn.append(f.read())
-        self.ui.textBrowser_LogIn.document().setDocumentMargin(0)
-        self.ui.textBrowser_LogIn.anchorClicked.connect(self.setLogInForm)
-
-        self.ui.button_ControlBack.clicked.connect(self.exit)
-        self.ui.button_SignIn.clicked.connect(self.signIn)
-
-    def signIn(self):
-
-        if not self.db.connect():
-            self.ui.label_FormatError.setVisible(True)
-            self.ui.label_FormatError.setText("CONNECTION ERROR")
-            return
-
-        name = self.ui.line_Login_2.text()
-        login = self.ui.line_Login.text()
-        password = self.ui.line_Password.text()
-
-        error = self.auth.signIn(login, password, name)
-
-        if self.auth.logIn(login, password):
-            self.ui.label_FormatError.setVisible(True)
-            self.ui.label_FormatError.setText(error)
-        else:
-            self.exit()
-
-    def setLogInForm(self):
-
-        self.hide()
-        self.login = LoginForm(self.parent)
-        self.login.move(self.pos().x(), self.pos().y())
-        self.login.show()
-
-    def exit(self):
-
-        self.hide()
-        self.parent.move(self.pos().x(), self.pos().y())
-        self.parent.show()
-        self.parent.refresh()
-
-
-class LoginForm(Ui_form_Login, QWidget):
-    def __init__(self, parent: App):
-        super(Ui_form_Login, self).__init__()
-        self.ui = Ui_form_Login()
-        self.ui.setupUi(self)
-
-        self.parent = parent
-
-        self.auth = Authorization()
-        self.db = DataBase()
-        self.regForm = RegistrationForm(self.parent)
-
-        self.button_IconPasswordVisibility = {}
-
-        self.setIconsSVG()
-        self.initSetup()
-
-    def setIconsSVG(self):
-
-        icon_Back = QIcon()
-        icon_Back.addFile("gui/resources/icons/AuthBack.svg", QSize(), QIcon.Normal)
-        self.ui.button_ControlBack.setIcon(icon_Back)
-        self.ui.button_ControlBack.setIconSize(QSize(30, 30))
-
-        icon_PasswordVisibilityOn = QIcon()
-        icon_PasswordVisibilityOn.addFile("gui/resources/icons/PasswordVisibilityOn.svg", QSize(), QIcon.Normal)
-        self.ui.button_PasswordVisibility.setIcon(icon_PasswordVisibilityOn)
-        self.ui.button_PasswordVisibility.setIconSize(QSize(25, 25))
-
-        icon_PasswordVisibilityOff = QIcon()
-        icon_PasswordVisibilityOff.addFile("gui/resources/icons/PasswordVisibilityOff.svg", QSize(), QIcon.Normal)
-
-        self.button_IconPasswordVisibility[True] = icon_PasswordVisibilityOn
-        self.button_IconPasswordVisibility[False] = icon_PasswordVisibilityOff
-
-    def initSetup(self, bg_fp="gui/resources/images/LoginForm.png"):
-
-        window_width, window_height = 1000, 550
-        image = Image.open(bg_fp)
-        image_width, image_height = image.size
-        # image_rgba = Image.new("RGBA", (image_width, image_height), 255)
-        # image_rgba.paste(image, (0, 0))
-        image_rgba = image.crop((int((image_width - window_width) / 2), int((image_height - window_height) / 2),
-                                 int(image_width - (image_width - window_width) / 2),
-                                 int(image_height - (image_height - window_height) / 2)))
-        image_rgba.save("gui/resources/images/rendered/LoginForm.png")
-        self.ui.frame_Main.setStyleSheet("""
-                                         QFrame#frame_Main {border-image: url(
-                                         gui/resources/images/rendered/LoginForm.png) 0 0 0 0 stretch stretch}
-                                         """)
-
-        self.ui.label_FormatError.setHidden(True)
-        self.ui.button_PasswordVisibility.toggled.connect(self.setPasswordVisibility)
-
-        self.ui.textBrowser_Rules.setAcceptRichText(True)
-        with open("gui/resources/html/AuthRules") as f:
-            self.ui.textBrowser_Rules.append(f.read())
-        self.ui.textBrowser_Rules.document().setDocumentMargin(0)
-
-        self.ui.textBrowser_LogIn.setAcceptRichText(True)
-        with open("gui/resources/html/AuthToReg") as f:
-            self.ui.textBrowser_LogIn.append(f.read())
-        self.ui.textBrowser_LogIn.document().setDocumentMargin(0)
-        self.ui.textBrowser_LogIn.anchorClicked.connect(self.setRegForm)
-
-        self.ui.button_ControlBack.clicked.connect(self.exit)
-        self.ui.button_LogIn.clicked.connect(self.logIn)
-
-    def setPasswordVisibility(self):
-
-        if self.sender().isChecked():
-            self.ui.line_Password.setEchoMode(QLineEdit.EchoMode.Normal)
-            self.ui.button_PasswordVisibility.setIcon(self.button_IconPasswordVisibility[False])
-        else:
-            self.ui.line_Password.setEchoMode(QLineEdit.EchoMode.Password)
-            self.ui.button_PasswordVisibility.setIcon(self.button_IconPasswordVisibility[True])
-        self.ui.button_PasswordVisibility.setIconSize(QSize(25, 25))
-
-    def logIn(self):
-
-        if not self.db.connect():
-            self.ui.label_FormatError.setVisible(True)
-            self.ui.label_FormatError.setText("CONNECTION ERROR")
-            return
-
-        login = self.ui.line_Login.text()
-        password = self.ui.line_Password.text()
-
-        error = self.auth.logIn(login, password)
-
-        if self.auth.logIn(login, password):
-            self.ui.label_FormatError.setVisible(True)
-            self.ui.label_FormatError.setText(error)
-        else:
-            self.exit()
-
-    def setRegForm(self):
-
-        self.hide()
-        self.regForm = RegistrationForm(self.parent)
-        self.regForm.move(self.pos().x(), self.pos().y())
-        self.regForm.show()
-
-    def exit(self):
-
-        self.hide()
-        self.parent.move(self.pos().x(), self.pos().y())
-        self.parent.show()
-        self.parent.refresh()
+        pass
 
 
 if __name__ == '__main__':

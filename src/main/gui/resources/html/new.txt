@@ -1,0 +1,1 @@
+<p>Enter and confirm your new password.</p>

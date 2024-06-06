@@ -1,0 +1,1 @@
+<p>Already signed up? <a href="gui/resources/html/toLogIn.txt" target="_blank" rel="noopener noreferrer">Log In</a>.</p>

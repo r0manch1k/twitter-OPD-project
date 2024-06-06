@@ -1,0 +1,42 @@
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>User Agreement for R&amp;R</strong></span> <a target="_blank" rel="noopener noreferrer" href="gui/resources/html/rules.txt"><u>Back.</u></a></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>1. Acceptance of Terms</strong></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">By creating an account, you agree to comply with the terms and conditions set forth in this User's Agreement.</span></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>2. Privacy Policy</strong></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">Your privacy is important to us. Please review our Privacy Policy to understand our practices.</span></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>3. Account Security</strong></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account.</span></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>4. User Conduct</strong></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">You agree not to use the service to:</span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">Post or transmit any content that is harmful, unlawful, or violates the rights of others.</span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">Engage in any activity that disrupts or interferes with the service.</span></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>5. Content Ownership</strong></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">You retain all rights to the content you post but grant R&amp;R a non-exclusive license to use and distribute your content.</span></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>6. Termination</strong></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">We may terminate or suspend your account if you violate the terms of this agreement.</span></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>7. Changes to Agreement</strong></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">We reserve the right to modify this agreement at any time. Your continued use of the service constitutes your acceptance of the changes.</span></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>8. Governing Law</strong></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">This agreement shall be governed by the laws of the jurisdiction in which R&amp;R operates.</span></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><strong>9. Contact Information</strong></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">For any questions or concerns regarding this agreement, please contact us in real life.</span></p>
+<p style="margin:0cm;">&nbsp;</p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"></span></p>
+<p style="margin:0cm;"><span style="sans-serif;font-size:12pt;">By continuing, you acknowledge that you have read, understood, and agreed to be bound by the terms of this User Agreement.</span></p>
