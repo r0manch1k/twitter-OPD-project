@@ -1,0 +1,1 @@
+<p>Don't have an account yet? <a href="gui/resources/html/toSignUp.txt" target="_blank" rel="noopener noreferrer">Sign In</a>.</p>

@@ -1,0 +1,1 @@
+<p><a href="gui/resources/html/resendCode.txt" target="_blank" rel="noopener noreferrer">Resend</a> code.</p>

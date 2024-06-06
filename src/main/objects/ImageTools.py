@@ -47,7 +47,8 @@ class ImageTools:
                             int((imageHeight - cls.profilePictureHeight) / 2),
                             int(imageWidth - (imageWidth - cls.profilePictureWidth) / 2),
                             int(imageHeight - (imageHeight - cls.profilePictureHeight) / 2)))
-        image = image.resize((cls.profilePictureWidth, cls.profilePictureHeight))
+        image = image.resize(
+            (cls.profilePictureWidth, cls.profilePictureHeight))  # Resizing 'cause crop doesn't work perfectly
 
         image.save(pathToSave + "Just" + fileName)
 
@@ -98,8 +99,8 @@ class ImageTools:
         return pixMap
 
     @classmethod
-    def getProfileBackgroundPicture(cls, width: int, height: int, filePath: str, pathToSave: str,
-                                    fileName: str = None) -> str:
+    def getPictureForWidget(cls, widgetWidth: int, widgetHeight: int, offsetY: int, filePath: str, pathToSave: str,
+                            fileName: str = None) -> str:
 
         if not filePath.endswith(".png"):
             raise ValueError("File Name must contain '.png' extension!")
@@ -107,12 +108,29 @@ class ImageTools:
         if not fileName:
             fileName = cls.getRandomString() + ".png"
 
-        with open(filePath, "rb") as imageData:
-            image = QImage.fromData(imageData.read(), ".png")
-        image.convertToFormat(QImage.Format_ARGB32)
+        image = Image.open(filePath)
+        imageWidth, imageHeight = image.size
 
-        rectToCrop = QRect(0, 0, width, height)
-        image = image.copy(rectToCrop)
+        pixelPatio = QWindow().devicePixelRatio()
+        width = widgetWidth * pixelPatio
+        height = widgetHeight * pixelPatio
+
+        if height + offsetY > imageHeight:
+            raise ValueError("offsetY must be lesser than image size!")
+
+        if imageWidth < width:
+            image = image.resize((width, int(imageHeight * width / imageWidth)))
+            imageWidth, imageHeight = image.size
+
+        if imageHeight < height:
+            image = image.resize((int(imageWidth * height / imageHeight), height))
+            imageWidth, imageHeight = image.size
+
+        image = image.crop((int((imageWidth - width) / 2),
+                            offsetY,
+                            int(imageWidth - (imageWidth - width) / 2),
+                            offsetY + height))
+        image = image.resize((width, height))
 
         image.save(pathToSave + fileName)
 

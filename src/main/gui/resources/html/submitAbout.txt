@@ -1,0 +1,1 @@
+<p>Enter the verification code sent to <a href="gui/resources/html/submitAbout.txt" target="_blank" rel="noopener noreferrer">###</a>.</p>
