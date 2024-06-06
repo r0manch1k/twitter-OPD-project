@@ -1,17 +1,17 @@
-def generateResult(error: str = None, error_type: str = "no errors", data = None):
+def generateResult(error: str = None, error_type: str = "", data = None):
     result = dict()
     result["data"] = data
-    if error_type == "no errors":
-        result["errors"] = None
+    if error_type == "":
+        result["error"] = None
         return result
 
-    result["errors"] = dict()
+    result["error"] = dict()
     if error_type == "connection":
-        result["errors"][error_type] = error
+        result["error"][error_type] = error
     else:
-        result["errors"]["connection"] = None
+        result["error"]["connection"] = None
     if error_type == "format":
-        result["errors"][error_type] = error
+        result["error"][error_type] = error
     else:
-        result["errors"]["format"] = None
+        result["error"]["format"] = None
     return result

@@ -6,6 +6,7 @@ from src.main.objects.server.UserInfo import CurrentUser
 from src.main.objects.server.Result import generateResult
 from src.main.objects.server.Validator import validateText
 from src.main.objects.server.Authorization import Authorization
+from src.main.objects.server.Static import setConfigInfo, getConfigInfo
 
 
 class PostTools:
@@ -14,7 +15,7 @@ class PostTools:
 
     def createPost(self, post_text: str, image_id: int, video_id: int):
         message = Authorization().checkAuthorization()
-        if message["errors"]:
+        if message["error"]:
             return message
 
         if validateText(post_text):
@@ -77,7 +78,7 @@ class PostTools:
 
     def createComment(self, comment_text: str, post_id: int):
         message = Authorization().checkAuthorization()
-        if message["errors"]:
+        if message["error"]:
             return message
 
         if validateText(comment_text):
@@ -118,7 +119,7 @@ class PostTools:
 
     def createReaction(self, post_id=-1, comment_id=-1, is_like=False, is_dislike=False):
         message = Authorization().checkAuthorization()
-        if message["errors"]:
+        if message["error"]:
             return message
         
         user_id = CurrentUser().userID['data']
@@ -279,12 +280,19 @@ class PostTools:
             if not self.__db.connect():
                 return generateResult("Check your internet connection", "connection")
             else:
+                search_by_key = search_by_key.replace("'", "''")
                 post_ids = self.__db.select(f"""SELECT post_id FROM Posts WHERE post_text LIKE '%{search_by_key}%';""")
         else:
             if not self.__db.connect():
                 return generateResult("Check your internet connection", "connection")
             else:
                 post_ids = self.__db.select("""SELECT post_id FROM Posts;""")
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            max_post_id = self.__db.select("""SELECT MAX(post_id) FROM Posts;""")[0]['MAX(post_id)']
+            setConfigInfo('const', 'last_post_id', str(max_post_id))
 
         if post_ids == ():
             return generateResult("Posts were not found", "format")
@@ -359,6 +367,18 @@ class PostTools:
                     dict_posts_info[i]['comments'] = None
 
         return generateResult(data=dict_posts_info)
+    
+    def checkNewPosts(self):
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            max_post_id = self.__db.select("""SELECT MAX(post_id) FROM Posts;""")[0]['MAX(post_id)']
+        
+        if str(max_post_id) != str(getConfigInfo('const', 'last_post_id')):
+            setConfigInfo('const', 'last_post_id', str(max_post_id))
+            return generateResult(data=True)
+        else:
+            return generateResult(data=False)
 
 
 # EXAMPLES FOR USING

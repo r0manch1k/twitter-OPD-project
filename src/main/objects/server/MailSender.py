@@ -523,7 +523,7 @@ class MailSender:
                                                                                         <p class="t9"
                                                                                             style="margin:0;Margin:0;font-family:Fira Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:30px;font-weight:500;font-style:normal;font-size:20px;text-decoration:none;text-transform:none;direction:ltr;color:#666666;text-align:center;mso-line-height-rule:exactly;mso-text-raise:3px;">
                                                                                             To make sure it's you, enter
-                                                                                            your code in r&amp;r.</p>
+                                                                                            your code in R&amp;R.</p>
                                                                                     </td>
                                                                                 </tr>
                                                                             </table>
