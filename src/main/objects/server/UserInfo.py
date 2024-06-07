@@ -17,32 +17,47 @@ class User:
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
-            else:
-                user_id = user_id["data"]
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
 
-            user_info = self._db.select(f"""SELECT email, username, name, access, image_id, about FROM Users WHERE user_id = {user_id};""")[0]
-            user_info['user_id'] = str(user_id)
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                user_info = self._db.select(f"""SELECT email, username, name, access, image_id, about FROM Users WHERE user_id = {user_id};""")[0]
+                user_info['user_id'] = str(user_id)
+                user_info['online'] = self.online['data']
+                user_info['followers_ids'] = self.followersIds['data']
+                user_info['followings_ids'] = self.followingsIds['data']
             return generateResult(data=user_info)
                
     @property
     def userID(self):
-        return generateResult(data=int(self.user_id))
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            if self._db.select(f"""SELECT email FROM Users WHERE user_id = {self.user_id};""") == ():
+                return generateResult("This account isn't found", "format")
+            else:
+                return generateResult(data=int(self.user_id))
     
     @property
     def email(self):
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
+            
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
             else:
-                user_id = user_id["data"]
-
-            email = self._db.select(f"""SELECT email FROM Users WHERE user_id = {user_id};""")[0]['email']
+                email = self._db.select(f"""SELECT email FROM Users WHERE user_id = {user_id};""")[0]['email']
             return generateResult(data=email)
     
     @property
@@ -50,13 +65,16 @@ class User:
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
-            else:
-                user_id = user_id["data"]
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
 
-            username = self._db.select(f"""SELECT username FROM Users WHERE user_id = {user_id};""")[0]['username']
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                username = self._db.select(f"""SELECT username FROM Users WHERE user_id = {user_id};""")[0]['username']
             return generateResult(data=username)
     
     @property
@@ -64,13 +82,16 @@ class User:
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
-            else:
-                user_id = user_id["data"]
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
 
-            name = self._db.select(f"""SELECT name FROM Users WHERE user_id = {user_id};""")[0]['name']
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                name = self._db.select(f"""SELECT name FROM Users WHERE user_id = {user_id};""")[0]['name']
             return generateResult(data=name)
 
     @property
@@ -78,13 +99,16 @@ class User:
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
-            else:
-                user_id = user_id["data"]
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
 
-            image_id = int(self._db.select(f"""SELECT image_id FROM Users WHERE user_id = {user_id};""")[0]['image_id'])
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                image_id = int(self._db.select(f"""SELECT image_id FROM Users WHERE user_id = {user_id};""")[0]['image_id'])
             return generateResult(data=image_id)
     
     @property
@@ -92,13 +116,16 @@ class User:
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
-            else:
-                user_id = user_id["data"]
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
 
-            access = self._db.select(f"""SELECT access FROM Users WHERE user_id = {user_id};""")[0]['access']
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                access = self._db.select(f"""SELECT access FROM Users WHERE user_id = {user_id};""")[0]['access']
             return generateResult(data=access)
         
     @property
@@ -106,15 +133,18 @@ class User:
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
-            else:
-                user_id = user_id["data"]
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
 
-            about = self._db.select(f"""SELECT about FROM Users WHERE user_id = {user_id};""")[0]['about']
-            if about == "":
-                about = None
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                about = self._db.select(f"""SELECT about FROM Users WHERE user_id = {user_id};""")[0]['about']
+                if about == "":
+                    about = None
             return generateResult(data=about)
     
     @property
@@ -122,13 +152,16 @@ class User:
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
-            else:
-                user_id = user_id["data"]
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
 
-            recent_activity = self._db.select(f"""SELECT time FROM Online WHERE user_id = {user_id};""")[0]['time']
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                recent_activity = self._db.select(f"""SELECT time FROM Online WHERE user_id = {user_id};""")[0]['time']
 
         time1 = datetime.strptime(recent_activity, "%Y-%m-%d %H:%M:%S")
         time2 = datetime.strptime(datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
@@ -139,17 +172,70 @@ class User:
         return generateResult(data=False)
     
     @property
+    def followersIds(self):
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
+            
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                follower_ids = self._db.select(f"""SELECT follower_id FROM Followers WHERE user_id = {user_id};""")
+        
+            if follower_ids == ():
+                return generateResult("Followers were not found", "format")
+            
+            ids = []
+            for i in follower_ids:
+                ids.append(i['follower_id'])
+
+        return generateResult(data=ids)
+    
+    @property
+    def followingsIds(self):
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
+            
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                following_ids = self._db.select(f"""SELECT user_id FROM Followers WHERE follower_id = {user_id};""")
+        
+            if following_ids == ():
+                return generateResult("Followings were not found", "format")
+            
+            ids = []
+            for i in following_ids:
+                ids.append(i['user_id'])
+
+        return generateResult(data=ids)
+    
+    @property
     def postIds(self):
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
+            
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
             else:
-                user_id = user_id["data"]
-
-            post_ids = self._db.select(f"""SELECT post_id FROM Posts WHERE user_id = {user_id};""")
+                post_ids = self._db.select(f"""SELECT post_id FROM Posts WHERE user_id = {user_id};""")
         
         if post_ids == ():
             return generateResult("Posts were not found", "format")
@@ -164,13 +250,16 @@ class User:
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:   
-            user_id = self.userID
-            if user_id['data'] is None:
-                return user_id
-            else:
-                user_id = user_id["data"]
+            message = self.userID
+            user_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
 
-            post_ids = self._db.select(f"""SELECT comment_id FROM Comments WHERE user_id = {user_id};""")
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                post_ids = self._db.select(f"""SELECT comment_id FROM Comments WHERE user_id = {user_id};""")
         
         if post_ids == ():
             return generateResult("Comments were not found", "format")
@@ -181,6 +270,43 @@ class User:
 
         return generateResult(data=ids)
     
+    def followTo(self, user_id: int):
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:   
+            message = self.userID
+            follower_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
+
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                self._db.insert(
+                    f"""INSERT INTO Followers (user_id, follower_id) \
+                        VALUES  ({str(user_id)}, {str(follower_id)});""")
+        return generateResult()
+
+    def unfollowTo(self, user_id: int):
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:   
+            message = self.userID
+            follower_id = message["data"]
+            error = message["error"]
+            if error:
+                return message
+
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                self._db.insert(
+                    f"""DELETE FROM Followers
+                        WHERE follower_id = {str(follower_id)} 
+                        AND 
+                        user_id = {user_id};""")
+        return generateResult()    
 
 class CurrentUser(User):
     def __init__(self):
@@ -189,7 +315,7 @@ class CurrentUser(User):
     @property
     def userID(self):
         message = Authorization().checkAuthorization()
-        if message['error'] is not None:
+        if message['error']:
             return message
 
         self.user_id = getConfigInfo('current_user', 'user_id')
@@ -234,20 +360,20 @@ class CurrentUser(User):
 
         return generateResult()
     
-    def changeInfo(self, new_info: str):
+    def changeAbout(self, new_about: str):
         message = Authorization().checkAuthorization()
         if message['error']:
             return message
         
-        if validateInfo(new_info):
-            return generateResult(validateInfo(new_info), "format")
+        if validateInfo(new_about):
+            return generateResult(validateInfo(new_about), "format")
         
-        fixed_info = new_info.replace("'", "''")
+        fixed_about = new_about.replace("'", "''")
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
             user_id = self.userID['data']
-            self._db.insert(f"""UPDATE Users SET info = '{fixed_info}' WHERE user_id = {user_id};""")
+            self._db.insert(f"""UPDATE Users SET info = '{fixed_about}' WHERE user_id = {user_id};""")
 
         return generateResult()
     

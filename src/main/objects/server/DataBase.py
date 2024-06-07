@@ -1,5 +1,5 @@
 import pymysql
-from Static import getConfigInfo
+from src.main.objects.server.Static import getConfigInfo
 
 
 class Singleton(object):
@@ -28,7 +28,8 @@ class DataBase(Singleton):
                                 'Friends': 'friends_id', 
                                 'Images': 'image_id',
                                 'Messages': 'message_id',
-                                'Videos': 'video_id'}
+                                'Videos': 'video_id',
+                                'Followers': 'id'}
 
         self.connection = None
         self.cursor = None

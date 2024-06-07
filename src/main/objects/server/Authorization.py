@@ -314,5 +314,3 @@ class Authorization:
 
 # LOG OUT
 # auth.logOut()
-
-# print(auth.logIn("kutorgin2002@gmail.com", "1567731204w@SDF"))
