@@ -83,6 +83,12 @@ class PostTools:
 
         if validateText(comment_text):
             return generateResult(validateText(comment_text), "format")
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            if self.__db.select(f"""SELECT * FROM Posts WHERE post_id = {post_id};""") == ():
+                return generateResult("This post isn't found", "format")
 
         utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
         fixed_comment_text = comment_text.replace("'", "''")
