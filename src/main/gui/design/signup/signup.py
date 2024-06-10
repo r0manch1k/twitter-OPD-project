@@ -50,9 +50,8 @@ class Ui_form_SignUp(object):
 "}\n"
 "\n"
 "QLineEdit {\n"
-"	height: 50px;\n"
 "	color: black;\n"
-"	border-radius: 20px;\n"
+"	border-radius: 15px;\n"
 "	background-color:  rgb(235, 237, 239);\n"
 "	padding-left: 10px;\n"
 "}\n"
@@ -106,6 +105,7 @@ class Ui_form_SignUp(object):
         self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.frame_Main = QFrame(self.page_Main)
         self.frame_Main.setObjectName(u"frame_Main")
+        self.frame_Main.setStyleSheet(u"")
         self.frame_Main.setFrameShape(QFrame.StyledPanel)
         self.frame_Main.setFrameShadow(QFrame.Raised)
         self.horizontalLayout = QHBoxLayout(self.frame_Main)
@@ -208,7 +208,51 @@ class Ui_form_SignUp(object):
         self.frame_SignUp_3 = QFrame(self.frame_SignUp_2)
         self.frame_SignUp_3.setObjectName(u"frame_SignUp_3")
         self.frame_SignUp_3.setMinimumSize(QSize(287, 410))
-        self.frame_SignUp_3.setStyleSheet(u"")
+        self.frame_SignUp_3.setStyleSheet(u"QFrame#frame_PasswordInput {\n"
+"	color: black;\n"
+"	border-radius: 15px;\n"
+"	background-color:  rgb(235, 237, 239);\n"
+"	padding-left: 10px;\n"
+"}\n"
+"\n"
+"\n"
+"QLineEdit#line_Password {\n"
+"	border: 0;\n"
+"	padding-left: 0;\n"
+"	background-color: rgb(235, 237, 239);\n"
+"	border-top-right-radius: 0;\n"
+"	border-bottom-right-radius: 0;\n"
+"}\n"
+"\n"
+"QPushButton#button_PasswordVisibility {\n"
+"	border-radius: 15px;\n"
+"	background-color: rgb(235, 237, 239);\n"
+"	border-top-left-radius: 0;\n"
+"	border-bottom-left-radius: 0;\n"
+"}\n"
+"\n"
+"QFrame#frame_Username {\n"
+"	color: black;\n"
+"	border-radius: 15px;\n"
+"	background-color:  rgb(235, 237, 239);\n"
+"	padding-left: 10px;\n"
+"}\n"
+"\n"
+"QLineEdit#line_Username,\n"
+"QLineEdit#line_Snail {\n"
+"	border: 0;\n"
+"	border-radius: 15px;\n"
+"	padding-left: 0;\n"
+"	background-color: rgb(235, 237, 239);\n"
+"}\n"
+"\n"
+"QLineEdit#line_Snail {\n"
+"	border-top-left-radius: 15px;\n"
+"	border-bottom-left-radius: 15px;\n"
+"	border-top-right-radius: 0;\n"
+"	border-bottom-right"
+                        "-radius: 0;\n"
+"}")
         self.frame_SignUp_3.setFrameShape(QFrame.StyledPanel)
         self.frame_SignUp_3.setFrameShadow(QFrame.Raised)
         self.verticalLayout_3 = QVBoxLayout(self.frame_SignUp_3)
@@ -246,26 +290,7 @@ class Ui_form_SignUp(object):
         self.frame_Username.setObjectName(u"frame_Username")
         self.frame_Username.setMinimumSize(QSize(0, 40))
         self.frame_Username.setMaximumSize(QSize(16777215, 40))
-        self.frame_Username.setStyleSheet(u"QFrame {\n"
-"	height: 60px;\n"
-"	color: black;\n"
-"	border-radius: 20px;\n"
-"	background-color:  rgb(235, 237, 239);\n"
-"	padding-left: 10px;\n"
-"}\n"
-"\n"
-"QLineEdit {\n"
-"	border: 0;\n"
-"	padding-left: 0;\n"
-"	background-color: rgb(235, 237, 239);\n"
-"}\n"
-"\n"
-"QLineEdit#line_Snail {\n"
-"	border-top-left-radius: 20px;\n"
-"	border-bottom-left-radius: 20px;\n"
-"	border-top-right-radius: 0;\n"
-"	border-bottom-right-radius: 0;\n"
-"}")
+        self.frame_Username.setStyleSheet(u"")
         self.frame_Username.setFrameShape(QFrame.StyledPanel)
         self.frame_Username.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_4 = QHBoxLayout(self.frame_Username)
@@ -274,8 +299,8 @@ class Ui_form_SignUp(object):
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.line_Snail = QLineEdit(self.frame_Username)
         self.line_Snail.setObjectName(u"line_Snail")
-        self.line_Snail.setMinimumSize(QSize(20, 40))
-        self.line_Snail.setMaximumSize(QSize(20, 40))
+        self.line_Snail.setMinimumSize(QSize(20, 30))
+        self.line_Snail.setMaximumSize(QSize(20, 30))
         font2 = QFont()
         font2.setPointSize(16)
         self.line_Snail.setFont(font2)
@@ -285,6 +310,8 @@ class Ui_form_SignUp(object):
 
         self.line_Username = QLineEdit(self.frame_Username)
         self.line_Username.setObjectName(u"line_Username")
+        self.line_Username.setMinimumSize(QSize(0, 30))
+        self.line_Username.setMaximumSize(QSize(16777215, 30))
         self.line_Username.setFont(font1)
         self.line_Username.setMaxLength(32)
         self.line_Username.setEchoMode(QLineEdit.Normal)
@@ -299,6 +326,7 @@ class Ui_form_SignUp(object):
         self.line_Email.setMinimumSize(QSize(0, 40))
         self.line_Email.setMaximumSize(QSize(16777215, 40))
         self.line_Email.setFont(font1)
+        self.line_Email.setStyleSheet(u"")
         self.line_Email.setReadOnly(False)
 
         self.verticalLayout_3.addWidget(self.line_Email)
@@ -307,30 +335,7 @@ class Ui_form_SignUp(object):
         self.frame_PasswordInput.setObjectName(u"frame_PasswordInput")
         self.frame_PasswordInput.setMinimumSize(QSize(0, 40))
         self.frame_PasswordInput.setMaximumSize(QSize(16777215, 40))
-        self.frame_PasswordInput.setStyleSheet(u"QFrame {\n"
-"	height: 60px;\n"
-"	color: black;\n"
-"	border-radius: 20px;\n"
-"	background-color:  rgb(235, 237, 239);\n"
-"	padding-left: 10px;\n"
-"}\n"
-"\n"
-"\n"
-"QLineEdit {\n"
-"	border: 0;\n"
-"	padding-left: 0;\n"
-"	background-color: rgb(235, 237, 239);\n"
-"	border-top-right-radius: 0;\n"
-"	border-bottom-right-radius: 0;\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	height: 60px;\n"
-"	border: 20px;\n"
-"	background-color: rgb(235, 237, 239);\n"
-"	border-top-left-radius: 0;\n"
-"	border-bottom-left-radius: 0;\n"
-"}")
+        self.frame_PasswordInput.setStyleSheet(u"")
         self.frame_PasswordInput.setFrameShape(QFrame.StyledPanel)
         self.frame_PasswordInput.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_3 = QHBoxLayout(self.frame_PasswordInput)
@@ -340,6 +345,7 @@ class Ui_form_SignUp(object):
         self.line_Password = QLineEdit(self.frame_PasswordInput)
         self.line_Password.setObjectName(u"line_Password")
         self.line_Password.setFont(font1)
+        self.line_Password.setStyleSheet(u"")
         self.line_Password.setMaxLength(16)
         self.line_Password.setEchoMode(QLineEdit.Password)
 
@@ -347,6 +353,9 @@ class Ui_form_SignUp(object):
 
         self.button_PasswordVisibility = QPushButton(self.frame_PasswordInput)
         self.button_PasswordVisibility.setObjectName(u"button_PasswordVisibility")
+        self.button_PasswordVisibility.setMinimumSize(QSize(30, 30))
+        self.button_PasswordVisibility.setMaximumSize(QSize(30, 30))
+        self.button_PasswordVisibility.setStyleSheet(u"")
         self.button_PasswordVisibility.setCheckable(True)
 
         self.horizontalLayout_3.addWidget(self.button_PasswordVisibility)
@@ -369,15 +378,15 @@ class Ui_form_SignUp(object):
 
         self.verticalLayout_3.addWidget(self.textBrowser_toLogIn)
 
-        self.button_CheckEmail = QPushButton(self.frame_SignUp_3)
-        self.button_CheckEmail.setObjectName(u"button_CheckEmail")
-        self.button_CheckEmail.setMinimumSize(QSize(0, 50))
-        self.button_CheckEmail.setMaximumSize(QSize(16777215, 50))
+        self.button_NextStep = QPushButton(self.frame_SignUp_3)
+        self.button_NextStep.setObjectName(u"button_NextStep")
+        self.button_NextStep.setMinimumSize(QSize(0, 50))
+        self.button_NextStep.setMaximumSize(QSize(16777215, 50))
         font3 = QFont()
         font3.setBold(True)
-        self.button_CheckEmail.setFont(font3)
+        self.button_NextStep.setFont(font3)
 
-        self.verticalLayout_3.addWidget(self.button_CheckEmail)
+        self.verticalLayout_3.addWidget(self.button_NextStep)
 
 
         self.gridLayout.addWidget(self.frame_SignUp_3, 1, 1, 1, 1)
@@ -393,7 +402,7 @@ class Ui_form_SignUp(object):
 
         self.verticalLayout.addWidget(self.frame_SignUp_2)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 37, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 50, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer_2)
 
@@ -415,18 +424,19 @@ class Ui_form_SignUp(object):
         self.gridLayout_5.setSpacing(0)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
         self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.frame_Submit = QFrame(self.page_Submit)
-        self.frame_Submit.setObjectName(u"frame_Submit")
-        self.frame_Submit.setStyleSheet(u"")
-        self.frame_Submit.setFrameShape(QFrame.StyledPanel)
-        self.frame_Submit.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_5 = QHBoxLayout(self.frame_Submit)
+        self.frame_Verify = QFrame(self.page_Submit)
+        self.frame_Verify.setObjectName(u"frame_Verify")
+        self.frame_Verify.setStyleSheet(u"")
+        self.frame_Verify.setFrameShape(QFrame.StyledPanel)
+        self.frame_Verify.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_5 = QHBoxLayout(self.frame_Verify)
         self.horizontalLayout_5.setSpacing(10)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.frame_ControlSubmitContainer = QFrame(self.frame_Submit)
+        self.frame_ControlSubmitContainer = QFrame(self.frame_Verify)
         self.frame_ControlSubmitContainer.setObjectName(u"frame_ControlSubmitContainer")
         self.frame_ControlSubmitContainer.setMinimumSize(QSize(325, 0))
+        self.frame_ControlSubmitContainer.setStyleSheet(u"")
         self.frame_ControlSubmitContainer.setFrameShape(QFrame.StyledPanel)
         self.frame_ControlSubmitContainer.setFrameShadow(QFrame.Raised)
         self.verticalLayout_4 = QVBoxLayout(self.frame_ControlSubmitContainer)
@@ -440,13 +450,13 @@ class Ui_form_SignUp(object):
 
         self.horizontalLayout_5.addWidget(self.frame_ControlSubmitContainer)
 
-        self.frame_Submit_1 = QFrame(self.frame_Submit)
-        self.frame_Submit_1.setObjectName(u"frame_Submit_1")
-        self.frame_Submit_1.setMinimumSize(QSize(327, 0))
-        self.frame_Submit_1.setStyleSheet(u"")
-        self.frame_Submit_1.setFrameShape(QFrame.StyledPanel)
-        self.frame_Submit_1.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_5 = QVBoxLayout(self.frame_Submit_1)
+        self.frame_Verify_1 = QFrame(self.frame_Verify)
+        self.frame_Verify_1.setObjectName(u"frame_Verify_1")
+        self.frame_Verify_1.setMinimumSize(QSize(327, 0))
+        self.frame_Verify_1.setStyleSheet(u"")
+        self.frame_Verify_1.setFrameShape(QFrame.StyledPanel)
+        self.frame_Verify_1.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_5 = QVBoxLayout(self.frame_Verify_1)
         self.verticalLayout_5.setSpacing(10)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
@@ -454,11 +464,11 @@ class Ui_form_SignUp(object):
 
         self.verticalLayout_5.addItem(self.verticalSpacer_7)
 
-        self.frame_Submit_2 = QFrame(self.frame_Submit_1)
-        self.frame_Submit_2.setObjectName(u"frame_Submit_2")
-        self.frame_Submit_2.setMinimumSize(QSize(0, 450))
-        self.frame_Submit_2.setMaximumSize(QSize(16777215, 450))
-        self.frame_Submit_2.setStyleSheet(u"QFrame {\n"
+        self.frame_Verify_2 = QFrame(self.frame_Verify_1)
+        self.frame_Verify_2.setObjectName(u"frame_Verify_2")
+        self.frame_Verify_2.setMinimumSize(QSize(0, 450))
+        self.frame_Verify_2.setMaximumSize(QSize(16777215, 450))
+        self.frame_Verify_2.setStyleSheet(u"QFrame {\n"
 "	background-color: white;\n"
 "	border-radius: 30px;\n"
 "}\n"
@@ -474,9 +484,9 @@ class Ui_form_SignUp(object):
 "}\n"
 "\n"
 "")
-        self.frame_Submit_2.setFrameShape(QFrame.StyledPanel)
-        self.frame_Submit_2.setFrameShadow(QFrame.Raised)
-        self.gridLayout_4 = QGridLayout(self.frame_Submit_2)
+        self.frame_Verify_2.setFrameShape(QFrame.StyledPanel)
+        self.frame_Verify_2.setFrameShadow(QFrame.Raised)
+        self.gridLayout_4 = QGridLayout(self.frame_Verify_2)
         self.gridLayout_4.setSpacing(0)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
@@ -488,74 +498,74 @@ class Ui_form_SignUp(object):
 
         self.gridLayout_4.addItem(self.horizontalSpacer_6, 1, 0, 1, 1)
 
-        self.frame_Submit_3 = QFrame(self.frame_Submit_2)
-        self.frame_Submit_3.setObjectName(u"frame_Submit_3")
-        self.frame_Submit_3.setMinimumSize(QSize(287, 410))
-        self.frame_Submit_3.setStyleSheet(u"")
-        self.frame_Submit_3.setFrameShape(QFrame.StyledPanel)
-        self.frame_Submit_3.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_6 = QVBoxLayout(self.frame_Submit_3)
+        self.frame_Verify_3 = QFrame(self.frame_Verify_2)
+        self.frame_Verify_3.setObjectName(u"frame_Verify_3")
+        self.frame_Verify_3.setMinimumSize(QSize(287, 410))
+        self.frame_Verify_3.setStyleSheet(u"")
+        self.frame_Verify_3.setFrameShape(QFrame.StyledPanel)
+        self.frame_Verify_3.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_6 = QVBoxLayout(self.frame_Verify_3)
         self.verticalLayout_6.setSpacing(10)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.label_SubmitEmail = QLabel(self.frame_Submit_3)
-        self.label_SubmitEmail.setObjectName(u"label_SubmitEmail")
-        self.label_SubmitEmail.setFont(font)
-        self.label_SubmitEmail.setIndent(0)
+        self.label_VerifyEmail = QLabel(self.frame_Verify_3)
+        self.label_VerifyEmail.setObjectName(u"label_VerifyEmail")
+        self.label_VerifyEmail.setFont(font)
+        self.label_VerifyEmail.setIndent(0)
 
-        self.verticalLayout_6.addWidget(self.label_SubmitEmail)
+        self.verticalLayout_6.addWidget(self.label_VerifyEmail)
 
-        self.textBrowser_SubmitAbout = QTextBrowser(self.frame_Submit_3)
-        self.textBrowser_SubmitAbout.setObjectName(u"textBrowser_SubmitAbout")
-        self.textBrowser_SubmitAbout.setMaximumSize(QSize(16777215, 100))
-        self.textBrowser_SubmitAbout.setOpenLinks(False)
+        self.textBrowser_VerifyAbout = QTextBrowser(self.frame_Verify_3)
+        self.textBrowser_VerifyAbout.setObjectName(u"textBrowser_VerifyAbout")
+        self.textBrowser_VerifyAbout.setMaximumSize(QSize(16777215, 100))
+        self.textBrowser_VerifyAbout.setOpenLinks(False)
 
-        self.verticalLayout_6.addWidget(self.textBrowser_SubmitAbout)
+        self.verticalLayout_6.addWidget(self.textBrowser_VerifyAbout)
 
         self.verticalSpacer_11 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_6.addItem(self.verticalSpacer_11)
 
-        self.line_SubmitCode = QLineEdit(self.frame_Submit_3)
-        self.line_SubmitCode.setObjectName(u"line_SubmitCode")
-        self.line_SubmitCode.setMinimumSize(QSize(0, 50))
-        self.line_SubmitCode.setMaximumSize(QSize(16777215, 50))
-        self.line_SubmitCode.setFont(font1)
-        self.line_SubmitCode.setMaxLength(6)
-        self.line_SubmitCode.setReadOnly(False)
+        self.line_Code = QLineEdit(self.frame_Verify_3)
+        self.line_Code.setObjectName(u"line_Code")
+        self.line_Code.setMinimumSize(QSize(0, 50))
+        self.line_Code.setMaximumSize(QSize(16777215, 50))
+        self.line_Code.setFont(font1)
+        self.line_Code.setMaxLength(6)
+        self.line_Code.setReadOnly(False)
 
-        self.verticalLayout_6.addWidget(self.line_SubmitCode)
+        self.verticalLayout_6.addWidget(self.line_Code)
 
-        self.label_SubmitError = QLabel(self.frame_Submit_3)
-        self.label_SubmitError.setObjectName(u"label_SubmitError")
-        self.label_SubmitError.setMinimumSize(QSize(287, 20))
-        self.label_SubmitError.setMaximumSize(QSize(287, 20))
-        self.label_SubmitError.setStyleSheet(u"")
+        self.label_VerifyError = QLabel(self.frame_Verify_3)
+        self.label_VerifyError.setObjectName(u"label_VerifyError")
+        self.label_VerifyError.setMinimumSize(QSize(287, 20))
+        self.label_VerifyError.setMaximumSize(QSize(287, 20))
+        self.label_VerifyError.setStyleSheet(u"")
 
-        self.verticalLayout_6.addWidget(self.label_SubmitError)
+        self.verticalLayout_6.addWidget(self.label_VerifyError)
 
-        self.textBrowser_SubmitTimer = QTextBrowser(self.frame_Submit_3)
-        self.textBrowser_SubmitTimer.setObjectName(u"textBrowser_SubmitTimer")
-        self.textBrowser_SubmitTimer.setMinimumSize(QSize(0, 20))
-        self.textBrowser_SubmitTimer.setMaximumSize(QSize(16777215, 20))
+        self.textBrowser_ResendTimer = QTextBrowser(self.frame_Verify_3)
+        self.textBrowser_ResendTimer.setObjectName(u"textBrowser_ResendTimer")
+        self.textBrowser_ResendTimer.setMinimumSize(QSize(0, 20))
+        self.textBrowser_ResendTimer.setMaximumSize(QSize(16777215, 20))
 
-        self.verticalLayout_6.addWidget(self.textBrowser_SubmitTimer)
+        self.verticalLayout_6.addWidget(self.textBrowser_ResendTimer)
 
-        self.textBrowser_SubmitBack = QTextBrowser(self.frame_Submit_3)
-        self.textBrowser_SubmitBack.setObjectName(u"textBrowser_SubmitBack")
-        self.textBrowser_SubmitBack.setMinimumSize(QSize(0, 20))
-        self.textBrowser_SubmitBack.setMaximumSize(QSize(16777215, 20))
+        self.textBrowser_VerifyBack = QTextBrowser(self.frame_Verify_3)
+        self.textBrowser_VerifyBack.setObjectName(u"textBrowser_VerifyBack")
+        self.textBrowser_VerifyBack.setMinimumSize(QSize(0, 20))
+        self.textBrowser_VerifyBack.setMaximumSize(QSize(16777215, 20))
 
-        self.verticalLayout_6.addWidget(self.textBrowser_SubmitBack)
+        self.verticalLayout_6.addWidget(self.textBrowser_VerifyBack)
 
-        self.button_SignUp = QPushButton(self.frame_Submit_3)
-        self.button_SignUp.setObjectName(u"button_SignUp")
-        self.button_SignUp.setFont(font3)
+        self.button_VerifyEmail = QPushButton(self.frame_Verify_3)
+        self.button_VerifyEmail.setObjectName(u"button_VerifyEmail")
+        self.button_VerifyEmail.setFont(font3)
 
-        self.verticalLayout_6.addWidget(self.button_SignUp)
+        self.verticalLayout_6.addWidget(self.button_VerifyEmail)
 
 
-        self.gridLayout_4.addWidget(self.frame_Submit_3, 1, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.frame_Verify_3, 1, 1, 1, 1)
 
         self.horizontalSpacer_7 = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
 
@@ -566,21 +576,21 @@ class Ui_form_SignUp(object):
         self.gridLayout_4.addItem(self.verticalSpacer_9, 2, 1, 1, 1)
 
 
-        self.verticalLayout_5.addWidget(self.frame_Submit_2)
+        self.verticalLayout_5.addWidget(self.frame_Verify_2)
 
         self.verticalSpacer_10 = QSpacerItem(20, 37, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_10)
 
 
-        self.horizontalLayout_5.addWidget(self.frame_Submit_1)
+        self.horizontalLayout_5.addWidget(self.frame_Verify_1)
 
         self.horizontalSpacer_8 = QSpacerItem(320, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_5.addItem(self.horizontalSpacer_8)
 
 
-        self.gridLayout_5.addWidget(self.frame_Submit, 0, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.frame_Verify, 0, 0, 1, 1)
 
         self.stacked_Main.addWidget(self.page_Submit)
 
@@ -589,7 +599,7 @@ class Ui_form_SignUp(object):
 
         self.retranslateUi(form_SignUp)
 
-        self.stacked_Main.setCurrentIndex(1)
+        self.stacked_Main.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(form_SignUp)
@@ -607,16 +617,16 @@ class Ui_form_SignUp(object):
         self.line_Password.setPlaceholderText(QCoreApplication.translate("form_SignUp", u"Password", None))
         self.button_PasswordVisibility.setText("")
         self.label_SignUpError.setText(QCoreApplication.translate("form_SignUp", u"Invalid suka", None))
-        self.button_CheckEmail.setText(QCoreApplication.translate("form_SignUp", u"Check Email", None))
-        self.label_SubmitEmail.setText(QCoreApplication.translate("form_SignUp", u"Submit Email", None))
-        self.textBrowser_SubmitAbout.setHtml(QCoreApplication.translate("form_SignUp", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.button_NextStep.setText(QCoreApplication.translate("form_SignUp", u"Next Step", None))
+        self.label_VerifyEmail.setText(QCoreApplication.translate("form_SignUp", u"Submit Email", None))
+        self.textBrowser_VerifyAbout.setHtml(QCoreApplication.translate("form_SignUp", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
-        self.line_SubmitCode.setText("")
-        self.line_SubmitCode.setPlaceholderText(QCoreApplication.translate("form_SignUp", u"Verification Code", None))
-        self.label_SubmitError.setText(QCoreApplication.translate("form_SignUp", u"Invalid suka", None))
-        self.button_SignUp.setText(QCoreApplication.translate("form_SignUp", u"Sign Up", None))
+        self.line_Code.setText("")
+        self.line_Code.setPlaceholderText(QCoreApplication.translate("form_SignUp", u"Verification Code", None))
+        self.label_VerifyError.setText(QCoreApplication.translate("form_SignUp", u"Invalid suka", None))
+        self.button_VerifyEmail.setText(QCoreApplication.translate("form_SignUp", u"Verify Email", None))
     # retranslateUi
 

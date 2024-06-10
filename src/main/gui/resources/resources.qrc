@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="fonts">
     <file>fonts/Roboto/Roboto-Regular.ttf</file>
+    <file>fonts/Roboto/Roboto-Thin.ttf</file>
     <file>fonts/Great_Vibes/GreatVibes-Regular.ttf</file>
   </qresource>
   <qresource prefix="icons">
@@ -33,6 +34,16 @@
     <file>icons/Time.svg</file>
     <file>icons/SendCode.svg</file>
     <file>icons/CodeSent.svg</file>
+    <file>icons/Image.svg</file>
+    <file>icons/Video.svg</file>
+    <file>icons/Music.svg</file>
+    <file>icons/Apps.svg</file>
+    <file>icons/AppsDisabled.svg</file>
+    <file>icons/NotificationsDisabled.svg</file>
+    <file>icons/ChatDisabled.svg</file>
+    <file>icons/DislikeSelected.svg</file>
+    <file>icons/LikeSelected.svg</file>
+    <file>icons/Close.svg</file>
   </qresource>
   <qresource prefix="images">
     <file>images/profileBgSource.png</file>

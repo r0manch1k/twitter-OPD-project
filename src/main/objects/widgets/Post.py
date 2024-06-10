@@ -1,15 +1,16 @@
-from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect, QMenu, QMainWindow
-from PySide6.QtGui import QIcon, QFontDatabase, QFont, QColor, QAction
-from PySide6.QtCore import QSize, Qt, QEvent
+from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect, QMenu, QMainWindow, QApplication
+from PySide6.QtGui import QIcon, QFontDatabase, QFont, QColor, QAction, QCursor
+from PySide6.QtCore import QSize, Qt, QEvent, Signal
 
 from src.main.gui.design.post.post import Ui_form_Post
 from src.main.objects.widgets import ProfilePictureFrame
-
+from src.main.objects.server.PostTools import PostTools
+from src.main.objects.server.UserInfo import CurrentUser
+from src.main.objects.server.FileManager import FileManager
 from src.main.gui.resources import resources
 
 
 class Post(Ui_form_Post, QWidget):
-
     userNameStyle = ("font-size:14px;"
                      "font-weight:800")
 
@@ -31,89 +32,125 @@ class Post(Ui_form_Post, QWidget):
     postTextStyle = ("font-size:13px;"
                      "font-weight:350")
 
-    def __init__(self, userName: str, userLogin: str, photoPath: str, postText: str, postData: str, postLikes: int,
-                 postDislikes: int, postComments: int):
+    connectionError = Signal(str)
+    formatError = Signal(str)
+
+    def __init__(self, postId: int, postInfo: dict, postTools: PostTools, currentUser: CurrentUser,
+                 fileManager: FileManager):
 
         super(Ui_form_Post, self).__init__()
         self.ui = Ui_form_Post()
         self.ui.setupUi(self)
 
-        self.userLogin = userLogin
+        self.__postTools = postTools
+        self.__currentUser = currentUser
+        self.__fileManager = fileManager
 
         self.menuParentStyle = QMainWindow()
 
-        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Bold.ttf")
-        families = QFontDatabase.applicationFontFamilies(fontId)
-        self.fontBold = QFont(families[0])
+        self.postId = postId
+        self.postImageId = postInfo["image_id"]
+        self.postVideoId = postInfo["video_id"]
+        self.postText = postInfo["post_text"]
+        self.likes = postInfo["likes"]
+        self.dislikes = postInfo["dislikes"]
+        self.postTime = postInfo["post_time"]
+        self.username = postInfo["username"]
+        self.name = postInfo["name"]
+        self.userImageId = postInfo["Users.image_id"]
+        self.comments = postInfo["comments"]
 
-        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Medium.ttf")
-        families = QFontDatabase.applicationFontFamilies(fontId)
-        self.fontMedium = QFont(families[0])
+        execute = self.__currentUser.access
+        if execute["error"]:
+            if execute["error"]["connection"]:
+                self.showConnectionError(execute["error"]["connection"])
+            elif execute["error"]["format"]:
+                self.showConnectionError(execute["error"]["format"])
+            self.close()
+            return
 
-        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Regular.ttf")
-        families = QFontDatabase.applicationFontFamilies(fontId)
-        self.fontRegular = QFont(families[0])
-
-        fontId = QFontDatabase.addApplicationFont(":/files/fonts/Roboto/Roboto-Light.ttf")
-        families = QFontDatabase.applicationFontFamilies(fontId)
-        self.fontThin = QFont(families[0])
-
-        self.setPost(userName, userLogin, photoPath, postText, postData, postLikes,
-                     postDislikes, postComments)
+        self.currentUserAccess = execute["data"]
 
         self.__initSetup()
         self.__setIconsSVG()
         self.__setMyFont()
         self.__setShadow()
 
+        self.setPost()
+
+    def __setIconsSVG(self):
+
+        icon_Likes = QIcon()
+        icon_Likes.addFile(":icons/icons/Like.svg", QSize(), QIcon.Normal)
+        self.ui.button_PostLike.setIcon(icon_Likes)
+        self.ui.button_PostLike.setIconSize(QSize(25, 25))
+
+        icon_Dislikes = QIcon()
+        icon_Dislikes.addFile(":icons/icons/Dislike.svg", QSize(), QIcon.Normal)
+        self.ui.button_PostDislike.setIcon(icon_Dislikes)
+        self.ui.button_PostDislike.setIconSize(QSize(25, 52))
+
+        icon_Comments = QIcon()
+        icon_Comments.addFile(":icons/icons/Comments.svg", QSize(), QIcon.Normal)
+        self.ui.button_PostComments.setIcon(icon_Comments)
+        self.ui.button_PostComments.setIconSize(QSize(25, 25))
+
+        icon_More = QIcon()
+        icon_More.addFile(":icons/icons/MoreGrey.svg", QSize(), QIcon.Normal)
+        self.ui.button_More.setIcon(icon_More)
+        self.ui.button_More.setIconSize(QSize(20, 20))
+
     def __initSetup(self):
 
         self.setMaximumHeight(300)
+        self.setAttribute(Qt.WidgetAttribute.WA_Hover)
 
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint | Qt.WindowMinMaxButtonsHint)
         shadow = QGraphicsDropShadowEffect(blurRadius=5, xOffset=3, yOffset=3)
         self.setGraphicsEffect(shadow)
 
+        self.ui.textBrowser_UserName.document().setDocumentMargin(0)
+        self.ui.textBrowser_PostText.document().setDocumentMargin(0)
+        self.ui.textBrowser_PostText.setLineWrapColumnOrWidth(0)
+        self.ui.textBrowser_PostText.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.ui.textBrowser_PostText.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+
         self.ui.button_More.installEventFilter(self)
+        self.ui.textBrowser_UserName.installEventFilter(self)
+        self.ui.button_PostDislike.installEventFilter(self)
+        self.ui.button_PostLike.installEventFilter(self)
+        self.ui.button_PostComments.installEventFilter(self)
+
+        self.ui.button_More.setToolTip("More")
+        self.ui.button_PostDislike.setToolTip("Dislike")
+        self.ui.button_PostLike.setToolTip("Like")
+        self.ui.button_PostComments.setToolTip("Comments")
 
         menu_More = QMenu(self.menuParentStyle)
 
-        action_FollowUser = QAction(f"&Follow @{self.userLogin}", self)
+        action_FollowUser = QAction(f"&Follow @{self.username}", self)
         action_FollowUser.triggered.connect(self.followUser)
         menu_More.addAction(action_FollowUser)
 
-        action_Report = QAction(f"&Report @{self.userLogin}", self)
+        action_Report = QAction(f"&Report @{self.username}", self)
         action_Report.triggered.connect(self.reportUser)
         menu_More.addAction(action_Report)
 
+        if self.currentUserAccess == "Admin":
+            action_DeletePost = QAction(f"&Delete Post", self)
+            action_DeletePost.triggered.connect(self.deletePost)
+            menu_More.addAction(action_DeletePost)
+
         self.ui.button_More.setMenu(menu_More)
-
-    def __setIconsSVG(self):
-
-        icon_Likes = QIcon()
-        icon_Likes.addFile("gui/resources/icons/Like.svg", QSize(), QIcon.Normal)
-        self.ui.button_PostInfoLikes.setIcon(icon_Likes)
-        self.ui.button_PostInfoLikes.setIconSize(QSize(25, 25))
-
-        icon_Dislikes = QIcon()
-        icon_Dislikes.addFile("gui/resources/icons/Dislike.svg", QSize(), QIcon.Normal)
-        self.ui.button_PostInfoDislikes.setIcon(icon_Dislikes)
-        self.ui.button_PostInfoDislikes.setIconSize(QSize(25, 52))
-
-        icon_Comments = QIcon()
-        icon_Comments.addFile("gui/resources/icons/Comments.svg", QSize(), QIcon.Normal)
-        self.ui.button_PostInfoComments.setIcon(icon_Comments)
-        self.ui.button_PostInfoComments.setIconSize(QSize(25, 25))
-
-        icon_More = QIcon()
-        icon_More.addFile("gui/resources/icons/MoreGrey.svg", QSize(), QIcon.Normal)
-        self.ui.button_More.setIcon(icon_More)
-        self.ui.button_More.setIconSize(QSize(20, 20))
 
     def __setMyFont(self):
 
-        self.ui.label_UserName.setFont(self.fontRegular)
-        self.ui.label_PostText.setFont(self.fontRegular)
+        fontId = QFontDatabase.addApplicationFont(":fonts/fonts/Roboto/Roboto-Regular.ttf")
+        families = QFontDatabase.applicationFontFamilies(fontId)
+        self.fontRegular = QFont(families[0])
+
+        self.ui.textBrowser_UserName.setFont(self.fontRegular)
+        self.ui.textBrowser_PostText.setFont(self.fontRegular)
         self.ui.label_PostData.setFont(self.fontRegular)
         self.ui.label_Likes.setFont(self.fontRegular)
         self.ui.label_Dislikes.setFont(self.fontRegular)
@@ -175,7 +212,7 @@ class Post(Ui_form_Post, QWidget):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/MoreBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/MoreBlack", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(20, 20))
 
@@ -184,42 +221,153 @@ class Post(Ui_form_Post, QWidget):
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile("gui/resources/icons/MoreGrey.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/MoreGrey.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
                 watched.setIconSize(QSize(20, 20))
 
                 return True
 
+        elif watched == self.ui.button_PostLike:
+
+            if event.type() == QEvent.Type.MouseButtonPress:
+
+                self.setReaction(isLike=True)
+
+                return True
+
+        elif watched == self.ui.button_PostDislike:
+
+            if event.type() == QEvent.Type.MouseButtonPress:
+
+                self.setReaction(isDislike=True)
+
+                return True
+
         return False
 
-    def setPost(self, userName: str, userLogin: str, photoPath: str, postText: str, postData: str, postLikes: int,
-                postDislikes: int, postComments: int):
+    def setPost(self):
 
-        name = self.getUserName(userName, userLogin)
-        self.ui.label_UserName.setText(name)
+        execute = self.__fileManager.getFilePath(self.userImageId)
+        if execute["error"]:
+            if execute["error"]["connection"]:
+                self.showConnectionError(execute["error"]["connection"])
+            elif execute["error"]["format"]:
+                self.showConnectionError(execute["error"]["format"])
+            return
+        userImagePath = execute["data"]
 
-        text = self.getText(postText)
-        self.ui.label_PostText.setText(text)
+        execute = self.__postTools.checkReaction(self.postId)
+        if execute["error"]:
+            if execute["error"]["connection"]:
+                self.showConnectionError(execute["error"]["connection"])
+            elif execute["error"]["format"]:
+                self.showConnectionError(execute["error"]["format"])
+            return
 
-        data = self.getPostData(postData)
-        self.ui.label_PostData.setText(data)
+        reaction = execute["data"]
+        if reaction == "like":
+            icon_Likes = QIcon()
+            icon_Likes.addFile(":icons/icons/LikeSelected.svg", QSize(), QIcon.Normal)
+            self.ui.button_PostLike.setIcon(icon_Likes)
+            self.ui.button_PostLike.setIconSize(QSize(25, 25))
+            self.ui.button_PostLike.setChecked(True)
+        elif reaction == "dislike":
+            icon_Dislikes = QIcon()
+            icon_Dislikes.addFile(":icons/icons/DislikeSelected.svg", QSize(), QIcon.Normal)
+            self.ui.button_PostDislike.setIcon(icon_Dislikes)
+            self.ui.button_PostDislike.setIconSize(QSize(25, 25))
+            self.ui.button_PostDislike.setChecked(True)
 
-        likes = self.getLikes(postLikes)
+        name = self.getUserName(self.name, self.username)
+        self.ui.textBrowser_UserName.setText(name)
+
+        text = self.getText(self.postText)
+        self.ui.textBrowser_PostText.setText(text)
+
+        time = self.getPostData(self.postTime)
+        self.ui.label_PostData.setText(time)
+
+        likes = self.getLikes(self.likes)
         self.ui.label_Likes.setText(likes)
 
-        dislikes = self.getDislikes(postDislikes)
+        dislikes = self.getDislikes(self.dislikes)
         self.ui.label_Dislikes.setText(dislikes)
 
-        comments = self.getComments(postComments)
+        if self.comments:
+            comments = self.getComments(len(self.comments))
+        else:
+            comments = self.getComments(0)
         self.ui.label_Comments.setText(comments)
 
-        photo = ProfilePictureFrame(photoPath, 50, 50, 25, shadowOffset=0)
+        photo = ProfilePictureFrame(userImagePath, 40, 40, 20, shadowOffset=0)
+        photo.setToolTip("@" + self.username)
+        photo.hoverEnterSignal.connect(self.mouseOnUserImage)
+        photo.hoverLeaveSignal.connect(self.mouseOffUserImage)
+        photo.mousePressedSignal.connect(self.openUserAccountPage)
         self.ui.layout_userName.insertWidget(0, photo)
 
-    def followUser(self):
+    def setReaction(self, isLike: bool = False, isDislike: bool = False):
+
+        execute = self.__postTools.createReaction(post_id=self.postId, is_like=isLike, is_dislike=isDislike)
+        if execute["error"]:
+            if execute["error"]["connection"]:
+                self.showConnectionError(execute["error"]["connection"])
+            elif execute["error"]["format"]:
+                self.showConnectionError(execute["error"]["format"])
+            return
+
+        checked = execute["data"]
+
+        icon_Likes = QIcon()
+        if checked["like"]["set"]:
+            icon_Likes.addFile(":icons/icons/LikeSelected.svg", QSize(), QIcon.Normal)
+        elif not checked["like"]["set"]:
+            icon_Likes.addFile(":icons/icons/Like.svg", QSize(), QIcon.Normal)
+        self.ui.button_PostLike.setIcon(icon_Likes)
+        self.ui.button_PostLike.setIconSize(QSize(25, 25))
+
+        icon_Dislikes = QIcon()
+        if checked["dislike"]["set"]:
+            icon_Dislikes.addFile(":icons/icons/DislikeSelected.svg", QSize(), QIcon.Normal)
+        elif not checked["dislike"]["set"]:
+            icon_Dislikes.addFile(":icons/icons/Dislike.svg", QSize(), QIcon.Normal)
+        self.ui.button_PostDislike.setIcon(icon_Dislikes)
+        self.ui.button_PostDislike.setIconSize(QSize(25, 25))
+
+        self.likes = checked["like"]["count"]
+        likes = self.getLikes(self.likes)
+        self.ui.label_Likes.setText(likes)
+
+        self.dislikes = checked["dislike"]["count"]
+        dislikes = self.getDislikes(self.dislikes)
+        self.ui.label_Dislikes.setText(dislikes)
+
+    @staticmethod
+    def mouseOnUserImage():
+
+        QApplication.setOverrideCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+
+    @staticmethod
+    def mouseOffUserImage():
+
+        QApplication.restoreOverrideCursor()
+
+    def openUserAccountPage(self):
+
         pass
+
+    def followUser(self):
+
+        self.__postTools.createReaction()
 
     def reportUser(self):
         pass
 
+    def deletePost(self):
+
+        pass
+
+    def showConnectionError(self, error: str):
+
+        self.connectionError.emit(error)
 

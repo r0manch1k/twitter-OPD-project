@@ -282,13 +282,13 @@ class LogInForm(Ui_form_LogIn, QWidget):
         self.ui.button_CodeSend.setChecked(value)
         self.ui.button_CodeSend.setIcon(self.button_IconCodeSent[value])
 
-    def setSubmitTimerText(self):
+    def setResendTimerText(self):
 
-        self.ui.textBrowser_ResendTimer.blockSignals(False)
         with open(os.path.abspath("gui/resources/html/resendCode.txt")) as f:
             self.ui.textBrowser_ResendTimer.setText("")
             self.ui.textBrowser_ResendTimer.append(f.read())
-
+        self.ui.textBrowser_ResendTimer.anchorClicked.connect(self.sendCode)
+        self.ui.textBrowser_ResendTimer.setOpenLinks(True)
         self.ui.textBrowser_ResendTimer.setVisible(True)
 
     def switchPage(self):
@@ -389,6 +389,10 @@ class LogInForm(Ui_form_LogIn, QWidget):
         if self.isError(self.ui.label_ResetError, execute):
             return
 
+        self.ui.textBrowser_ResendTimer.clearFocus()
+        self.ui.textBrowser_ResendTimer.clear()
+        self.ui.textBrowser_ResendTimer.anchorClicked.disconnect(self.sendCode)
+        self.ui.textBrowser_ResendTimer.setOpenLinks(False)
         self.ui.line_Code.setReadOnly(False)
         self.ui.label_ResetError.setHidden(True)
         self.setCodeSentButton(True)
@@ -408,9 +412,8 @@ class LogInForm(Ui_form_LogIn, QWidget):
         if self.timeCounter > self.awaitingTime:
             if not self.__email:
                 self.ui.line_Code.setReadOnly(True)
-            self.ui.textBrowser_ResendTimer.blockSignals(True)
             self.ui.textBrowser_ResendTimer.setHidden(True)
-            self.setSubmitTimerText()
+            self.setResendTimerText()
             self.timeCounter = 0
             self.timer.stop()
 

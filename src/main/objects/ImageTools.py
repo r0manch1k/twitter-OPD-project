@@ -1,7 +1,7 @@
 import random
 import string
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 from PySide6.QtCore import QRect
 from PySide6.QtGui import QPixmap, Qt, QImage, QBrush, QPainter, QWindow
 
@@ -112,24 +112,25 @@ class ImageTools:
         imageWidth, imageHeight = image.size
 
         pixelPatio = QWindow().devicePixelRatio()
-        width = widgetWidth * pixelPatio
-        height = widgetHeight * pixelPatio
-
-        if height + offsetY > imageHeight:
-            raise ValueError("offsetY must be lesser than image size!")
+        width = int(widgetWidth * pixelPatio)
+        height = int(widgetHeight * pixelPatio)
 
         if imageWidth < width:
             image = image.resize((width, int(imageHeight * width / imageWidth)))
             imageWidth, imageHeight = image.size
 
-        if imageHeight < height:
-            image = image.resize((int(imageWidth * height / imageHeight), height))
+        while imageHeight < height + offsetY:
+            concatenatedImageV = Image.new("RGBA", (imageWidth, imageHeight + imageHeight))
+            concatenatedImageV.paste(image, (0, 0))
+            concatenatedImageV.paste(ImageOps.flip(image), (0, imageHeight))
+            image = concatenatedImageV
             imageWidth, imageHeight = image.size
 
         image = image.crop((int((imageWidth - width) / 2),
                             offsetY,
                             int(imageWidth - (imageWidth - width) / 2),
                             offsetY + height))
+
         image = image.resize((width, height))
 
         image.save(pathToSave + fileName)

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'post.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QButtonGroup, QFrame, QHBoxLayout,
-    QLabel, QPushButton, QSizePolicy, QSpacerItem,
-    QTextBrowser, QTextEdit, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
+    QPushButton, QSizePolicy, QSpacerItem, QTextBrowser,
+    QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_form_Post(object):
     def setupUi(self, form_Post):
@@ -151,8 +151,8 @@ class Ui_form_Post(object):
         self.verticalLayout.setContentsMargins(10, 10, 10, 10)
         self.frame_PostAuthor = QFrame(self.frame_Main)
         self.frame_PostAuthor.setObjectName(u"frame_PostAuthor")
-        self.frame_PostAuthor.setMinimumSize(QSize(0, 60))
-        self.frame_PostAuthor.setMaximumSize(QSize(16777215, 60))
+        self.frame_PostAuthor.setMinimumSize(QSize(0, 50))
+        self.frame_PostAuthor.setMaximumSize(QSize(16777215, 50))
         self.frame_PostAuthor.setStyleSheet(u"")
         self.frame_PostAuthor.setFrameShape(QFrame.StyledPanel)
         self.frame_PostAuthor.setFrameShadow(QFrame.Raised)
@@ -170,14 +170,14 @@ class Ui_form_Post(object):
         self.layout_userName.setSpacing(5)
         self.layout_userName.setObjectName(u"layout_userName")
         self.layout_userName.setContentsMargins(0, 0, 0, 0)
-        self.label_UserName = QTextBrowser(self.frame_UserContainer)
-        self.label_UserName.setObjectName(u"label_UserName")
-        self.label_UserName.setMinimumSize(QSize(0, 40))
-        self.label_UserName.setMaximumSize(QSize(16777215, 50))
-        self.label_UserName.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.label_UserName.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.textBrowser_UserName = QTextBrowser(self.frame_UserContainer)
+        self.textBrowser_UserName.setObjectName(u"textBrowser_UserName")
+        self.textBrowser_UserName.setMinimumSize(QSize(0, 40))
+        self.textBrowser_UserName.setMaximumSize(QSize(16777215, 40))
+        self.textBrowser_UserName.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.textBrowser_UserName.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        self.layout_userName.addWidget(self.label_UserName)
+        self.layout_userName.addWidget(self.textBrowser_UserName)
 
 
         self.horizontalLayout.addWidget(self.frame_UserContainer)
@@ -197,13 +197,13 @@ class Ui_form_Post(object):
 
         self.verticalLayout.addWidget(self.frame_PostAuthor)
 
-        self.label_PostText = QTextBrowser(self.frame_Main)
-        self.label_PostText.setObjectName(u"label_PostText")
-        self.label_PostText.setMinimumSize(QSize(0, 30))
-        self.label_PostText.setMaximumSize(QSize(16777215, 16777215))
-        self.label_PostText.setOpenExternalLinks(True)
+        self.textBrowser_PostText = QTextBrowser(self.frame_Main)
+        self.textBrowser_PostText.setObjectName(u"textBrowser_PostText")
+        self.textBrowser_PostText.setMinimumSize(QSize(0, 20))
+        self.textBrowser_PostText.setMaximumSize(QSize(16777215, 100))
+        self.textBrowser_PostText.setOpenExternalLinks(True)
 
-        self.verticalLayout.addWidget(self.label_PostText)
+        self.verticalLayout.addWidget(self.textBrowser_PostText)
 
         self.label_PostData = QTextEdit(self.frame_Main)
         self.label_PostData.setObjectName(u"label_PostData")
@@ -270,33 +270,29 @@ class Ui_form_Post(object):
         self.horizontalLayout_2.setSpacing(10)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.button_PostInfoLikes = QPushButton(self.frame_PostInfo)
-        self.buttonGroup_PostReaction = QButtonGroup(form_Post)
-        self.buttonGroup_PostReaction.setObjectName(u"buttonGroup_PostReaction")
-        self.buttonGroup_PostReaction.addButton(self.button_PostInfoLikes)
-        self.button_PostInfoLikes.setObjectName(u"button_PostInfoLikes")
-        self.button_PostInfoLikes.setMinimumSize(QSize(40, 40))
-        self.button_PostInfoLikes.setMaximumSize(QSize(40, 40))
-        self.button_PostInfoLikes.setCheckable(True)
+        self.button_PostLike = QPushButton(self.frame_PostInfo)
+        self.button_PostLike.setObjectName(u"button_PostLike")
+        self.button_PostLike.setMinimumSize(QSize(40, 40))
+        self.button_PostLike.setMaximumSize(QSize(40, 40))
+        self.button_PostLike.setCheckable(True)
 
-        self.horizontalLayout_2.addWidget(self.button_PostInfoLikes)
+        self.horizontalLayout_2.addWidget(self.button_PostLike)
 
-        self.button_PostInfoDislikes = QPushButton(self.frame_PostInfo)
-        self.buttonGroup_PostReaction.addButton(self.button_PostInfoDislikes)
-        self.button_PostInfoDislikes.setObjectName(u"button_PostInfoDislikes")
-        self.button_PostInfoDislikes.setMinimumSize(QSize(40, 40))
-        self.button_PostInfoDislikes.setMaximumSize(QSize(40, 40))
-        self.button_PostInfoDislikes.setCheckable(True)
+        self.button_PostDislike = QPushButton(self.frame_PostInfo)
+        self.button_PostDislike.setObjectName(u"button_PostDislike")
+        self.button_PostDislike.setMinimumSize(QSize(40, 40))
+        self.button_PostDislike.setMaximumSize(QSize(40, 40))
+        self.button_PostDislike.setCheckable(True)
 
-        self.horizontalLayout_2.addWidget(self.button_PostInfoDislikes)
+        self.horizontalLayout_2.addWidget(self.button_PostDislike)
 
-        self.button_PostInfoComments = QPushButton(self.frame_PostInfo)
-        self.button_PostInfoComments.setObjectName(u"button_PostInfoComments")
-        self.button_PostInfoComments.setMinimumSize(QSize(40, 40))
-        self.button_PostInfoComments.setMaximumSize(QSize(40, 40))
-        self.button_PostInfoComments.setCheckable(False)
+        self.button_PostComments = QPushButton(self.frame_PostInfo)
+        self.button_PostComments.setObjectName(u"button_PostComments")
+        self.button_PostComments.setMinimumSize(QSize(40, 40))
+        self.button_PostComments.setMaximumSize(QSize(40, 40))
+        self.button_PostComments.setCheckable(False)
 
-        self.horizontalLayout_2.addWidget(self.button_PostInfoComments)
+        self.horizontalLayout_2.addWidget(self.button_PostComments)
 
         self.horizontalSpacer_2 = QSpacerItem(628, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -317,7 +313,7 @@ class Ui_form_Post(object):
     def retranslateUi(self, form_Post):
         form_Post.setWindowTitle(QCoreApplication.translate("form_Post", u"Form", None))
         self.button_More.setText("")
-        self.label_PostText.setHtml(QCoreApplication.translate("form_Post", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.textBrowser_PostText.setHtml(QCoreApplication.translate("form_Post", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
@@ -326,8 +322,8 @@ class Ui_form_Post(object):
         self.label_Likes.setText(QCoreApplication.translate("form_Post", u"Likes", None))
         self.label_Dislikes.setText(QCoreApplication.translate("form_Post", u"Dislikes", None))
         self.label_Comments.setText(QCoreApplication.translate("form_Post", u"Comments", None))
-        self.button_PostInfoLikes.setText("")
-        self.button_PostInfoDislikes.setText("")
-        self.button_PostInfoComments.setText("")
+        self.button_PostLike.setText("")
+        self.button_PostDislike.setText("")
+        self.button_PostComments.setText("")
     # retranslateUi
 

@@ -571,7 +571,7 @@ p, li { white-space: pre-wrap; }
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">x</string>
+                      <string notr="true"/>
                      </property>
                      <property name="frameShape">
                       <enum>QFrame::StyledPanel</enum>
@@ -602,6 +602,9 @@ p, li { white-space: pre-wrap; }
                           <pointsize>15</pointsize>
                          </font>
                         </property>
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
                         <property name="maxLength">
                          <number>16</number>
                         </property>
@@ -615,6 +618,9 @@ p, li { white-space: pre-wrap; }
                       </item>
                       <item>
                        <widget class="QPushButton" name="button_PasswordVisibility">
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
                         <property name="text">
                          <string/>
                         </property>
@@ -1294,7 +1300,7 @@ p, li { white-space: pre-wrap; }
                       </font>
                      </property>
                      <property name="text">
-                      <string>Verify Code</string>
+                      <string>Verify Email</string>
                      </property>
                     </widget>
                    </item>

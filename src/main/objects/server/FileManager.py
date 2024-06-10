@@ -97,7 +97,7 @@ class FileManager(Singleton):
             with open(self.__tempDir + path + UUID + fileType, "wb") as file:
                 self.__ftp.retrbinary("RETR " + path + UUID + fileType, file.write)
 
-            self.__ftp.quit()
+            # self.__ftp.quit()
 
         return generateResult(data=self.__tempDir + path + UUID + fileType)
 
@@ -170,7 +170,7 @@ class FileManager(Singleton):
         with open(self.__tempDir + path + UUID + fileType, "rb") as file:
             self.__ftp.storbinary("STOR " + path + UUID + fileType, file)
 
-        self.__ftp.quit()
+        # self.__ftp.quit()
 
         if imageID and imageID > 1:
             self.__db.insert(f"""UPDATE Images SET path = '{UUID + fileType}' WHERE image_id = {str(imageID)};""")
@@ -243,6 +243,7 @@ class FileManager(Singleton):
         return generateResult(data=1)
 
     def __clear(self) -> None:
+        self.__ftp.quit()
         if self.__tempDir:
             shutil.rmtree(self.__tempDir, ignore_errors=True)
 
