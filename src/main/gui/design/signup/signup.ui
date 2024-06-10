@@ -49,9 +49,8 @@ QPushButton:pressed {
 }
 
 QLineEdit {
-	height: 50px;
 	color: black;
-	border-radius: 20px;
+	border-radius: 15px;
 	background-color:  rgb(235, 237, 239);
 	padding-left: 10px;
 }
@@ -134,6 +133,9 @@ QTextBrowser QScrollBar::sub-line:horizontal {
        </property>
        <item row="0" column="0">
         <widget class="QFrame" name="frame_Main">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -414,7 +416,50 @@ QPushButton#button_PasswordVisibility {
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true"/>
+                   <string notr="true">QFrame#frame_PasswordInput {
+	color: black;
+	border-radius: 15px;
+	background-color:  rgb(235, 237, 239);
+	padding-left: 10px;
+}
+
+
+QLineEdit#line_Password {
+	border: 0;
+	padding-left: 0;
+	background-color: rgb(235, 237, 239);
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+QPushButton#button_PasswordVisibility {
+	border-radius: 15px;
+	background-color: rgb(235, 237, 239);
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+QFrame#frame_Username {
+	color: black;
+	border-radius: 15px;
+	background-color:  rgb(235, 237, 239);
+	padding-left: 10px;
+}
+
+QLineEdit#line_Username,
+QLineEdit#line_Snail {
+	border: 0;
+	border-radius: 15px;
+	padding-left: 0;
+	background-color: rgb(235, 237, 239);
+}
+
+QLineEdit#line_Snail {
+	border-top-left-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}</string>
                   </property>
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>
@@ -507,26 +552,7 @@ QPushButton#button_PasswordVisibility {
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">QFrame {
-	height: 60px;
-	color: black;
-	border-radius: 20px;
-	background-color:  rgb(235, 237, 239);
-	padding-left: 10px;
-}
-
-QLineEdit {
-	border: 0;
-	padding-left: 0;
-	background-color: rgb(235, 237, 239);
-}
-
-QLineEdit#line_Snail {
-	border-top-left-radius: 20px;
-	border-bottom-left-radius: 20px;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-}</string>
+                      <string notr="true"/>
                      </property>
                      <property name="frameShape">
                       <enum>QFrame::StyledPanel</enum>
@@ -555,13 +581,13 @@ QLineEdit#line_Snail {
                         <property name="minimumSize">
                          <size>
                           <width>20</width>
-                          <height>40</height>
+                          <height>30</height>
                          </size>
                         </property>
                         <property name="maximumSize">
                          <size>
                           <width>20</width>
-                          <height>40</height>
+                          <height>30</height>
                          </size>
                         </property>
                         <property name="font">
@@ -579,6 +605,18 @@ QLineEdit#line_Snail {
                       </item>
                       <item>
                        <widget class="QLineEdit" name="line_Username">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>30</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>30</height>
+                         </size>
+                        </property>
                         <property name="font">
                          <font>
                           <pointsize>15</pointsize>
@@ -617,6 +655,9 @@ QLineEdit#line_Snail {
                        <pointsize>15</pointsize>
                       </font>
                      </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
                      <property name="text">
                       <string/>
                      </property>
@@ -643,30 +684,7 @@ QLineEdit#line_Snail {
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">QFrame {
-	height: 60px;
-	color: black;
-	border-radius: 20px;
-	background-color:  rgb(235, 237, 239);
-	padding-left: 10px;
-}
-
-
-QLineEdit {
-	border: 0;
-	padding-left: 0;
-	background-color: rgb(235, 237, 239);
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-}
-
-QPushButton {
-	height: 60px;
-	border: 20px;
-	background-color: rgb(235, 237, 239);
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
-}</string>
+                      <string notr="true"/>
                      </property>
                      <property name="frameShape">
                       <enum>QFrame::StyledPanel</enum>
@@ -697,6 +715,9 @@ QPushButton {
                           <pointsize>15</pointsize>
                          </font>
                         </property>
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
                         <property name="maxLength">
                          <number>16</number>
                         </property>
@@ -710,6 +731,21 @@ QPushButton {
                       </item>
                       <item>
                        <widget class="QPushButton" name="button_PasswordVisibility">
+                        <property name="minimumSize">
+                         <size>
+                          <width>30</width>
+                          <height>30</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>30</width>
+                          <height>30</height>
+                         </size>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
                         <property name="text">
                          <string/>
                         </property>
@@ -760,7 +796,7 @@ QPushButton {
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="button_CheckEmail">
+                    <widget class="QPushButton" name="button_NextStep">
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
@@ -780,7 +816,7 @@ QPushButton {
                       </font>
                      </property>
                      <property name="text">
-                      <string>Verify Email</string>
+                      <string>Next Step</string>
                      </property>
                     </widget>
                    </item>
@@ -880,7 +916,7 @@ QPushButton {
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="QFrame" name="frame_Submit">
+        <widget class="QFrame" name="frame_Verify">
          <property name="styleSheet">
           <string notr="true"/>
          </property>
@@ -913,6 +949,9 @@ QPushButton {
               <width>325</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
             </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -953,7 +992,7 @@ QPushButton {
            </widget>
           </item>
           <item>
-           <widget class="QFrame" name="frame_Submit_1">
+           <widget class="QFrame" name="frame_Verify_1">
             <property name="minimumSize">
              <size>
               <width>327</width>
@@ -999,7 +1038,7 @@ QPushButton {
               </spacer>
              </item>
              <item>
-              <widget class="QFrame" name="frame_Submit_2">
+              <widget class="QFrame" name="frame_Verify_2">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -1085,7 +1124,7 @@ QPushButton:pressed {
                  </spacer>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QFrame" name="frame_Submit_3">
+                 <widget class="QFrame" name="frame_Verify_3">
                   <property name="minimumSize">
                    <size>
                     <width>287</width>
@@ -1118,7 +1157,7 @@ QPushButton:pressed {
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="label_SubmitEmail">
+                    <widget class="QLabel" name="label_VerifyEmail">
                      <property name="font">
                       <font>
                        <pointsize>25</pointsize>
@@ -1135,7 +1174,7 @@ QPushButton:pressed {
                     </widget>
                    </item>
                    <item>
-                    <widget class="QTextBrowser" name="textBrowser_SubmitAbout">
+                    <widget class="QTextBrowser" name="textBrowser_VerifyAbout">
                      <property name="maximumSize">
                       <size>
                        <width>16777215</width>
@@ -1168,7 +1207,7 @@ p, li { white-space: pre-wrap; }
                     </spacer>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="line_SubmitCode">
+                    <widget class="QLineEdit" name="line_Code">
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
@@ -1201,7 +1240,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_SubmitError">
+                    <widget class="QLabel" name="label_VerifyError">
                      <property name="minimumSize">
                       <size>
                        <width>287</width>
@@ -1223,7 +1262,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item>
-                    <widget class="QTextBrowser" name="textBrowser_SubmitTimer">
+                    <widget class="QTextBrowser" name="textBrowser_ResendTimer">
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
@@ -1239,7 +1278,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item>
-                    <widget class="QTextBrowser" name="textBrowser_SubmitBack">
+                    <widget class="QTextBrowser" name="textBrowser_VerifyBack">
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
@@ -1255,7 +1294,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="button_SignUp">
+                    <widget class="QPushButton" name="button_VerifyEmail">
                      <property name="font">
                       <font>
                        <weight>75</weight>
@@ -1263,7 +1302,7 @@ p, li { white-space: pre-wrap; }
                       </font>
                      </property>
                      <property name="text">
-                      <string>Sign Up</string>
+                      <string>Verify Email</string>
                      </property>
                     </widget>
                    </item>

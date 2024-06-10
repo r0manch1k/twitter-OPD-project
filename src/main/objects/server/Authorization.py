@@ -237,7 +237,7 @@ class Authorization:
             return generateResult("Code has expired. Try again!", "format") 
         
         if in_code != int(server_verification_info['code']):
-            return generateResult("Enter your personal code!", "format")
+            return generateResult("Invalid personal code!", "format")
         setConfigInfo("verification_session", "status", "confirmed")
         return generateResult()
     
@@ -314,5 +314,3 @@ class Authorization:
 
 # LOG OUT
 # auth.logOut()
-
-# print(auth.logIn("kutorgin2002@gmail.com", "1567731204w@SDF"))

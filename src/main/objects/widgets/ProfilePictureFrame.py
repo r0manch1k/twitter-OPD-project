@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal, QEvent
 from PySide6.QtGui import QPainter, QColor, QPen
 from PySide6.QtWidgets import QLabel, QGraphicsDropShadowEffect
 
@@ -6,6 +6,10 @@ from src.main.objects.ImageTools import ImageTools
 
 
 class ProfilePictureFrame(QLabel):
+
+    hoverEnterSignal = Signal()
+    hoverLeaveSignal = Signal()
+    mousePressedSignal = Signal()
 
     def __init__(self, imagePath: str, width: int = 150, height: int = 150, radius: int = 75, frame: int = 2,
                  frameColor: tuple = (229, 235, 238), shadowOffset: int = 5,
@@ -29,6 +33,8 @@ class ProfilePictureFrame(QLabel):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setScaledContents(True)
+        self.installEventFilter(self)
+        self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
 
     def __setShadow(self):
         self.__shadowBlurRadius = 10.0
@@ -43,6 +49,30 @@ class ProfilePictureFrame(QLabel):
         self.setGraphicsEffect(self.__effect)
 
         self.repaint()
+
+    def eventFilter(self, watched, event):
+
+        if watched == self:
+
+            if event.type() == QEvent.Type.HoverEnter:
+
+                self.hoverEnterSignal.emit()
+
+                return True
+
+            elif event.type() == QEvent.Type.HoverLeave:
+
+                self.hoverLeaveSignal.emit()
+
+                return True
+
+            elif event.type() == QEvent.Type.MouseButtonPress:
+
+                self.mousePressedSignal.emit()
+
+                return
+
+        return False
 
     def paintEvent(self, arg__1):
         size = self.size()

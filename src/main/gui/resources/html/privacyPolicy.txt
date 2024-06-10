@@ -3,6 +3,7 @@
 <p style="margin:0cm 0cm 12.0pt;"><span style="sans-serif;font-size:12pt;"><strong>Information Collection</strong></span><span style="sans-serif;font-size:12pt;"><span style="sans-serif;font-size:12pt;"></span></span></p>
 <ul style="list-style-type:disc;">
     <li style="margin-bottom:0cm;margin-right:0cm;margin-top:0cm;tab-stops:list 36.0pt;"><span style="sans-serif;font-size:12pt;"><strong>Personal Information</strong>: We collect information you provide directly to us, such as when you create an account, including your name, email address, and password.</span></li>
+    <p style="margin:0cm;">&nbsp;</p>
     <li style="margin-bottom:0cm;margin-right:0cm;margin-top:3.0pt;tab-stops:list 36.0pt;"><span style="sans-serif;font-size:12pt;"><strong>Usage Information</strong>: We collect information about your interactions with our services, including the pages you visit and the content you view.</span></li>
     <li style="margin-bottom:0cm;margin-right:0cm;margin-top:3.0pt;tab-stops:list 36.0pt;">
         <p><span style="sans-serif;font-size:12pt;"><strong>Device Information</strong>: We collect information about the devices you use to access our services, including IP addresses and browser types.</span></p>
@@ -11,6 +12,7 @@
 <p style="margin:0cm 0cm 12.0pt;"><span style="sans-serif;font-size:12pt;"><strong>Use of Information</strong></span><span style="sans-serif;font-size:12pt;"><span style="sans-serif;font-size:12pt;"></span></span></p>
 <ul style="list-style-type:disc;">
     <li style="margin-bottom:0cm;margin-right:0cm;margin-top:0cm;tab-stops:list 36.0pt;"><span style="sans-serif;font-size:12pt;">To provide, maintain, and improve our services.</span></li>
+    <p style="margin:0cm;">&nbsp;</p>
     <li style="margin-bottom:0cm;margin-right:0cm;margin-top:3.0pt;tab-stops:list 36.0pt;"><span style="sans-serif;font-size:12pt;">To communicate with you about products, services, offers, and events offered by R&amp;R.</span></li>
     <li style="margin-bottom:0cm;margin-right:0cm;margin-top:3.0pt;tab-stops:list 36.0pt;">
         <p><span style="sans-serif;font-size:12pt;">To monitor and analyze trends, usage, and activities in connection with our services.</span></p>
@@ -30,5 +32,6 @@
         <p><span style="sans-serif;font-size:12pt;"><strong>Cookies</strong>: You can set your browser to not accept cookies, but this may limit your ability to use our services.</span></p>
     </li>
 </ul>
-<p style="margin:0cm 0cm 12.0pt;"><span style="sans-serif;font-size:12pt;"><strong>Changes to the Policy</strong></span><br><span style="sans-serif;font-size:12pt;">We may change this privacy policy from time to time. If we make changes, we will notify you by revising the date at the top of the policy and, in some cases, we may provide you with additional notice.</span></p>
+<p style="margin:0cm 0cm 12.0pt;"><span style="sans-serif;font-size:12pt;"><strong>Changes to the Policy</strong></span><span style="sans-serif;font-size:12pt;"><span style="sans-serif;font-size:12pt;"></span></span></p>
+<p style="margin:0cm 0cm 12.0pt;"><br><span style="sans-serif;font-size:12pt;">We may change this privacy policy from time to time. If we make changes, we will notify you by revising the date at the top of the policy and, in some cases, we may provide you with additional notice.</span></p>
 <p style="margin:0cm;"><span style="sans-serif;font-size:12pt;"><span lang="EN-US"></span></span></p>

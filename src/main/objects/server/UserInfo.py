@@ -284,14 +284,17 @@ class CurrentUser(User):
         message = Authorization().checkAuthorization()
         if message["error"]:
             return message
-        
+
         utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
             user_id = self.userID['data']
-            self._db.insert(
-                f"""UPDATE Online SET time = '{str(utc_time)}' \
-                    WHERE user_id = {user_id};""")
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                self._db.insert(
+                    f"""UPDATE Online SET time = '{str(utc_time)}' \
+                        WHERE user_id = {user_id};""")
         
         return generateResult()

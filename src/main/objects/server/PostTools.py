@@ -13,7 +13,7 @@ class PostTools:
     def __init__(self):
         self.__db = DataBase()
 
-    def createPost(self, post_text: str, image_id: int, video_id: int):
+    def createPost(self, post_text: str, image_id: int = None, video_id: int  = None):
         message = Authorization().checkAuthorization()
         if message["error"]:
             return message
@@ -28,9 +28,22 @@ class PostTools:
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            self.__db.insert(
-                f"""INSERT INTO Posts (user_id, image_id, video_id, post_text, likes, dislikes, post_time) \
-                    VALUES  ({user_id}, {image_id}, {video_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
+            if image_id and video_id:
+                self.__db.insert(
+                    f"""INSERT INTO Posts (user_id, image_id, video_id, post_text, likes, dislikes, post_time) \
+                        VALUES  ({user_id}, {image_id}, {video_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
+            elif image_id:
+                self.__db.insert(
+                    f"""INSERT INTO Posts (user_id, image_id, post_text, likes, dislikes, post_time) \
+                        VALUES  ({user_id}, {image_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
+            elif video_id:
+                self.__db.insert(
+                    f"""INSERT INTO Posts (user_id, video_id, post_text, likes, dislikes, post_time) \
+                        VALUES  ({user_id}, {video_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
+            else:
+                self.__db.insert(
+                    f"""INSERT INTO Posts (user_id, post_text, likes, dislikes, post_time) \
+                        VALUES  ({user_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
         return generateResult()
 
     def deletePost(self, post_id: int):
@@ -83,6 +96,12 @@ class PostTools:
 
         if validateText(comment_text):
             return generateResult(validateText(comment_text), "format")
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            if self.__db.select(f"""SELECT * FROM Posts WHERE post_id = {post_id};""") == ():
+                return generateResult("This post isn't found", "format")
 
         utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
         fixed_comment_text = comment_text.replace("'", "''")
@@ -133,6 +152,7 @@ class PostTools:
             insert_value = comment_id
         else:
             return generateResult("The index was not entered", "format")
+        
         if not is_like and not is_dislike:
             return generateResult("The type of reaction was not entered", "format")
         
@@ -141,6 +161,15 @@ class PostTools:
         else:
             if self.__db.select(f"""SELECT * FROM {table_name} WHERE {index} = {insert_value};""") == ():
                 return generateResult("This object isn't found", "format")
+        
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            count_likes = self.__db.select(f"""SELECT likes FROM {table_name} WHERE {index} = {insert_value};""")[0]["likes"]
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            count_dislikes = self.__db.select(f"""SELECT dislikes FROM {table_name} WHERE {index} = {insert_value};""")[0]["dislikes"]
 
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
@@ -162,6 +191,8 @@ class PostTools:
                         self.__db.insert(
                             f"""UPDATE {table_name} SET likes = likes + 1 \
                                 WHERE {index} = {str(insert_value)};""")
+                    return generateResult(data={"like": {"set": True, "count": count_likes + 1},
+                                                "dislike": {"set": False, "count": count_dislikes}})
                 if is_dislike:
                     if not self.__db.connect():
                         return generateResult("Check your internet connection", "connection")
@@ -175,6 +206,8 @@ class PostTools:
                         self.__db.insert(
                             f"""UPDATE {table_name} SET dislikes = dislikes + 1 \
                                 WHERE {index} = {str(insert_value)};""")
+                    return generateResult(data={"like": {"set": False, "count": count_likes}, 
+                                                "dislike": {"set": True, "count": count_dislikes + 1}})
             else:
                 server_reaction = server_reaction[0]['reaction']
                 if is_like:
@@ -191,6 +224,8 @@ class PostTools:
                             self.__db.insert(
                                 f"""UPDATE {table_name} SET likes = likes - 1 \
                                     WHERE {index} = {str(insert_value)};""")
+                        return generateResult(data={"like": {"set": False, "count": count_likes - 1}, 
+                                                    "dislike": {"set": False, "count": count_dislikes}})
                     if server_reaction == "dislike":
                         if not self.__db.connect():
                             return generateResult("Check your internet connection", "connection")
@@ -204,6 +239,8 @@ class PostTools:
                             self.__db.insert(
                                 f"""UPDATE {table_name} SET dislikes = dislikes - 1, likes = likes + 1 \
                                     WHERE {index} = {str(insert_value)};""")
+                        return generateResult(data={"like": {"set": True, "count": count_likes + 1}, 
+                                                    "dislike": {"set": False, "count": count_dislikes - 1}})
                 if is_dislike:
                     if server_reaction == "dislike":
                         if not self.__db.connect():
@@ -218,6 +255,8 @@ class PostTools:
                             self.__db.insert(
                                 f"""UPDATE {table_name} SET dislikes = dislikes - 1 \
                                     WHERE {index} = {str(insert_value)};""")
+                        return generateResult(data={"like": {"set": False, "count": count_likes}, 
+                                                    "dislike": {"set": False, "count": count_dislikes - 1}})
                     if server_reaction == "like":
                         if not self.__db.connect():
                             return generateResult("Check your internet connection", "connection")
@@ -231,7 +270,8 @@ class PostTools:
                             self.__db.insert(
                                 f"""UPDATE {table_name} SET likes = likes - 1, dislikes = dislikes + 1 \
                                     WHERE {index} = {str(insert_value)};""")
-        return generateResult()
+                        return generateResult(data={"like": {"set": False, "count": count_likes - 1}, 
+                                                    "dislike": {"set": True, "count": count_dislikes + 1}})
     
     def checkReaction(self, post_id=-1, comment_id=-1):
         user_id = CurrentUser().userID['data']
@@ -260,11 +300,10 @@ class PostTools:
                     WHERE user_id = {user_id} AND {index} = {insert_value};""")
         
         if reaction == ():
-            return generateResult("No reactions on this object", "format")
+            return generateResult()
         else:
             return generateResult(data=reaction[0]['reaction'])
             
-
     def getPostIds(self, sort_by_time=False, sort_by_likes=False, search_by_key=None):
         if sort_by_time:
             if not self.__db.connect():
@@ -293,9 +332,6 @@ class PostTools:
         else:
             max_post_id = self.__db.select("""SELECT MAX(post_id) FROM Posts;""")[0]['MAX(post_id)']
             setConfigInfo('const', 'last_post_id', str(max_post_id))
-
-        if post_ids == ():
-            return generateResult("Posts were not found", "format")
 
         ids = []
         for i in post_ids:
@@ -340,26 +376,31 @@ class PostTools:
                     FROM Comments \
                     INNER JOIN Users \
                         ON Comments.user_id = Users.user_id \
-                    WHERE Comments.post_id IN ({', '.join([str(i) for i in post_ids])});""")
-
+                    WHERE Comments.post_id IN ({', '.join([str(i) for i in post_ids])}) \
+                    ORDER BY (Comments.comment_time) DESC;""")
         dict_posts_info = dict()
         for i in range(len(posts_info)):
             server_datetime = utc.localize(datetime.strptime(posts_info[i]['post_time'], "%Y-%m-%d %H:%M:%S"))
             posts_info[i]['post_time'] = server_datetime.astimezone(timezone(str(tzlocal.get_localzone()))).strftime(
                 "%I:%M %p - %d %b %Y")
-            dict_posts_info[posts_info[i]['post_id']] = posts_info[i]
-            dict_posts_info[posts_info[i]['post_id']].pop('post_id')
+            dict_posts_info[int(posts_info[i]['post_id'])] = posts_info[i]
+            dict_posts_info[int(posts_info[i]['post_id'])].pop('post_id')
 
-        dict_comments_info = dict()
         if comments_info == ():
             for i in list(dict_posts_info.keys()):
                 dict_posts_info[i]['comments'] = None
         else:
+            dict_comments_info = dict()
             for i in range(len(comments_info)):
                 server_datetime = utc.localize(datetime.strptime(comments_info[i]['comment_time'], "%Y-%m-%d %H:%M:%S"))
                 comments_info[i]['comment_time'] = server_datetime.astimezone(timezone(str(tzlocal.get_localzone()))).strftime("%I:%M %p - %d %b %Y")
-                dict_comments_info[comments_info[i]['post_id']] = comments_info[i]
-                dict_comments_info[comments_info[i]['post_id']].pop('post_id')
+                dict_comments_info[comments_info[i]['post_id']] = dict()
+            for i in range(len(comments_info)):
+                dict_comments_info[comments_info[i]['post_id']][comments_info[i]['comment_id']] = comments_info[i]
+                post_id = comments_info[i]['post_id']
+                comment_id = comments_info[i]['comment_id']
+                dict_comments_info[post_id][comment_id].pop('post_id')
+                dict_comments_info[post_id][comment_id].pop('comment_id')
             for i in list(dict_posts_info.keys()):
                 if i in list(dict_comments_info.keys()):
                     dict_posts_info[i]['comments'] = dict_comments_info[i]
@@ -386,13 +427,13 @@ class PostTools:
 # post_tools = PostTools()
 
 # CREATE POST
-# post_tools.createPost(post_text="всем хай", image_id=666, video_id=69)
+# post_tools.createPost(post_text="wassupski")
 
 # DELETE POST
 # post_tools.deletePost(post_id=1)
 
 # CREATE COMMENT
-# post_tools.createComment(comment_text="wassupski", post_id=1337)
+# post_tools.createComment(comment_text="assalamuallykum", post_id=2)
 
 # DELETE COMMENT
 # post_tools.deleteComment(comment_id=1)
