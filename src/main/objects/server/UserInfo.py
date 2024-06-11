@@ -3,6 +3,7 @@ from datetime import datetime
 from src.main.objects.server.DataBase import DataBase
 from src.main.objects.server.Static import getConfigInfo
 from src.main.objects.server.Result import generateResult
+from src.main.objects.server.MailSender import MailSender
 from src.main.objects.server.Authorization import Authorization
 from src.main.objects.server.Validator import validateName, validateUsername, validateInfo
 
@@ -20,6 +21,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
 
@@ -51,6 +54,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
             
@@ -68,6 +73,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
 
@@ -85,6 +92,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
 
@@ -102,6 +111,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
 
@@ -119,6 +130,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
 
@@ -136,6 +149,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
 
@@ -155,6 +170,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
 
@@ -179,6 +196,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
             
@@ -204,6 +223,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
             
@@ -229,6 +250,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
             
@@ -253,6 +276,8 @@ class User:
             message = self.userID
             user_id = message["data"]
             error = message["error"]
+            if user_id == -1:
+                return generateResult(error_type="auth", error="User is not authorized!")
             if error:
                 return message
 
@@ -269,44 +294,7 @@ class User:
             ids.append(i['comment_id'])
 
         return generateResult(data=ids)
-    
-    def followTo(self, user_id: int):
-        if not self._db.connect():
-            return generateResult("Check your internet connection", "connection")
-        else:   
-            message = self.userID
-            follower_id = message["data"]
-            error = message["error"]
-            if error:
-                return message
-
-            if not self._db.connect():
-                return generateResult("Check your internet connection", "connection")
-            else:
-                self._db.insert(
-                    f"""INSERT INTO Followers (user_id, follower_id) \
-                        VALUES  ({str(user_id)}, {str(follower_id)});""")
-        return generateResult()
-
-    def unfollowTo(self, user_id: int):
-        if not self._db.connect():
-            return generateResult("Check your internet connection", "connection")
-        else:   
-            message = self.userID
-            follower_id = message["data"]
-            error = message["error"]
-            if error:
-                return message
-
-            if not self._db.connect():
-                return generateResult("Check your internet connection", "connection")
-            else:
-                self._db.insert(
-                    f"""DELETE FROM Followers
-                        WHERE follower_id = {str(follower_id)} 
-                        AND 
-                        user_id = {user_id};""")
-        return generateResult()    
+       
 
 class CurrentUser(User):
     def __init__(self):
@@ -314,17 +302,13 @@ class CurrentUser(User):
 
     @property
     def userID(self):
-        message = Authorization().checkAuthorization()
-        if message['error']:
-            return message
-
         self.user_id = getConfigInfo('current_user', 'user_id')
         return generateResult(data=int(self.user_id))
     
     def changeName(self, new_name: str):
-        message = Authorization().checkAuthorization()
-        if message['error']:
-            return message
+        error = self.updateOnline()
+        if error["error"]:
+            return error
 
         if validateName(new_name):
             return generateResult(validateName(new_name), "format")    
@@ -339,9 +323,9 @@ class CurrentUser(User):
         return generateResult()
 
     def changeUsername(self, new_username: str):
-        message = Authorization().checkAuthorization()
-        if message['error']:
-            return message
+        error = self.updateOnline()
+        if error["error"]:
+            return error
         
         if validateUsername(new_username):
             return generateResult(validateUsername(new_username), "format")
@@ -361,9 +345,9 @@ class CurrentUser(User):
         return generateResult()
     
     def changeAbout(self, new_about: str):
-        message = Authorization().checkAuthorization()
-        if message['error']:
-            return message
+        error = self.updateOnline()
+        if error["error"]:
+            return error
         
         if validateInfo(new_about):
             return generateResult(validateInfo(new_about), "format")
@@ -378,9 +362,9 @@ class CurrentUser(User):
         return generateResult()
     
     def changeImageID(self, new_image_id: int):
-        message = Authorization().checkAuthorization()
-        if message["error"]:
-            return message
+        error = self.updateOnline()
+        if error["error"]:
+            return error
         
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
@@ -404,10 +388,43 @@ class CurrentUser(User):
 
         return generateResult()
     
+    def followTo(self, user_id: int):
+        error = self.updateOnline()
+        if error["error"]:
+            return error
+        
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:   
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                self._db.insert(
+                    f"""INSERT INTO Followers (user_id, follower_id) \
+                        VALUES  ({str(user_id)}, {str(self.userID)});""")
+        return generateResult()
+
+    def unfollowTo(self, user_id: int):
+        error = self.updateOnline()
+        if error["error"]:
+            return error
+        
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:   
+            if not self._db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                self._db.insert(
+                    f"""DELETE FROM Followers
+                        WHERE follower_id = {str(self.userID)} 
+                        AND 
+                        user_id = {user_id};""")
+        return generateResult() 
+    
     def updateOnline(self):
-        message = Authorization().checkAuthorization()
-        if message["error"]:
-            return message
+        if Authorization().checkAuthorization()["error"]:
+            return generateResult(error_type="auth", error="User is not authorized!")
         
         utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
         if not self._db.connect():
@@ -418,4 +435,40 @@ class CurrentUser(User):
                 f"""UPDATE Online SET time = '{str(utc_time)}' \
                     WHERE user_id = {user_id};""")
         
+        return generateResult()
+
+    def makeReportTo(self, post_id: int):
+        error = self.updateOnline()
+        if error["error"]:
+            return error
+        
+        user_id_1 = self.userID["data"]
+        username_1 = self.username["data"]
+
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            post_info = self._db.select(f"""SELECT Posts.post_id, \
+                                                   Posts.user_id, \
+                                                   Users.username \
+                                            FROM Posts \
+                                            INNER JOIN Users \
+                                                ON Posts.user_id = Users.user_id 
+                                            WHERE Posts.post_id = {post_id};""")
+            if post_info == ():
+                return generateResult("This account isn't found", "format")
+            user_id_2 = post_info[0]["user_id"]
+            username_2 = post_info[0]["username"]
+        
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            admins_list = self._db.select(f"""SELECT email FROM Users WHERE access = 'Admin';""")
+            if admins_list == ():
+                return generateResult(error="No active admins. Try again later", error_type="format")
+        
+        for email in admins_list:
+            MailSender(email_to=email["email"]).sendReportEmail({"user_id": user_id_1, "username": username_1}, 
+                                                                {"user_id": user_id_2, "username": username_2, 
+                                                                 "post_id": post_id})
         return generateResult()

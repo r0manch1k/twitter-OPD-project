@@ -14,4 +14,9 @@ def generateResult(error: str = None, error_type: str = "", data = None):
         result["error"][error_type] = error
     else:
         result["error"]["format"] = None
+    if error_type == "auth":
+        result["error"][error_type] = error
+    else:
+        result["error"]["auth"] = None
+
     return result
