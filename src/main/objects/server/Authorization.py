@@ -78,7 +78,7 @@ class Authorization:
         else:
             self.__db.insert(
             f"""INSERT INTO Users (email, username, password, name, access, image_id) \
-                VALUES  ('{email}', '{username}', '{hashed_password}', '{name}', 'user', 1);""")
+                VALUES  ('{email}', '{username}', '{hashed_password}', '{name}', 'User', 1);""")
             setConfigInfo('current_user', 'user_id', str(user_id))
             setConfigInfo('current_user', 'password', str(password))
         
@@ -206,7 +206,7 @@ class Authorization:
             return generateResult("Check your internet connection", "connection") 
         else:
             utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
-            code = MailSender(email).sendEmailVerification()
+            code = MailSender(email).sendVerificationEmail()
             self.__db.insert(
                 f"""INSERT INTO Verifications (email, username, name, code, time) \
                     VALUES  ('{email}', '{username}', '{fixed_name}', {code}, '{utc_time}');""")
@@ -257,7 +257,7 @@ class Authorization:
         password = getConfigInfo('current_user', 'password')
 
         if user_id == "-1":
-            return generateResult("Authorization is required", "format")
+            return generateResult(data=False)
         
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
@@ -265,9 +265,9 @@ class Authorization:
             email = self.__db.select(f"""SELECT email FROM Users WHERE user_id = {user_id};""")[0]['email']
 
         if self.logIn(email, password)['error']:
-            return generateResult("Authorization is required", "format")
+            return generateResult(data=False)
         
-        return generateResult()
+        return generateResult(data=True)
     
     def __checkRelevanceSession(self, email):
         if not self.__db.connect():

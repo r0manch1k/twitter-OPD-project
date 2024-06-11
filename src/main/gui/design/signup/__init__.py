@@ -1,0 +1,1 @@
+from .signup import Ui_form_SignUp

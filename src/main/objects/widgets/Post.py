@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QGraphicsDropShadowEffect, QMenu, QMainWi
 from PySide6.QtGui import QIcon, QFontDatabase, QFont, QColor, QAction, QCursor
 from PySide6.QtCore import QSize, Qt, QEvent, Signal
 
-from src.main.gui.design.post.post import Ui_form_Post
+from src.main.gui.design.post import Ui_form_Post
 from src.main.objects.widgets import ProfilePictureFrame
 from src.main.objects.server.PostTools import PostTools
 from src.main.objects.server.UserInfo import CurrentUser
@@ -11,12 +11,16 @@ from src.main.gui.resources import resources
 
 
 class Post(Ui_form_Post, QWidget):
-    userNameStyle = ("font-size:14px;"
-                     "font-weight:800")
+    nameStyle = ("font-size:14px;"
+                 "font-weight:800")
 
-    userLoginStyle = ("color:rgb(184,191,195);"
-                      "font-size:14px;"
-                      "font-weight:350")
+    usernameStyle = ("color:rgb(184,191,195);"
+                     "font-size:14px;"
+                     "font-weight:350")
+
+    accessStyle = ("color:rgb(184,191,195);"
+                   "font-size:14px;"
+                   "font-weight:550")
 
     postDataStyle = ("color:rgb(184,191,195);"
                      "font-size:13px;"
@@ -32,8 +36,13 @@ class Post(Ui_form_Post, QWidget):
     postTextStyle = ("font-size:13px;"
                      "font-weight:350")
 
-    connectionError = Signal(str)
-    formatError = Signal(str)
+    connectionErrorSignal = Signal(str)
+    formatErrorSignal = Signal(str)
+    authErrorSignal = Signal(str)
+    userImageClickedSignal = Signal(int)
+    reportUserSignal = Signal(int)
+    followUserSignal = Signal(int)
+    deletePostSignal = Signal(int)
 
     def __init__(self, postId: int, postInfo: dict, postTools: PostTools, currentUser: CurrentUser,
                  fileManager: FileManager):
@@ -57,6 +66,7 @@ class Post(Ui_form_Post, QWidget):
         self.postTime = postInfo["post_time"]
         self.username = postInfo["username"]
         self.name = postInfo["name"]
+        self.access = postInfo["access"]
         self.userImageId = postInfo["Users.image_id"]
         self.comments = postInfo["comments"]
 
@@ -64,12 +74,17 @@ class Post(Ui_form_Post, QWidget):
         if execute["error"]:
             if execute["error"]["connection"]:
                 self.showConnectionError(execute["error"]["connection"])
+                self.close()
+                return
             elif execute["error"]["format"]:
                 self.showConnectionError(execute["error"]["format"])
-            self.close()
-            return
-
-        self.currentUserAccess = execute["data"]
+                self.close()
+                return
+            elif execute["error"]["auth"]:
+                self.isAuth = False
+        else:
+            self.currentUserAccess = execute["data"]
+            self.isAuth = True
 
         self.__initSetup()
         self.__setIconsSVG()
@@ -88,7 +103,7 @@ class Post(Ui_form_Post, QWidget):
         icon_Dislikes = QIcon()
         icon_Dislikes.addFile(":icons/icons/Dislike.svg", QSize(), QIcon.Normal)
         self.ui.button_PostDislike.setIcon(icon_Dislikes)
-        self.ui.button_PostDislike.setIconSize(QSize(25, 52))
+        self.ui.button_PostDislike.setIconSize(QSize(22, 22))
 
         icon_Comments = QIcon()
         icon_Comments.addFile(":icons/icons/Comments.svg", QSize(), QIcon.Normal)
@@ -110,6 +125,8 @@ class Post(Ui_form_Post, QWidget):
         self.setGraphicsEffect(shadow)
 
         self.ui.textBrowser_UserName.document().setDocumentMargin(0)
+        self.ui.textBrowser_UserName.setStyleSheet("QTextBrowser { margin-top: 3px; }")
+        self.ui.label_PostData.document().setDocumentMargin(0)
         self.ui.textBrowser_PostText.document().setDocumentMargin(0)
         self.ui.textBrowser_PostText.setLineWrapColumnOrWidth(0)
         self.ui.textBrowser_PostText.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -136,7 +153,7 @@ class Post(Ui_form_Post, QWidget):
         action_Report.triggered.connect(self.reportUser)
         menu_More.addAction(action_Report)
 
-        if self.currentUserAccess == "Admin":
+        if self.isAuth and self.currentUserAccess == "Admin":
             action_DeletePost = QAction(f"&Delete Post", self)
             action_DeletePost.triggered.connect(self.deletePost)
             menu_More.addAction(action_DeletePost)
@@ -172,9 +189,13 @@ class Post(Ui_form_Post, QWidget):
         self.repaint()
 
     @classmethod
-    def getUserName(cls, userName, userLogin):
-        name = f"""<p style="vertical-align: middle;"><span style="{cls.userNameStyle}">{userName}</span><br>"""
-        login = f"""<span style="{cls.userLoginStyle}">@{userLogin}</span></p>"""
+    def getUserName(cls, name, username, access):
+        if access == "Admin":
+            name = f"""<p style="vertical-align: middle;"><span style="{cls.nameStyle}">{name}</span>
+                        <span style="{cls.accessStyle}"> {access}</span><br>"""
+        else:
+            name = f"""<p style="vertical-align: middle;"><span style="{cls.nameStyle}"</span><br>"""
+        login = f"""<span style="{cls.usernameStyle}">@{username}</span></p>"""
         return name + login
 
     @classmethod
@@ -230,7 +251,6 @@ class Post(Ui_form_Post, QWidget):
         elif watched == self.ui.button_PostLike:
 
             if event.type() == QEvent.Type.MouseButtonPress:
-
                 self.setReaction(isLike=True)
 
                 return True
@@ -238,7 +258,6 @@ class Post(Ui_form_Post, QWidget):
         elif watched == self.ui.button_PostDislike:
 
             if event.type() == QEvent.Type.MouseButtonPress:
-
                 self.setReaction(isDislike=True)
 
                 return True
@@ -260,9 +279,12 @@ class Post(Ui_form_Post, QWidget):
         if execute["error"]:
             if execute["error"]["connection"]:
                 self.showConnectionError(execute["error"]["connection"])
+                return
+            elif execute["error"]["auth"]:
+                self.toAuth(execute["error"]["auth"])
             elif execute["error"]["format"]:
                 self.showConnectionError(execute["error"]["format"])
-            return
+                return
 
         reaction = execute["data"]
         if reaction == "like":
@@ -275,10 +297,10 @@ class Post(Ui_form_Post, QWidget):
             icon_Dislikes = QIcon()
             icon_Dislikes.addFile(":icons/icons/DislikeSelected.svg", QSize(), QIcon.Normal)
             self.ui.button_PostDislike.setIcon(icon_Dislikes)
-            self.ui.button_PostDislike.setIconSize(QSize(25, 25))
+            self.ui.button_PostDislike.setIconSize(QSize(22, 22))
             self.ui.button_PostDislike.setChecked(True)
 
-        name = self.getUserName(self.name, self.username)
+        name = self.getUserName(self.name, self.username, self.access)
         self.ui.textBrowser_UserName.setText(name)
 
         text = self.getText(self.postText)
@@ -299,11 +321,9 @@ class Post(Ui_form_Post, QWidget):
             comments = self.getComments(0)
         self.ui.label_Comments.setText(comments)
 
-        photo = ProfilePictureFrame(userImagePath, 40, 40, 20, shadowOffset=0)
+        photo = ProfilePictureFrame(userImagePath, 40, 40, 20, shadowOffset=0, hoverOn=True)
         photo.setToolTip("@" + self.username)
-        photo.hoverEnterSignal.connect(self.mouseOnUserImage)
-        photo.hoverLeaveSignal.connect(self.mouseOffUserImage)
-        photo.mousePressedSignal.connect(self.openUserAccountPage)
+        photo.mouseClickedSignal.connect(self.openUserAccountPage)
         self.ui.layout_userName.insertWidget(0, photo)
 
     def setReaction(self, isLike: bool = False, isDislike: bool = False):
@@ -312,6 +332,9 @@ class Post(Ui_form_Post, QWidget):
         if execute["error"]:
             if execute["error"]["connection"]:
                 self.showConnectionError(execute["error"]["connection"])
+            elif execute["error"]["auth"]:
+                print(execute, "from reaction")
+                self.toAuth(execute["error"]["auth"])
             elif execute["error"]["format"]:
                 self.showConnectionError(execute["error"]["format"])
             return
@@ -332,7 +355,7 @@ class Post(Ui_form_Post, QWidget):
         elif not checked["dislike"]["set"]:
             icon_Dislikes.addFile(":icons/icons/Dislike.svg", QSize(), QIcon.Normal)
         self.ui.button_PostDislike.setIcon(icon_Dislikes)
-        self.ui.button_PostDislike.setIconSize(QSize(25, 25))
+        self.ui.button_PostDislike.setIconSize(QSize(22, 22))
 
         self.likes = checked["like"]["count"]
         likes = self.getLikes(self.likes)
@@ -342,32 +365,29 @@ class Post(Ui_form_Post, QWidget):
         dislikes = self.getDislikes(self.dislikes)
         self.ui.label_Dislikes.setText(dislikes)
 
-    @staticmethod
-    def mouseOnUserImage():
-
-        QApplication.setOverrideCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
-    @staticmethod
-    def mouseOffUserImage():
-
-        QApplication.restoreOverrideCursor()
-
     def openUserAccountPage(self):
 
         pass
 
     def followUser(self):
 
-        self.__postTools.createReaction()
+        if not self.isAuth:
+            self.toAuth()
 
     def reportUser(self):
-        pass
+
+        if not self.isAuth:
+            self.toAuth()
 
     def deletePost(self):
 
-        pass
+        if not self.isAuth:
+            self.toAuth()
 
     def showConnectionError(self, error: str):
 
-        self.connectionError.emit(error)
+        self.connectionErrorSignal.emit(error)
 
+    def toAuth(self, error: str = ""):
+
+        self.authErrorSignal.emit(error)

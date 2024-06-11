@@ -15,11 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QButtonGroup, QFrame,
-    QGridLayout, QHBoxLayout, QLabel, QLayout,
-    QLineEdit, QMainWindow, QPlainTextEdit, QPushButton,
-    QScrollArea, QSizePolicy, QSpacerItem, QStackedWidget,
-    QTextEdit, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QButtonGroup, QFrame, QGridLayout,
+    QHBoxLayout, QLabel, QLineEdit, QMainWindow,
+    QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
+    QStackedWidget, QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -376,247 +375,21 @@ class Ui_MainWindow(object):
         self.scrollAreaWidget_Posts.setObjectName(u"scrollAreaWidget_Posts")
         self.scrollAreaWidget_Posts.setGeometry(QRect(0, 0, 620, 460))
         self.scrollAreaWidget_Posts.setStyleSheet(u"")
-        self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidget_Posts)
-        self.verticalLayout_4.setSpacing(0)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(0, 20, 0, 20)
-        self.frame_HomeCreatePost = QFrame(self.scrollAreaWidget_Posts)
-        self.frame_HomeCreatePost.setObjectName(u"frame_HomeCreatePost")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame_HomeCreatePost.sizePolicy().hasHeightForWidth())
-        self.frame_HomeCreatePost.setSizePolicy(sizePolicy)
-        self.frame_HomeCreatePost.setMinimumSize(QSize(0, 50))
-        self.frame_HomeCreatePost.setMaximumSize(QSize(16777215, 160))
-        self.frame_HomeCreatePost.setStyleSheet(u"QFrame {\n"
-"	border: 0;\n"
-"	background-color: white;\n"
-"}\n"
-"\n"
-"QFrame#frame_HomeCreatePost {\n"
-"	background: transponent;\n"
-"}\n"
-"\n"
-"QFrame#frame_PostCreateMain {\n"
-"	border-radius: 20px;\n"
-"}\n"
-"\n"
-"QFrame#frame_PostCreateToolsSelected {\n"
-"	border-top: 1px solid rgb(190, 194, 196);\n"
-"	border-bottom-left-radius: 20px;\n"
-"	border-bottom-right-radius: 20px;\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	color: black;\n"
-"	margin: 0;\n"
-"	background-color:  white;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"	background-color:  rgb(235, 237, 239);\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"	background-color: rgb(190, 194, 196);\n"
-"}\n"
-"\n"
-"QPushButton#button_PostCreateAddImageSelected,\n"
-"QPushButton#button_PostCreateAddImageUnselected,\n"
-"QPushButton#button_PostCreateAddVideoSelected,\n"
-"QPushButton#button_PostCreateAddVideoUnselected,\n"
-"QPushButton#button_PostCreateAddMusicSelected,\n"
-"QPushButton#button_PostCreateAddMusicUnselected {\n"
-"	border-radius: 15px;\n"
-"}\n"
-"\n"
-"QPushButton#button_PostCrea"
-                        "te {\n"
-"	color: white;\n"
-"	background-color: rgb(0, 88, 155);\n"
-"	border-radius: 15px;\n"
-"}\n"
-"\n"
-"QPushButton#button_PostCreate:hover {\n"
-"	background-color: rgb(0, 78, 145);\n"
-"}\n"
-"\n"
-"QPushButton#button_PostCreate:pressed {\n"
-"	background-color: rgb(0, 68, 135);\n"
-"}\n"
-"")
-        self.frame_HomeCreatePost.setFrameShape(QFrame.StyledPanel)
-        self.frame_HomeCreatePost.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_7 = QVBoxLayout(self.frame_HomeCreatePost)
-        self.verticalLayout_7.setSpacing(0)
-        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.verticalLayout_7.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.verticalLayout_7.setContentsMargins(20, 0, 10, 10)
-        self.frame_PostCreateMain = QFrame(self.frame_HomeCreatePost)
-        self.frame_PostCreateMain.setObjectName(u"frame_PostCreateMain")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.frame_PostCreateMain.sizePolicy().hasHeightForWidth())
-        self.frame_PostCreateMain.setSizePolicy(sizePolicy1)
-        self.frame_PostCreateMain.setMinimumSize(QSize(0, 50))
-        self.frame_PostCreateMain.setMaximumSize(QSize(16777215, 50))
-        self.frame_PostCreateMain.setStyleSheet(u"")
-        self.frame_PostCreateMain.setFrameShape(QFrame.StyledPanel)
-        self.frame_PostCreateMain.setFrameShadow(QFrame.Raised)
-        self.layout_PostCreateMain = QHBoxLayout(self.frame_PostCreateMain)
-        self.layout_PostCreateMain.setSpacing(10)
-        self.layout_PostCreateMain.setObjectName(u"layout_PostCreateMain")
-        self.layout_PostCreateMain.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.layout_PostCreateMain.setContentsMargins(10, 10, 10, 10)
-        self.frame_PostCreateImage = QFrame(self.frame_PostCreateMain)
-        self.frame_PostCreateImage.setObjectName(u"frame_PostCreateImage")
-        self.frame_PostCreateImage.setMinimumSize(QSize(0, 30))
-        self.frame_PostCreateImage.setFrameShape(QFrame.StyledPanel)
-        self.frame_PostCreateImage.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_11 = QVBoxLayout(self.frame_PostCreateImage)
-        self.verticalLayout_11.setSpacing(0)
-        self.verticalLayout_11.setObjectName(u"verticalLayout_11")
-        self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
-        self.label_PostCreateImage = QLabel(self.frame_PostCreateImage)
-        self.label_PostCreateImage.setObjectName(u"label_PostCreateImage")
-        self.label_PostCreateImage.setMinimumSize(QSize(30, 30))
-        self.label_PostCreateImage.setMaximumSize(QSize(30, 30))
-
-        self.verticalLayout_11.addWidget(self.label_PostCreateImage)
-
-        self.verticalSpacer_7 = QSpacerItem(20, 12, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.MinimumExpanding)
-
-        self.verticalLayout_11.addItem(self.verticalSpacer_7)
-
-
-        self.layout_PostCreateMain.addWidget(self.frame_PostCreateImage)
-
-        self.line_PostCreateText = QPlainTextEdit(self.frame_PostCreateMain)
-        self.line_PostCreateText.setObjectName(u"line_PostCreateText")
-        self.line_PostCreateText.setMinimumSize(QSize(0, 30))
-        self.line_PostCreateText.setMaximumSize(QSize(16777215, 30))
-        self.line_PostCreateText.setStyleSheet(u"padding-top: 3px;")
-        self.line_PostCreateText.setFrameShadow(QFrame.Sunken)
-        self.line_PostCreateText.setLineWidth(0)
-        self.line_PostCreateText.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.line_PostCreateText.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.line_PostCreateText.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
-        self.line_PostCreateText.setBackgroundVisible(False)
-
-        self.layout_PostCreateMain.addWidget(self.line_PostCreateText)
-
-        self.frame_PostCreateToolsUnselected = QFrame(self.frame_PostCreateMain)
-        self.frame_PostCreateToolsUnselected.setObjectName(u"frame_PostCreateToolsUnselected")
-        self.frame_PostCreateToolsUnselected.setMinimumSize(QSize(0, 30))
-        self.frame_PostCreateToolsUnselected.setFrameShape(QFrame.StyledPanel)
-        self.frame_PostCreateToolsUnselected.setFrameShadow(QFrame.Raised)
-        self.gridLayout_12 = QGridLayout(self.frame_PostCreateToolsUnselected)
-        self.gridLayout_12.setObjectName(u"gridLayout_12")
-        self.gridLayout_12.setHorizontalSpacing(5)
-        self.gridLayout_12.setVerticalSpacing(0)
-        self.gridLayout_12.setContentsMargins(0, 0, 0, 0)
-        self.button_PostCreateAddVideoUnselected = QPushButton(self.frame_PostCreateToolsUnselected)
-        self.button_PostCreateAddVideoUnselected.setObjectName(u"button_PostCreateAddVideoUnselected")
-        self.button_PostCreateAddVideoUnselected.setMinimumSize(QSize(30, 30))
-        self.button_PostCreateAddVideoUnselected.setMaximumSize(QSize(30, 30))
-
-        self.gridLayout_12.addWidget(self.button_PostCreateAddVideoUnselected, 1, 2, 1, 1)
-
-        self.button_PostCreateAddMusicUnselected = QPushButton(self.frame_PostCreateToolsUnselected)
-        self.button_PostCreateAddMusicUnselected.setObjectName(u"button_PostCreateAddMusicUnselected")
-        self.button_PostCreateAddMusicUnselected.setMinimumSize(QSize(30, 30))
-        self.button_PostCreateAddMusicUnselected.setMaximumSize(QSize(30, 30))
-
-        self.gridLayout_12.addWidget(self.button_PostCreateAddMusicUnselected, 1, 3, 1, 1)
-
-        self.verticalSpacer_10 = QSpacerItem(20, 5, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
-
-        self.gridLayout_12.addItem(self.verticalSpacer_10, 0, 0, 1, 4)
-
-        self.verticalSpacer_8 = QSpacerItem(78, 12, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.MinimumExpanding)
-
-        self.gridLayout_12.addItem(self.verticalSpacer_8, 2, 0, 1, 4)
-
-        self.button_PostCreateAddImageUnselected = QPushButton(self.frame_PostCreateToolsUnselected)
-        self.button_PostCreateAddImageUnselected.setObjectName(u"button_PostCreateAddImageUnselected")
-        self.button_PostCreateAddImageUnselected.setMinimumSize(QSize(30, 30))
-        self.button_PostCreateAddImageUnselected.setMaximumSize(QSize(30, 30))
-
-        self.gridLayout_12.addWidget(self.button_PostCreateAddImageUnselected, 1, 1, 1, 1)
-
-
-        self.layout_PostCreateMain.addWidget(self.frame_PostCreateToolsUnselected)
-
-
-        self.verticalLayout_7.addWidget(self.frame_PostCreateMain)
-
-        self.frame_PostCreateToolsSelected = QFrame(self.frame_HomeCreatePost)
-        self.frame_PostCreateToolsSelected.setObjectName(u"frame_PostCreateToolsSelected")
-        self.frame_PostCreateToolsSelected.setMinimumSize(QSize(0, 60))
-        self.frame_PostCreateToolsSelected.setMaximumSize(QSize(16777215, 60))
-        self.frame_PostCreateToolsSelected.setStyleSheet(u"")
-        self.frame_PostCreateToolsSelected.setFrameShape(QFrame.StyledPanel)
-        self.frame_PostCreateToolsSelected.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_2 = QHBoxLayout(self.frame_PostCreateToolsSelected)
-        self.horizontalLayout_2.setSpacing(5)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(10, 10, 10, 10)
-        self.button_PostCreateAddImageSelected = QPushButton(self.frame_PostCreateToolsSelected)
-        self.button_PostCreateAddImageSelected.setObjectName(u"button_PostCreateAddImageSelected")
-        self.button_PostCreateAddImageSelected.setMinimumSize(QSize(30, 30))
-        self.button_PostCreateAddImageSelected.setMaximumSize(QSize(30, 30))
-
-        self.horizontalLayout_2.addWidget(self.button_PostCreateAddImageSelected)
-
-        self.button_PostCreateAddVideoSelected = QPushButton(self.frame_PostCreateToolsSelected)
-        self.button_PostCreateAddVideoSelected.setObjectName(u"button_PostCreateAddVideoSelected")
-        self.button_PostCreateAddVideoSelected.setMinimumSize(QSize(30, 30))
-        self.button_PostCreateAddVideoSelected.setMaximumSize(QSize(30, 30))
-
-        self.horizontalLayout_2.addWidget(self.button_PostCreateAddVideoSelected)
-
-        self.button_PostCreateAddMusicSelected = QPushButton(self.frame_PostCreateToolsSelected)
-        self.button_PostCreateAddMusicSelected.setObjectName(u"button_PostCreateAddMusicSelected")
-        self.button_PostCreateAddMusicSelected.setMinimumSize(QSize(30, 30))
-        self.button_PostCreateAddMusicSelected.setMaximumSize(QSize(30, 30))
-
-        self.horizontalLayout_2.addWidget(self.button_PostCreateAddMusicSelected)
-
-        self.horizontalSpacer_15 = QSpacerItem(377, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_2.addItem(self.horizontalSpacer_15)
-
-        self.button_PostCreate = QPushButton(self.frame_PostCreateToolsSelected)
-        self.button_PostCreate.setObjectName(u"button_PostCreate")
-        self.button_PostCreate.setMinimumSize(QSize(80, 40))
-        self.button_PostCreate.setMaximumSize(QSize(80, 40))
-        font1 = QFont()
-        font1.setBold(True)
-        font1.setItalic(False)
-        self.button_PostCreate.setFont(font1)
-        self.button_PostCreate.setStyleSheet(u"")
-
-        self.horizontalLayout_2.addWidget(self.button_PostCreate)
-
-
-        self.verticalLayout_7.addWidget(self.frame_PostCreateToolsSelected)
-
-
-        self.verticalLayout_4.addWidget(self.frame_HomeCreatePost)
-
+        self.layout_ScrollAreaPosts = QVBoxLayout(self.scrollAreaWidget_Posts)
+        self.layout_ScrollAreaPosts.setSpacing(20)
+        self.layout_ScrollAreaPosts.setObjectName(u"layout_ScrollAreaPosts")
+        self.layout_ScrollAreaPosts.setContentsMargins(0, 20, 0, 20)
         self.stacked_Posts = QStackedWidget(self.scrollAreaWidget_Posts)
         self.stacked_Posts.setObjectName(u"stacked_Posts")
         self.stacked_Posts.setStyleSheet(u"QStackedWidget {\n"
 "	background: transponent;\n"
 "}")
 
-        self.verticalLayout_4.addWidget(self.stacked_Posts)
+        self.layout_ScrollAreaPosts.addWidget(self.stacked_Posts)
 
         self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_4.addItem(self.verticalSpacer_3)
+        self.layout_ScrollAreaPosts.addItem(self.verticalSpacer_3)
 
         self.frame_SetPostsPage = QFrame(self.scrollAreaWidget_Posts)
         self.frame_SetPostsPage.setObjectName(u"frame_SetPostsPage")
@@ -655,20 +428,20 @@ class Ui_MainWindow(object):
         self.layout_SetPostsPage.addItem(self.horizontalSpacer_16)
 
 
-        self.verticalLayout_4.addWidget(self.frame_SetPostsPage)
+        self.layout_ScrollAreaPosts.addWidget(self.frame_SetPostsPage)
 
         self.label_HomeSign = QLabel(self.scrollAreaWidget_Posts)
         self.label_HomeSign.setObjectName(u"label_HomeSign")
         self.label_HomeSign.setMinimumSize(QSize(0, 20))
         self.label_HomeSign.setMaximumSize(QSize(16777215, 20))
-        font2 = QFont()
-        font2.setBold(True)
-        font2.setItalic(True)
-        self.label_HomeSign.setFont(font2)
+        font1 = QFont()
+        font1.setBold(True)
+        font1.setItalic(True)
+        self.label_HomeSign.setFont(font1)
         self.label_HomeSign.setStyleSheet(u"color: rgba(255, 255, 255, 100);")
         self.label_HomeSign.setAlignment(Qt.AlignCenter)
 
-        self.verticalLayout_4.addWidget(self.label_HomeSign)
+        self.layout_ScrollAreaPosts.addWidget(self.label_HomeSign)
 
         self.scrollArea_HomePosts.setWidget(self.scrollAreaWidget_Posts)
 
@@ -733,7 +506,7 @@ class Ui_MainWindow(object):
         self.scrollArea_Account.setWidgetResizable(True)
         self.scrollAreaWidget_Account = QWidget()
         self.scrollAreaWidget_Account.setObjectName(u"scrollAreaWidget_Account")
-        self.scrollAreaWidget_Account.setGeometry(QRect(0, 0, 570, 1065))
+        self.scrollAreaWidget_Account.setGeometry(QRect(0, 0, 1000, 1065))
         self.scrollAreaWidget_Account.setStyleSheet(u"QFrame#frame_AccountTabsContainer {\n"
 "	border: 0;\n"
 "}")
@@ -798,21 +571,6 @@ class Ui_MainWindow(object):
         self.button_AccountTabsPosts.setCheckable(True)
 
         self.horizontalLayout_3.addWidget(self.button_AccountTabsPosts)
-
-        self.horizontalSpacer_2 = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
-
-        self.button_AccountTabsComments = QPushButton(self.frame_AccountTabs)
-        self.buttonGroup_AccountTabs.addButton(self.button_AccountTabsComments)
-        self.button_AccountTabsComments.setObjectName(u"button_AccountTabsComments")
-        self.button_AccountTabsComments.setCheckable(True)
-
-        self.horizontalLayout_3.addWidget(self.button_AccountTabsComments)
-
-        self.horizontalSpacer_3 = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_3)
 
         self.button_AccountTabsFriend = QPushButton(self.frame_AccountTabs)
         self.buttonGroup_AccountTabs.addButton(self.button_AccountTabsFriend)
@@ -880,10 +638,10 @@ class Ui_MainWindow(object):
         self.frame_AccountInfo.setObjectName(u"frame_AccountInfo")
         self.frame_AccountInfo.setMinimumSize(QSize(0, 150))
         self.frame_AccountInfo.setMaximumSize(QSize(16777215, 150))
-        font3 = QFont()
-        font3.setFamilies([u".AppleSystemUIFont"])
-        font3.setBold(False)
-        self.frame_AccountInfo.setFont(font3)
+        font2 = QFont()
+        font2.setFamilies([u".AppleSystemUIFont"])
+        font2.setBold(False)
+        self.frame_AccountInfo.setFont(font2)
         self.frame_AccountInfo.setStyleSheet(u"QFrame {\n"
 "	border-top-left-radius: 0;\n"
 "	border-top-right-radius: 0;\n"
@@ -977,13 +735,16 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.label_AccountNickname = QLabel(self.frame_AccountLabels_1)
         self.label_AccountNickname.setObjectName(u"label_AccountNickname")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_AccountNickname.sizePolicy().hasHeightForWidth())
         self.label_AccountNickname.setSizePolicy(sizePolicy)
         self.label_AccountNickname.setMinimumSize(QSize(0, 30))
         self.label_AccountNickname.setMaximumSize(QSize(16777215, 30))
-        font4 = QFont()
-        font4.setPointSize(28)
-        self.label_AccountNickname.setFont(font4)
+        font3 = QFont()
+        font3.setPointSize(28)
+        self.label_AccountNickname.setFont(font3)
         self.label_AccountNickname.setStyleSheet(u"")
         self.label_AccountNickname.setScaledContents(False)
         self.label_AccountNickname.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
@@ -1055,10 +816,10 @@ class Ui_MainWindow(object):
         self.label_AccountInformationID.setObjectName(u"label_AccountInformationID")
         self.label_AccountInformationID.setMinimumSize(QSize(0, 20))
         self.label_AccountInformationID.setMaximumSize(QSize(100, 20))
-        font5 = QFont()
-        font5.setPointSize(12)
-        font5.setItalic(False)
-        self.label_AccountInformationID.setFont(font5)
+        font4 = QFont()
+        font4.setPointSize(12)
+        font4.setItalic(False)
+        self.label_AccountInformationID.setFont(font4)
         self.label_AccountInformationID.setStyleSheet(u"")
         self.label_AccountInformationID.setIndent(0)
         self.label_AccountInformationID.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
@@ -1069,9 +830,9 @@ class Ui_MainWindow(object):
         self.label_AccountInformationText.setObjectName(u"label_AccountInformationText")
         self.label_AccountInformationText.setMinimumSize(QSize(300, 20))
         self.label_AccountInformationText.setMaximumSize(QSize(300, 70))
-        font6 = QFont()
-        font6.setItalic(False)
-        self.label_AccountInformationText.setFont(font6)
+        font5 = QFont()
+        font5.setItalic(False)
+        self.label_AccountInformationText.setFont(font5)
         self.label_AccountInformationText.setStyleSheet(u"")
         self.label_AccountInformationText.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.label_AccountInformationText.setWordWrap(True)
@@ -1164,7 +925,7 @@ class Ui_MainWindow(object):
         self.scrollArea_AccountEdit.setWidgetResizable(True)
         self.scrollAreaWidget_AccountEdit = QWidget()
         self.scrollAreaWidget_AccountEdit.setObjectName(u"scrollAreaWidget_AccountEdit")
-        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, 0, 550, 761))
+        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, -311, 980, 761))
         self.scrollAreaWidget_AccountEdit.setStyleSheet(u"")
         self.verticalLayout_8 = QVBoxLayout(self.scrollAreaWidget_AccountEdit)
         self.verticalLayout_8.setSpacing(10)
@@ -1186,13 +947,13 @@ class Ui_MainWindow(object):
         self.label_AccountEditSettings.setObjectName(u"label_AccountEditSettings")
         self.label_AccountEditSettings.setMinimumSize(QSize(0, 50))
         self.label_AccountEditSettings.setMaximumSize(QSize(16777215, 50))
-        font7 = QFont()
-        font7.setPointSize(20)
-        font7.setBold(False)
-        font7.setItalic(False)
-        font7.setUnderline(False)
-        font7.setStrikeOut(False)
-        self.label_AccountEditSettings.setFont(font7)
+        font6 = QFont()
+        font6.setPointSize(20)
+        font6.setBold(False)
+        font6.setItalic(False)
+        font6.setUnderline(False)
+        font6.setStrikeOut(False)
+        self.label_AccountEditSettings.setFont(font6)
         self.label_AccountEditSettings.setStyleSheet(u"")
         self.label_AccountEditSettings.setLineWidth(0)
         self.label_AccountEditSettings.setIndent(0)
@@ -1435,11 +1196,11 @@ class Ui_MainWindow(object):
 
         self.frame_AccountEditAccountContainer = QFrame(self.frame_AccountEditProfileContainer)
         self.frame_AccountEditAccountContainer.setObjectName(u"frame_AccountEditAccountContainer")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(215)
-        sizePolicy2.setHeightForWidth(self.frame_AccountEditAccountContainer.sizePolicy().hasHeightForWidth())
-        self.frame_AccountEditAccountContainer.setSizePolicy(sizePolicy2)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(215)
+        sizePolicy1.setHeightForWidth(self.frame_AccountEditAccountContainer.sizePolicy().hasHeightForWidth())
+        self.frame_AccountEditAccountContainer.setSizePolicy(sizePolicy1)
         self.frame_AccountEditAccountContainer.setMinimumSize(QSize(0, 0))
         self.frame_AccountEditAccountContainer.setMaximumSize(QSize(16777215, 16777215))
         self.frame_AccountEditAccountContainer.setStyleSheet(u"QFrame {\n"
@@ -1504,9 +1265,9 @@ class Ui_MainWindow(object):
         self.label_3.setObjectName(u"label_3")
         self.label_3.setMinimumSize(QSize(0, 25))
         self.label_3.setMaximumSize(QSize(16777215, 25))
-        font8 = QFont()
-        font8.setPointSize(15)
-        self.label_3.setFont(font8)
+        font7 = QFont()
+        font7.setPointSize(15)
+        self.label_3.setFont(font7)
         self.label_3.setAlignment(Qt.AlignBottom|Qt.AlignLeading|Qt.AlignLeft)
         self.label_3.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
@@ -1584,7 +1345,7 @@ class Ui_MainWindow(object):
         self.label_6.setObjectName(u"label_6")
         self.label_6.setMinimumSize(QSize(0, 25))
         self.label_6.setMaximumSize(QSize(16777215, 25))
-        self.label_6.setFont(font8)
+        self.label_6.setFont(font7)
         self.label_6.setAlignment(Qt.AlignBottom|Qt.AlignLeading|Qt.AlignLeft)
         self.label_6.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
@@ -1619,7 +1380,7 @@ class Ui_MainWindow(object):
         self.label_4.setObjectName(u"label_4")
         self.label_4.setMinimumSize(QSize(0, 25))
         self.label_4.setMaximumSize(QSize(16777215, 25))
-        self.label_4.setFont(font8)
+        self.label_4.setFont(font7)
         self.label_4.setAlignment(Qt.AlignBottom|Qt.AlignLeading|Qt.AlignLeft)
         self.label_4.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
@@ -1639,13 +1400,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_10.addWidget(self.label_Sign_1, 1, 0, 1, 1)
 
-        self.line_AccountEditAbout = QTextEdit(self.frame_AccountEditInfo)
-        self.line_AccountEditAbout.setObjectName(u"line_AccountEditAbout")
-        self.line_AccountEditAbout.setMinimumSize(QSize(265, 50))
-        self.line_AccountEditAbout.setMaximumSize(QSize(265, 50))
-
-        self.gridLayout_10.addWidget(self.line_AccountEditAbout, 2, 0, 1, 1)
-
         self.button_AccountEditAboutDelete = QPushButton(self.frame_AccountEditInfo)
         self.button_AccountEditAboutDelete.setObjectName(u"button_AccountEditAboutDelete")
         self.button_AccountEditAboutDelete.setMinimumSize(QSize(30, 30))
@@ -1663,6 +1417,13 @@ class Ui_MainWindow(object):
         self.label_AccountEditAboutSymbols.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
         self.gridLayout_10.addWidget(self.label_AccountEditAboutSymbols, 3, 0, 1, 1)
+
+        self.line_AccountEditAbout = QTextEdit(self.frame_AccountEditInfo)
+        self.line_AccountEditAbout.setObjectName(u"line_AccountEditAbout")
+        self.line_AccountEditAbout.setMinimumSize(QSize(265, 50))
+        self.line_AccountEditAbout.setMaximumSize(QSize(265, 50))
+
+        self.gridLayout_10.addWidget(self.line_AccountEditAbout, 2, 0, 1, 1)
 
 
         self.verticalLayout_3.addWidget(self.frame_AccountEditInfo)
@@ -1705,17 +1466,17 @@ class Ui_MainWindow(object):
         self.button_AccountEditProfileCancel = QPushButton(self.frame_AccountEditButtonsContainer)
         self.button_AccountEditProfileCancel.setObjectName(u"button_AccountEditProfileCancel")
         self.button_AccountEditProfileCancel.setMinimumSize(QSize(120, 0))
-        font9 = QFont()
-        font9.setPointSize(13)
-        font9.setBold(True)
-        self.button_AccountEditProfileCancel.setFont(font9)
+        font8 = QFont()
+        font8.setPointSize(13)
+        font8.setBold(True)
+        self.button_AccountEditProfileCancel.setFont(font8)
 
         self.horizontalLayout_5.addWidget(self.button_AccountEditProfileCancel)
 
         self.button_AccountEditProfileSave = QPushButton(self.frame_AccountEditButtonsContainer)
         self.button_AccountEditProfileSave.setObjectName(u"button_AccountEditProfileSave")
         self.button_AccountEditProfileSave.setMinimumSize(QSize(150, 0))
-        self.button_AccountEditProfileSave.setFont(font9)
+        self.button_AccountEditProfileSave.setFont(font8)
 
         self.horizontalLayout_5.addWidget(self.button_AccountEditProfileSave)
 
@@ -1794,45 +1555,11 @@ class Ui_MainWindow(object):
         self.button_Account.setToolTip(QCoreApplication.translate("MainWindow", u"Account", None))
 #endif // QT_CONFIG(tooltip)
         self.button_Account.setText("")
-#if QT_CONFIG(tooltip)
-        self.label_PostCreateImage.setToolTip(QCoreApplication.translate("MainWindow", u"Your Profile", None))
-#endif // QT_CONFIG(tooltip)
-        self.label_PostCreateImage.setText("")
-        self.line_PostCreateText.setPlaceholderText(QCoreApplication.translate("MainWindow", u"What's new?", None))
-#if QT_CONFIG(tooltip)
-        self.button_PostCreateAddVideoUnselected.setToolTip(QCoreApplication.translate("MainWindow", u"Choose Video", None))
-#endif // QT_CONFIG(tooltip)
-        self.button_PostCreateAddVideoUnselected.setText("")
-#if QT_CONFIG(tooltip)
-        self.button_PostCreateAddMusicUnselected.setToolTip(QCoreApplication.translate("MainWindow", u"Choose Music", None))
-#endif // QT_CONFIG(tooltip)
-        self.button_PostCreateAddMusicUnselected.setText("")
-#if QT_CONFIG(tooltip)
-        self.button_PostCreateAddImageUnselected.setToolTip(QCoreApplication.translate("MainWindow", u"Choose Image", None))
-#endif // QT_CONFIG(tooltip)
-        self.button_PostCreateAddImageUnselected.setText("")
-#if QT_CONFIG(tooltip)
-        self.button_PostCreateAddImageSelected.setToolTip(QCoreApplication.translate("MainWindow", u"Choose Image", None))
-#endif // QT_CONFIG(tooltip)
-        self.button_PostCreateAddImageSelected.setText("")
-#if QT_CONFIG(tooltip)
-        self.button_PostCreateAddVideoSelected.setToolTip(QCoreApplication.translate("MainWindow", u"Choose Video", None))
-#endif // QT_CONFIG(tooltip)
-        self.button_PostCreateAddVideoSelected.setText("")
-#if QT_CONFIG(tooltip)
-        self.button_PostCreateAddMusicSelected.setToolTip(QCoreApplication.translate("MainWindow", u"Choose Music", None))
-#endif // QT_CONFIG(tooltip)
-        self.button_PostCreateAddMusicSelected.setText("")
-#if QT_CONFIG(tooltip)
-        self.button_PostCreate.setToolTip(QCoreApplication.translate("MainWindow", u"Create Post", None))
-#endif // QT_CONFIG(tooltip)
-        self.button_PostCreate.setText(QCoreApplication.translate("MainWindow", u"Post", None))
         self.label_HomeSign.setText(QCoreApplication.translate("MainWindow", u"fdf", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Notifications", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Chat", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Notifications", None))
         self.button_AccountTabsPosts.setText(QCoreApplication.translate("MainWindow", u"Posts", None))
-        self.button_AccountTabsComments.setText(QCoreApplication.translate("MainWindow", u"Comments", None))
         self.button_AccountTabsFriend.setText(QCoreApplication.translate("MainWindow", u"Follows", None))
         self.label_AccountNickname.setText(QCoreApplication.translate("MainWindow", u"Nickname", None))
         self.label_AccountStatus.setText("")
@@ -1873,12 +1600,12 @@ class Ui_MainWindow(object):
         self.label_AccountEditUsernameSymbols.setText(QCoreApplication.translate("MainWindow", u"Maximum 32 chrachters", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"About (optional)", None))
         self.label_Sign_1.setText(QCoreApplication.translate("MainWindow", u"A brief description of yourself shown on your profile.", None))
-        self.line_AccountEditAbout.setPlaceholderText("")
 #if QT_CONFIG(tooltip)
         self.button_AccountEditAboutDelete.setToolTip(QCoreApplication.translate("MainWindow", u"Clear About", None))
 #endif // QT_CONFIG(tooltip)
         self.button_AccountEditAboutDelete.setText("")
         self.label_AccountEditAboutSymbols.setText(QCoreApplication.translate("MainWindow", u"Maximum 50 chrachters", None))
+        self.line_AccountEditAbout.setPlaceholderText("")
         self.label_AccountEditProfileWarning.setText(QCoreApplication.translate("MainWindow", u"There are unsaved changes!", None))
         self.button_AccountEditProfileCancel.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
         self.button_AccountEditProfileSave.setText(QCoreApplication.translate("MainWindow", u"Save Changes", None))

@@ -229,6 +229,7 @@ class Ui_form_Post(object):
         self.label_Likes.setMaximumSize(QSize(16777215, 25))
         self.label_Likes.setTextFormat(Qt.RichText)
         self.label_Likes.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.label_Likes.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByMouse)
 
         self.horizontalLayout_3.addWidget(self.label_Likes)
 
@@ -239,6 +240,7 @@ class Ui_form_Post(object):
         self.label_Dislikes.setStyleSheet(u"")
         self.label_Dislikes.setTextFormat(Qt.RichText)
         self.label_Dislikes.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.label_Dislikes.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByMouse)
 
         self.horizontalLayout_3.addWidget(self.label_Dislikes)
 
@@ -249,6 +251,7 @@ class Ui_form_Post(object):
         self.label_Comments.setStyleSheet(u"")
         self.label_Comments.setTextFormat(Qt.RichText)
         self.label_Comments.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.label_Comments.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByMouse)
 
         self.horizontalLayout_3.addWidget(self.label_Comments)
 
@@ -317,7 +320,7 @@ class Ui_form_Post(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">HUESOS</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
         self.label_Likes.setText(QCoreApplication.translate("form_Post", u"Likes", None))
         self.label_Dislikes.setText(QCoreApplication.translate("form_Post", u"Dislikes", None))

@@ -5,7 +5,6 @@ from src.main.objects.server.DataBase import DataBase
 from src.main.objects.server.UserInfo import CurrentUser
 from src.main.objects.server.Result import generateResult
 from src.main.objects.server.Validator import validateText
-from src.main.objects.server.Authorization import Authorization
 from src.main.objects.server.Static import setConfigInfo, getConfigInfo
 
 
@@ -14,9 +13,9 @@ class PostTools:
         self.__db = DataBase()
 
     def createPost(self, post_text: str, image_id: int = None, video_id: int  = None):
-        message = Authorization().checkAuthorization()
-        if message["error"]:
-            return message
+        error = CurrentUser().updateOnline()
+        if error["error"]:
+            return error
 
         if validateText(post_text):
             return generateResult(validateText(post_text), "format")
@@ -90,9 +89,9 @@ class PostTools:
         return generateResult()
 
     def createComment(self, comment_text: str, post_id: int):
-        message = Authorization().checkAuthorization()
-        if message["error"]:
-            return message
+        error = CurrentUser().updateOnline()
+        if error["error"]:
+            return error
 
         if validateText(comment_text):
             return generateResult(validateText(comment_text), "format")
@@ -100,7 +99,7 @@ class PostTools:
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            if self.__db.select(f"""SELECT * FROM Posts WHERE post_id = {post_id};""") == ():
+            if self.__db.select(f"""SELECT likes FROM Posts WHERE post_id = {post_id};""") == ():
                 return generateResult("This post isn't found", "format")
 
         utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
@@ -137,9 +136,9 @@ class PostTools:
         return generateResult()
 
     def createReaction(self, post_id=-1, comment_id=-1, is_like=False, is_dislike=False):
-        message = Authorization().checkAuthorization()
-        if message["error"]:
-            return message
+        error = CurrentUser().updateOnline()
+        if error["error"]:
+            return error
         
         user_id = CurrentUser().userID['data']
         if post_id != -1:
@@ -274,6 +273,10 @@ class PostTools:
                                                     "dislike": {"set": True, "count": count_dislikes + 1}})
     
     def checkReaction(self, post_id=-1, comment_id=-1):
+        error = CurrentUser().updateOnline()
+        if error["error"]:
+            return error
+        
         user_id = CurrentUser().userID['data']
         if post_id != -1:
             index = "post_id"
@@ -353,7 +356,8 @@ class PostTools:
                            Posts.post_time, \
                            Users.username, \
                            Users.name, \
-                           Users.image_id \
+                           Users.image_id, \
+                           Users.access \
                     FROM Posts \
                     INNER JOIN Users \
                         ON Posts.user_id = Users.user_id \

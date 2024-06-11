@@ -81,7 +81,7 @@ def validatePassword(password):
     
 def validateInfo(info):
     if len(info) > 50:
-        return "Info must contain < 50 symbols"
+        return "About must contain < 70 symbols"
         
     return ""
 

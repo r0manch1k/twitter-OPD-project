@@ -1,5 +1,5 @@
 import pymysql
-from .Static import getConfigInfo
+from src.main.objects.server.Static import getConfigInfo
 
 
 class Singleton(object):
@@ -20,16 +20,16 @@ class DataBase(Singleton):
         self.__database = getConfigInfo('server', 'database')
 
         self.identity_ids = {'Users': 'user_id', 
-                                'Verifications': 'verification_id', 
-                                'Reactions': 'reaction_id', 
-                                'Posts': 'post_id', 
-                                'Chats': 'chat_id',
-                                'Comments': 'comment_id',
-                                'Friends': 'friends_id', 
-                                'Images': 'image_id',
-                                'Messages': 'message_id',
-                                'Videos': 'video_id',
-                                'Followers': 'id'}
+                             'Verifications': 'verification_id', 
+                             'Reactions': 'reaction_id', 
+                             'Posts': 'post_id', 
+                             'Chats': 'chat_id',
+                             'Comments': 'comment_id',
+                             'Friends': 'friends_id', 
+                             'Images': 'image_id',
+                             'Messages': 'message_id',
+                             'Videos': 'video_id',
+                             'Followers': 'id'}
 
         self.connection = None
         self.cursor = None
