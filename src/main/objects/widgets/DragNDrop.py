@@ -7,7 +7,7 @@ from PySide6.QtCore import QIODevice, QBuffer, Signal
 from PySide6.QtGui import QImage
 from PySide6.QtWidgets import QFrame, QWidget
 
-from src.main.gui.design.drag.drag import Ui_DragNDrop
+from src.main.gui.design.drag import Ui_DragNDrop
 from src.main.objects.ImageTools import ImageTools
 
 

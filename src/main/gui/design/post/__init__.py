@@ -1,0 +1,1 @@
+from .post import Ui_form_Post

@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt, Signal, QEvent
 from PySide6.QtGui import QPainter, QColor, QPen
-from PySide6.QtWidgets import QLabel, QGraphicsDropShadowEffect
+from PySide6.QtWidgets import QLabel, QGraphicsDropShadowEffect, QStyleOptionButton, QStyle
 
 from src.main.objects.ImageTools import ImageTools
 
@@ -9,10 +9,10 @@ class ProfilePictureFrame(QLabel):
 
     hoverEnterSignal = Signal()
     hoverLeaveSignal = Signal()
-    mousePressedSignal = Signal()
+    mouseClickedSignal = Signal()
 
     def __init__(self, imagePath: str, width: int = 150, height: int = 150, radius: int = 75, frame: int = 2,
-                 frameColor: tuple = (229, 235, 238), shadowOffset: int = 5,
+                 frameColor: tuple = (229, 235, 238), shadowOffset: int = 5, hoverOn: bool = False,
                  parent=None):
         super(ProfilePictureFrame, self).__init__(parent)
 
@@ -22,9 +22,10 @@ class ProfilePictureFrame(QLabel):
         self.frameColor = frameColor
         self.frame = frame
         self.shadowOffset = shadowOffset
-
+        self.hoverOn = hoverOn
         self.profileImage = ImageTools.getProfilePicturePixmap(imagePath, width, height)
 
+        self._clicked = False
         self.__initSetup()
         if shadowOffset:
             self.__setShadow()
@@ -56,21 +57,31 @@ class ProfilePictureFrame(QLabel):
 
             if event.type() == QEvent.Type.HoverEnter:
 
+                self._clicked = False
                 self.hoverEnterSignal.emit()
-
+                self.update()
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
 
+                self._clicked = False
                 self.hoverLeaveSignal.emit()
+                self.update()
 
                 return True
 
             elif event.type() == QEvent.Type.MouseButtonPress:
 
-                self.mousePressedSignal.emit()
+                self._clicked = True
+                self.update()
+                return True
 
-                return
+            elif event.type() == QEvent.Type.MouseButtonRelease:
+
+                self._clicked = False
+                self.mouseClickedSignal.emit()
+                self.update()
+                return True
 
         return False
 
@@ -79,9 +90,22 @@ class ProfilePictureFrame(QLabel):
         painter = QPainter()
         painter.begin(self)
         painter.setRenderHint(QPainter.Antialiasing, True)
-        painter.setPen(QPen(QColor(*self.frameColor), self.frame))
+
+        if self.hoverOn and self._clicked:
+            painter.setPen(
+                QPen(QColor(self.frameColor[0] - 20, self.frameColor[1] - 20, self.frameColor[2] - 20), self.frame))
+        elif self.hoverOn and self.underMouse():
+            painter.setPen(
+                QPen(QColor(self.frameColor[0] - 10, self.frameColor[1] - 10, self.frameColor[2] - 10), self.frame))
+        else:
+            painter.setPen(QPen(QColor(*self.frameColor), self.frame))
+
         painter.setBrush(self.profileImage)
         painter.drawRoundedRect(self.frame / 2, self.frame / 2, size.width() - self.frame,
                                 size.height() - self.frame, self.borderRadius - self.frame / 2,
                                 self.borderRadius - self.frame / 2)
         painter.end()
+
+
+
+
