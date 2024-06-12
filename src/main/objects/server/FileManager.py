@@ -32,13 +32,14 @@ class FileManager(Singleton):
         self.__ftp = FTP(self.__host)
 
         self.__tempDir = None
+        self.__createTempDir()
 
         atexit.register(self.__clear)
 
     @property
     def tempPath(self):
 
-        if self.__tempDir:
+        if os.path.exists(self.__tempDir) and self.__tempDir:
             return self.__tempDir + "/"
 
         self.__createTempDir()

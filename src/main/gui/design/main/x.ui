@@ -565,7 +565,7 @@ QFrame#frame_AccountTabsContainer {
 }</string>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page_Home">
           <property name="styleSheet">
@@ -1189,7 +1189,7 @@ QFrame#frame_AccountInfoContainer {
                    <number>10</number>
                   </property>
                   <property name="bottomMargin">
-                   <number>10</number>
+                   <number>0</number>
                   </property>
                   <item>
                    <widget class="QFrame" name="frame_AccountInfo">
@@ -1840,8 +1840,8 @@ QPushButton#button_AccountExitNo:pressed {
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-311</y>
-                   <width>980</width>
+                   <y>0</y>
+                   <width>550</width>
                    <height>761</height>
                   </rect>
                  </property>
@@ -3333,9 +3333,9 @@ QTextEdit::focus {
  </connections>
  <buttongroups>
   <buttongroup name="buttonGroup_AccountEditTabs"/>
-  <buttongroup name="buttonGroup_AccountTabs"/>
+  <buttongroup name="buttonGroup_MainTabs"/>
   <buttongroup name="buttonGroup_AccountExit"/>
   <buttongroup name="buttonGroup_MainSideBar"/>
-  <buttongroup name="buttonGroup_MainTabs"/>
+  <buttongroup name="buttonGroup_AccountTabs"/>
  </buttongroups>
 </ui>

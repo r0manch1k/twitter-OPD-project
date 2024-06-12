@@ -56,6 +56,7 @@ class Post(Ui_form_Post, QWidget):
         self.__fileManager = fileManager
 
         self.menuParentStyle = QMainWindow()
+        self.buttonsReactionDict = {}
 
         self.postId = postId
         self.postImageId = postInfo["image_id"]
@@ -71,20 +72,9 @@ class Post(Ui_form_Post, QWidget):
         self.comments = postInfo["comments"]
 
         execute = self.__currentUser.access
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-                self.close()
-                return
-            elif execute["error"]["format"]:
-                self.showConnectionError(execute["error"]["format"])
-                self.close()
-                return
-            elif execute["error"]["auth"]:
-                self.isAuth = False
-        else:
-            self.currentUserAccess = execute["data"]
-            self.isAuth = True
+        if self.isError(execute, openAuth=False):
+            return
+        self.currentUserAccess = execute["data"]
 
         self.__initSetup()
         self.__setIconsSVG()
@@ -95,16 +85,6 @@ class Post(Ui_form_Post, QWidget):
 
     def __setIconsSVG(self):
 
-        icon_Likes = QIcon()
-        icon_Likes.addFile(":icons/icons/Like.svg", QSize(), QIcon.Normal)
-        self.ui.button_PostLike.setIcon(icon_Likes)
-        self.ui.button_PostLike.setIconSize(QSize(25, 25))
-
-        icon_Dislikes = QIcon()
-        icon_Dislikes.addFile(":icons/icons/Dislike.svg", QSize(), QIcon.Normal)
-        self.ui.button_PostDislike.setIcon(icon_Dislikes)
-        self.ui.button_PostDislike.setIconSize(QSize(22, 22))
-
         icon_Comments = QIcon()
         icon_Comments.addFile(":icons/icons/Comments.svg", QSize(), QIcon.Normal)
         self.ui.button_PostComments.setIcon(icon_Comments)
@@ -114,6 +94,25 @@ class Post(Ui_form_Post, QWidget):
         icon_More.addFile(":icons/icons/MoreGrey.svg", QSize(), QIcon.Normal)
         self.ui.button_More.setIcon(icon_More)
         self.ui.button_More.setIconSize(QSize(20, 20))
+
+        icon_Like = QIcon()
+        icon_Like.addFile(":icons/icons/Like.svg", QSize(), QIcon.Normal)
+        self.ui.button_PostLike.setIcon(icon_Like)
+        self.ui.button_PostLike.setIconSize(QSize(23, 23))
+
+        icon_LikeSelected = QIcon()
+        icon_LikeSelected.addFile(":icons/icons/LikeSelected.svg", QSize(), QIcon.Normal)
+
+        icon_Dislike = QIcon()
+        icon_Dislike.addFile(":icons/icons/Dislike.svg", QSize(), QIcon.Normal)
+        self.ui.button_PostDislike.setIcon(icon_Dislike)
+        self.ui.button_PostDislike.setIconSize(QSize(18, 18))
+
+        icon_DislikeSelected = QIcon()
+        icon_DislikeSelected.addFile(":icons/icons/DislikeSelected.svg", QSize(), QIcon.Normal)
+
+        self.buttonsReactionDict = {"like": {True: icon_LikeSelected, False: icon_Like},
+                                    "dislike": {True: icon_DislikeSelected, False: icon_Dislike}}
 
     def __initSetup(self):
 
@@ -153,7 +152,7 @@ class Post(Ui_form_Post, QWidget):
         action_Report.triggered.connect(self.reportUser)
         menu_More.addAction(action_Report)
 
-        if self.isAuth and self.currentUserAccess == "Admin":
+        if self.currentUserAccess == "Admin":
             action_DeletePost = QAction(f"&Delete Post", self)
             action_DeletePost.triggered.connect(self.deletePost)
             menu_More.addAction(action_DeletePost)
@@ -188,11 +187,30 @@ class Post(Ui_form_Post, QWidget):
 
         self.repaint()
 
+    def isError(self, execute: dict, openAuth: bool = True) -> bool:
+
+        if execute["error"]:
+            if execute["error"]["connection"]:
+                self.showConnectionError(execute["error"]["connection"])
+                self.hide()
+                self.close()
+                return True
+            elif execute["error"]["format"]:
+                self.showConnectionError(execute["error"]["format"])
+                self.close()
+                return True
+            elif execute["error"]["auth"]:
+                if openAuth:
+                    self.toAuth(execute["error"]["auth"])
+                    return True
+                return False
+        return False
+
     @classmethod
     def getUserName(cls, name, username, access):
         if access == "Admin":
             name = f"""<p style="vertical-align: middle;"><span style="{cls.nameStyle}">{name}</span>
-                        <span style="{cls.accessStyle}"> {access}</span><br>"""
+                        <span style="{cls.accessStyle}"> ({access})</span><br>"""
         else:
             name = f"""<p style="vertical-align: middle;"><span style="{cls.nameStyle}"</span><br>"""
         login = f"""<span style="{cls.usernameStyle}">@{username}</span></p>"""
@@ -235,8 +253,6 @@ class Post(Ui_form_Post, QWidget):
                 icon = QIcon()
                 icon.addFile(":icons/icons/MoreBlack", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(20, 20))
-
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
@@ -244,22 +260,18 @@ class Post(Ui_form_Post, QWidget):
                 icon = QIcon()
                 icon.addFile(":icons/icons/MoreGrey.svg", QSize(), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(20, 20))
-
                 return True
 
         elif watched == self.ui.button_PostLike:
 
             if event.type() == QEvent.Type.MouseButtonPress:
                 self.setReaction(isLike=True)
-
                 return True
 
         elif watched == self.ui.button_PostDislike:
 
             if event.type() == QEvent.Type.MouseButtonPress:
                 self.setReaction(isDislike=True)
-
                 return True
 
         return False
@@ -267,37 +279,21 @@ class Post(Ui_form_Post, QWidget):
     def setPost(self):
 
         execute = self.__fileManager.getFilePath(self.userImageId)
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-            elif execute["error"]["format"]:
-                self.showConnectionError(execute["error"]["format"])
+        if self.isError(execute):
             return
+
         userImagePath = execute["data"]
 
         execute = self.__postTools.checkReaction(self.postId)
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-                return
-            elif execute["error"]["auth"]:
-                self.toAuth(execute["error"]["auth"])
-            elif execute["error"]["format"]:
-                self.showConnectionError(execute["error"]["format"])
-                return
+        if self.isError(execute, openAuth=False):
+            return
 
         reaction = execute["data"]
         if reaction == "like":
-            icon_Likes = QIcon()
-            icon_Likes.addFile(":icons/icons/LikeSelected.svg", QSize(), QIcon.Normal)
-            self.ui.button_PostLike.setIcon(icon_Likes)
-            self.ui.button_PostLike.setIconSize(QSize(25, 25))
+            self.ui.button_PostLike.setIcon(self.buttonsReactionDict["like"][True])
             self.ui.button_PostLike.setChecked(True)
         elif reaction == "dislike":
-            icon_Dislikes = QIcon()
-            icon_Dislikes.addFile(":icons/icons/DislikeSelected.svg", QSize(), QIcon.Normal)
-            self.ui.button_PostDislike.setIcon(icon_Dislikes)
-            self.ui.button_PostDislike.setIconSize(QSize(22, 22))
+            self.ui.button_PostDislike.setIcon(self.buttonsReactionDict["dislike"][True])
             self.ui.button_PostDislike.setChecked(True)
 
         name = self.getUserName(self.name, self.username, self.access)
@@ -329,33 +325,13 @@ class Post(Ui_form_Post, QWidget):
     def setReaction(self, isLike: bool = False, isDislike: bool = False):
 
         execute = self.__postTools.createReaction(post_id=self.postId, is_like=isLike, is_dislike=isDislike)
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-            elif execute["error"]["auth"]:
-                print(execute, "from reaction")
-                self.toAuth(execute["error"]["auth"])
-            elif execute["error"]["format"]:
-                self.showConnectionError(execute["error"]["format"])
+        if self.isError(execute):
             return
 
         checked = execute["data"]
 
-        icon_Likes = QIcon()
-        if checked["like"]["set"]:
-            icon_Likes.addFile(":icons/icons/LikeSelected.svg", QSize(), QIcon.Normal)
-        elif not checked["like"]["set"]:
-            icon_Likes.addFile(":icons/icons/Like.svg", QSize(), QIcon.Normal)
-        self.ui.button_PostLike.setIcon(icon_Likes)
-        self.ui.button_PostLike.setIconSize(QSize(25, 25))
-
-        icon_Dislikes = QIcon()
-        if checked["dislike"]["set"]:
-            icon_Dislikes.addFile(":icons/icons/DislikeSelected.svg", QSize(), QIcon.Normal)
-        elif not checked["dislike"]["set"]:
-            icon_Dislikes.addFile(":icons/icons/Dislike.svg", QSize(), QIcon.Normal)
-        self.ui.button_PostDislike.setIcon(icon_Dislikes)
-        self.ui.button_PostDislike.setIconSize(QSize(22, 22))
+        self.ui.button_PostLike.setIcon(self.buttonsReactionDict["like"][checked["like"]["set"]])
+        self.ui.button_PostDislike.setIcon(self.buttonsReactionDict["dislike"][checked["dislike"]["set"]])
 
         self.likes = checked["like"]["count"]
         likes = self.getLikes(self.likes)
@@ -371,23 +347,20 @@ class Post(Ui_form_Post, QWidget):
 
     def followUser(self):
 
-        if not self.isAuth:
-            self.toAuth()
+        pass
 
     def reportUser(self):
 
-        if not self.isAuth:
-            self.toAuth()
+        pass
 
     def deletePost(self):
 
-        if not self.isAuth:
-            self.toAuth()
+        pass
 
     def showConnectionError(self, error: str):
 
         self.connectionErrorSignal.emit(error)
 
-    def toAuth(self, error: str = ""):
+    def toAuth(self, error: str):
 
         self.authErrorSignal.emit(error)

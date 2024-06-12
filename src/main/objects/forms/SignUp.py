@@ -39,8 +39,8 @@ class SignUpForm(Ui_form_SignUp, QWidget):
         self.__email = None
         self.__password = None
 
-        self.button_IconPasswordVisibility = {}
-        self.button_IconCodeSent = {}
+        self.dictPasswordVisIcons = {}
+        self.dictCodeSentIcons = {}
 
         self.__setIconsSVG()
         self.__initSetup()
@@ -62,8 +62,8 @@ class SignUpForm(Ui_form_SignUp, QWidget):
         icon_PasswordVisibilityOff.addFile(":icons/icons/PasswordVisibilityOff.svg", QSize(),
                                            QIcon.Normal)
 
-        self.button_IconPasswordVisibility[True] = icon_PasswordVisibilityOn
-        self.button_IconPasswordVisibility[False] = icon_PasswordVisibilityOff
+        self.dictPasswordVisIcons[True] = icon_PasswordVisibilityOn
+        self.dictPasswordVisIcons[False] = icon_PasswordVisibilityOff
 
     def __initSetup(self):
 
@@ -211,10 +211,10 @@ class SignUpForm(Ui_form_SignUp, QWidget):
 
         if self.sender().isChecked():
             self.ui.line_Password.setEchoMode(QLineEdit.EchoMode.Normal)
-            self.ui.button_PasswordVisibility.setIcon(self.button_IconPasswordVisibility[False])
+            self.ui.button_PasswordVisibility.setIcon(self.dictPasswordVisIcons[False])
         else:
             self.ui.line_Password.setEchoMode(QLineEdit.EchoMode.Password)
-            self.ui.button_PasswordVisibility.setIcon(self.button_IconPasswordVisibility[True])
+            self.ui.button_PasswordVisibility.setIcon(self.dictPasswordVisIcons[True])
         self.ui.button_PasswordVisibility.setIconSize(QSize(25, 25))
 
     def switchPage(self):
@@ -283,6 +283,9 @@ class SignUpForm(Ui_form_SignUp, QWidget):
 
         elif executeDict["error"]["format"]:
             label.setText(executeDict["error"]["format"])
+
+        elif executeDict["error"]["auth"]:
+            label.setText(executeDict["error"]["auth"])
 
         return True
 

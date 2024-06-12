@@ -633,7 +633,7 @@ class Ui_MainWindow(object):
         self.layout_AccountInfoContainer = QHBoxLayout(self.frame_AccountInfoContainer)
         self.layout_AccountInfoContainer.setSpacing(10)
         self.layout_AccountInfoContainer.setObjectName(u"layout_AccountInfoContainer")
-        self.layout_AccountInfoContainer.setContentsMargins(20, 10, 10, 10)
+        self.layout_AccountInfoContainer.setContentsMargins(20, 10, 10, 0)
         self.frame_AccountInfo = QFrame(self.frame_AccountInfoContainer)
         self.frame_AccountInfo.setObjectName(u"frame_AccountInfo")
         self.frame_AccountInfo.setMinimumSize(QSize(0, 150))
@@ -925,7 +925,7 @@ class Ui_MainWindow(object):
         self.scrollArea_AccountEdit.setWidgetResizable(True)
         self.scrollAreaWidget_AccountEdit = QWidget()
         self.scrollAreaWidget_AccountEdit.setObjectName(u"scrollAreaWidget_AccountEdit")
-        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, -311, 980, 761))
+        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, 0, 550, 761))
         self.scrollAreaWidget_AccountEdit.setStyleSheet(u"")
         self.verticalLayout_8 = QVBoxLayout(self.scrollAreaWidget_AccountEdit)
         self.verticalLayout_8.setSpacing(10)
@@ -1519,7 +1519,7 @@ class Ui_MainWindow(object):
         self.button_Chat.toggled.connect(self.frame_SideBarChat.setVisible)
         self.button_Notifications.toggled.connect(self.frame_SideBarNotifications.setVisible)
 
-        self.stacked_Pages.setCurrentIndex(0)
+        self.stacked_Pages.setCurrentIndex(1)
         self.stacked_AccountEditTabs.setCurrentIndex(0)
 
 

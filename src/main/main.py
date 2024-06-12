@@ -22,12 +22,13 @@ from src.main.gui.resources import resources
 class App(Ui_MainWindow, QMainWindow):
     widgetToIndex = {"home": 0, "account": 1, "edit": 2}
     widgetToIndexAccountEdit = {"profile": 0, "privacy": 1, "chat": 2}
+    widgetToIndexAccount = {"posts": 0, "follows": 1}
 
-    tempHomeBackgroundFileName = "tempHomeBackgroundFileName.png"
-    tempAccountPictureFileName = "tempAccountPicture.png"
-    tempAccountEditProfilePictureFileName = "tempAccountEditProfilePicture.png"
-    tempProfileBackgroundFileName = "tempProfileBackground.png"
-    tempAccountTabsBackgroundFileName = "tempAccountTabsBackgroundFileName.png"
+    filenameHomeBackground = "tempHomeBackgroundFileName.png"
+    filenameAccountPicture = "tempAccountPicture.png"
+    filenameAccountEditProfilePicture = "tempAccountEditProfilePicture.png"
+    filenameProfileBackground = "tempProfileBackground.png"
+    filenameAccountTabsBackground = "tempAccountTabsBackgroundFileName.png"
 
     amountMaximumNameSymbols = 20
     amountMaximumUsernameSymbols = 32
@@ -37,6 +38,7 @@ class App(Ui_MainWindow, QMainWindow):
 
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -48,17 +50,20 @@ class App(Ui_MainWindow, QMainWindow):
 
         self.logInForm = None
         self.signUpForm = None
+        self.postCreateWidget = None
 
-        self.accountEditPhotoReset = False
-        self.accountEditPhotoSet = False
-        self.accountAboutReset = False
-        self.buttonsSideBarIcons = {}
-        self.postsList = []
-        self.postCreate = None
+        self.flagAccountEditPhotoReset = False
+        self.flagAccountEditPhotoSet = False
+        self.flagAccountAboutReset = False
 
-        self.buttonsPostsPagesGroup = QButtonGroup()
+        self.dictButtonsSideBarIcons = {}
+        self.listPosts = []
+        self.groupButtonsPostsPages = QButtonGroup()
 
-        self.fontThin = None  # Make cls
+        self.pathHomeBg = None
+        self.pathAccountBg = None
+
+        self.fontThin = None
         self.fontMedium = None
         self.fontRegular = None
         self.fontBold = None
@@ -154,10 +159,10 @@ class App(Ui_MainWindow, QMainWindow):
         icon_ChatDisabled = QIcon()
         icon_ChatDisabled.addFile(":icons/icons/ChatDisabled.svg", QSize(), QIcon.Normal)
 
-        self.buttonsSideBarIcons["apps"] = {"enabled": icon_Apps, "disabled": icon_AppsDisabled}
-        self.buttonsSideBarIcons["notifications"] = {"enabled": icon_Notifications,
-                                                     "disabled": icon_NotificationsDisabled}
-        self.buttonsSideBarIcons["chat"] = {"enabled": icon_Chat, "disabled": icon_ChatDisabled}
+        self.dictButtonsSideBarIcons["apps"] = {"enabled": icon_Apps, "disabled": icon_AppsDisabled}
+        self.dictButtonsSideBarIcons["notifications"] = {"enabled": icon_Notifications,
+                                                         "disabled": icon_NotificationsDisabled}
+        self.dictButtonsSideBarIcons["chat"] = {"enabled": icon_Chat, "disabled": icon_ChatDisabled}
 
     def __initSetup(self):
 
@@ -169,59 +174,56 @@ class App(Ui_MainWindow, QMainWindow):
         for button in self.ui.buttonGroup_AccountEditTabs.buttons():
             button.clicked.connect(self.switchPage)
 
+        self.ui.frame_Error.setHidden(True)
+        self.ui.label_HomeSign.setHidden(True)
         self.ui.frame_SideBarChat.setHidden(True)
         self.ui.frame_SideBarNotifications.setHidden(True)
         self.ui.frame_AccountExitConfirmation.setHidden(True)
-        self.ui.frame_Error.setHidden(True)
         self.ui.frame_AccountEditButtonsContainer.setHidden(True)
-        self.ui.label_HomeSign.setHidden(True)
 
         self.ui.button_Apps.setChecked(True)
         self.ui.frame_SideBarApps.setMinimumWidth(350)
         self.ui.frame_SideBarChat.setMinimumWidth(350)
         self.ui.frame_SideBarNotifications.setMinimumWidth(350)
+        self.ui.line_AccountEditName.setMaxLength(self.amountMaximumNameSymbols)
+        self.ui.label_AccountEditNameSymbols.setText(f"There are {self.amountMaximumNameSymbols} characters left.")
+        self.ui.label_AccountEditAboutSymbols.setText(f"There are {self.amountMaximumAboutSymbols} characters left.")
 
+        self.ui.line_SearchBar.installEventFilter(self)
+        self.ui.button_AccountExit.installEventFilter(self)
+        self.ui.line_AccountEditName.installEventFilter(self)
         self.ui.button_AccountExitNo.installEventFilter(self)
         self.ui.button_AccountExitYes.installEventFilter(self)
-        self.ui.button_AccountExit.installEventFilter(self)
-        self.ui.button_AccountEditPhotoDelete.installEventFilter(self)
-        self.ui.line_AccountEditName.installEventFilter(self)
         self.ui.line_AccountEditAbout.installEventFilter(self)
-        self.ui.line_SearchBar.installEventFilter(self)
         self.ui.line_AccountEditUsername.installEventFilter(self)
+        self.ui.button_AccountEditPhotoDelete.installEventFilter(self)
         self.ui.button_AccountEditAboutDelete.installEventFilter(self)
 
+        self.ui.button_ErrorClose.clicked.connect(self.hideConnectionError)
         self.ui.button_AccountExitYes.clicked.connect(self.switchPage)
-        self.ui.button_AccountEditProfileSave.clicked.connect(self.saveProfileChanges)
-        self.ui.button_AccountEditPhotoDelete.clicked.connect(self.setAccountImageToDefault)
-        self.ui.button_AccountEditProfileCancel.clicked.connect(self.setAccountEditPage)
-        self.ui.button_ErrorClose.clicked.connect(self.closeError)
         self.ui.button_AccountEditAboutDelete.clicked.connect(self.deleteAbout)
+        self.ui.button_AccountEditProfileSave.clicked.connect(self.saveProfileChanges)
+        self.ui.button_AccountEditProfileCancel.clicked.connect(self.setAccountEditPage)
+        self.ui.button_AccountEditPhotoDelete.clicked.connect(self.setAccountImageToDefault)
         self.ui.button_AccountEditPhotoAdd.clicked.connect(self.setAccountEditImageFromFile)
 
+        self.ui.stacked_Posts.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_HomeSign.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountInfo.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.frame_SetPostsPage.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountStatus.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.scrollArea_HomePosts.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountButtons.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.frame_AccountLabels_1.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.frame_AccountExitConfirmation.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.frame_AccountInformationContainer.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.frame_SetPostsPage.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.stacked_Posts.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.scrollArea_HomePosts.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.scrollAreaWidget_Posts.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.label_AccountStatus.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountNickname.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.label_AccountInformationText.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.scrollAreaWidget_Posts.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountInformationID.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.label_AccountInformationText.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.frame_AccountExitConfirmation.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.ui.label_AccountInformationAccess.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.ui.label_HomeSign.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.ui.frame_AccountInformationContainer.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
-        self.ui.line_AccountEditName.setMaxLength(self.amountMaximumNameSymbols)
-
-        self.ui.label_AccountEditNameSymbols.setText(
-            f"There are {self.amountMaximumNameSymbols - len(self.ui.line_AccountEditName.text())} characters left.")
-        self.ui.label_AccountEditAboutSymbols.setText(
-            f"There are {self.amountMaximumAboutSymbols - len(self.ui.line_AccountEditAbout.toPlainText())} "
-            f"characters left.")
+        self.ui.scrollArea_HomePosts.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
         menu_FilterPosts = QMenu(self)
         action_Sort = QMenu("&Sort", self)
@@ -237,16 +239,6 @@ class App(Ui_MainWindow, QMainWindow):
         action_Sort.addAction(action_SortByLikes)
         menu_FilterPosts.addMenu(action_Sort)
         self.ui.button_HomeFilterPosts.setMenu(menu_FilterPosts)
-
-        self.ui.scrollArea_HomePosts.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-
-        shadow = QGraphicsDropShadowEffect(blurRadius=5, xOffset=3, yOffset=3)
-        self.ui.frame_SideBarApps.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowMinMaxButtonsHint)
-        self.ui.frame_SideBarApps.setGraphicsEffect(shadow)
-        self.ui.frame_SideBarChat.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowMinMaxButtonsHint)
-        self.ui.frame_SideBarChat.setGraphicsEffect(shadow)
-        self.ui.frame_SideBarNotifications.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowMinMaxButtonsHint)
-        self.ui.frame_SideBarNotifications.setGraphicsEffect(shadow)
 
     def __setMyFont(self):
 
@@ -264,8 +256,8 @@ class App(Ui_MainWindow, QMainWindow):
 
         self.ui.label_AccountNickname.setFont(self.fontRegular)
         self.ui.label_AccountInformationID.setFont(self.fontRegular)
-        self.ui.label_AccountInformationAccess.setFont(self.fontRegular)
         self.ui.label_AccountInformationText.setFont(self.fontCursive)
+        self.ui.label_AccountInformationAccess.setFont(self.fontRegular)
 
     def __setShadow(self):
 
@@ -296,20 +288,16 @@ class App(Ui_MainWindow, QMainWindow):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountExitYesWhite.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitYesWhite.svg", QSize(25, 25), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(25, 25))
-
                 watched.setStyleSheet("background-color: rgb(255, 0, 0);")
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountExitYesBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitYesBlack.svg", QSize(25, 25), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(25, 25))
-
                 watched.setStyleSheet("background-color: white;")
                 return True
 
@@ -318,20 +306,16 @@ class App(Ui_MainWindow, QMainWindow):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountExitNoWhite.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitNoWhite.svg", QSize(25, 25), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(25, 25))
-
                 watched.setStyleSheet("background-color: #208b3a;")
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountExitNoBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitNoBlack.svg", QSize(25, 25), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(25, 25))
-
                 watched.setStyleSheet("background-color: white;")
                 return True
 
@@ -340,20 +324,16 @@ class App(Ui_MainWindow, QMainWindow):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountExitWhite.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitWhite.svg", QSize(22, 22), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(22, 22))
-
                 watched.setStyleSheet("background-color: rgb(255, 0, 0)")
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountExitBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountExitBlack.svg", QSize(22, 22), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(22, 22))
-
                 watched.setStyleSheet("background-color: white;")
                 return True
 
@@ -362,20 +342,16 @@ class App(Ui_MainWindow, QMainWindow):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountEditPhotoDeleteWhite.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountEditPhotoDeleteWhite.svg", QSize(30, 30), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(30, 30))
-
                 watched.setStyleSheet("background-color: rgb(240, 0, 0)")
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountEditPhotoDeleteBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountEditPhotoDeleteBlack.svg", QSize(30, 30), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(30, 30))
-
                 watched.setStyleSheet("background-color: rgb(229,235,238)")
                 return True
 
@@ -384,20 +360,16 @@ class App(Ui_MainWindow, QMainWindow):
             if event.type() == QEvent.Type.HoverEnter:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountEditPhotoDeleteWhite.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountEditPhotoDeleteWhite.svg", QSize(20, 20), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(20, 20))
-
                 watched.setStyleSheet("background-color: rgb(240, 0, 0)")
                 return True
 
             elif event.type() == QEvent.Type.HoverLeave:
 
                 icon = QIcon()
-                icon.addFile(":icons/icons/AccountEditPhotoDeleteBlack.svg", QSize(), QIcon.Normal)
+                icon.addFile(":icons/icons/AccountEditPhotoDeleteBlack.svg", QSize(20, 20), QIcon.Normal)
                 watched.setIcon(icon)
-                watched.setIconSize(QSize(20, 20))
-
                 watched.setStyleSheet("background-color: rgb(229,235,238)")
                 return True
 
@@ -433,8 +405,8 @@ class App(Ui_MainWindow, QMainWindow):
                     f"characters left.")
 
                 if (self.ui.line_AccountEditName.text() or self.ui.line_AccountEditAbout.toPlainText()
-                        or self.ui.line_AccountEditUsername.text() or self.accountEditPhotoSet
-                        or self.accountEditPhotoReset or self.accountAboutReset):
+                        or self.ui.line_AccountEditUsername.text() or self.flagAccountEditPhotoSet
+                        or self.flagAccountEditPhotoReset or self.flagAccountAboutReset):
                     self.setLabelAccountEditProfileWarning(show=True, save=False)
                     self.ui.frame_AccountEditButtonsContainer.setVisible(True)
                 else:
@@ -468,6 +440,23 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.label_ErrorText.setText(error)
         self.ui.frame_Error.setVisible(True)
 
+    def hideConnectionError(self):
+        self.ui.frame_Error.setHidden(True)
+
+    def isError(self, execute: dict) -> bool:
+
+        if execute["error"]:
+            if execute["error"]["connection"]:
+                self.showConnectionError(execute["error"]["connection"])
+            elif execute["error"]["format"]:
+                self.showConnectionError(execute["error"]["connection"])
+            elif execute["error"]["auth"]:
+                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
+                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
+            self.ui.frame_Error.setHidden(True)
+            return True
+        return False
+
     def setHomeSign(self, text=None):
         if text:
             self.ui.label_HomeSign.setVisible(True)
@@ -475,26 +464,10 @@ class App(Ui_MainWindow, QMainWindow):
         else:
             self.ui.label_HomeSign.setVisible(False)
 
-    def closeError(self):
-
-        self.ui.frame_Error.setHidden(True)
-
     def updateOnline(self) -> bool:
 
         execute = self.__currentUser.updateOnline()
-        print(execute)
-
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-            elif execute["error"]["format"]:
-                self.showConnectionError(execute["error"]["format"])
-            elif execute["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            self.ui.frame_Error.setHidden(True)
-            return False
-        return True
+        return self.isError(execute)
 
     def chooseFile(self, rootDir: str, nameFilter: str) -> str:
 
@@ -509,17 +482,17 @@ class App(Ui_MainWindow, QMainWindow):
             self.ui.button_Notifications.setStyleSheet("QPushButton:checked { background-color: rgb(235, 237, 239); }")
             self.ui.button_Chat.setStyleSheet("QPushButton:checked { background-color: rgb(235, 237, 239); }")
 
-            self.ui.button_Apps.setIcon(self.buttonsSideBarIcons["apps"]["enabled"])
-            self.ui.button_Notifications.setIcon(self.buttonsSideBarIcons["notifications"]["enabled"])
-            self.ui.button_Chat.setIcon(self.buttonsSideBarIcons["chat"]["enabled"])
+            self.ui.button_Apps.setIcon(self.dictButtonsSideBarIcons["apps"]["enabled"])
+            self.ui.button_Notifications.setIcon(self.dictButtonsSideBarIcons["notifications"]["enabled"])
+            self.ui.button_Chat.setIcon(self.dictButtonsSideBarIcons["chat"]["enabled"])
         else:
             self.ui.button_Apps.setStyleSheet("QPushButton:checked { background-color: white; }")
             self.ui.button_Notifications.setStyleSheet("QPushButton:checked { background-color: white; }")
             self.ui.button_Chat.setStyleSheet("QPushButton:checked { background-color: white; }")
 
-            self.ui.button_Apps.setIcon(self.buttonsSideBarIcons["apps"]["disabled"])
-            self.ui.button_Notifications.setIcon(self.buttonsSideBarIcons["notifications"]["disabled"])
-            self.ui.button_Chat.setIcon(self.buttonsSideBarIcons["chat"]["disabled"])
+            self.ui.button_Apps.setIcon(self.dictButtonsSideBarIcons["apps"]["disabled"])
+            self.ui.button_Notifications.setIcon(self.dictButtonsSideBarIcons["notifications"]["disabled"])
+            self.ui.button_Chat.setIcon(self.dictButtonsSideBarIcons["chat"]["disabled"])
 
         self.ui.button_Apps.setEnabled(value)
         self.ui.button_Notifications.setEnabled(value)
@@ -529,39 +502,43 @@ class App(Ui_MainWindow, QMainWindow):
 
         if self.sender() == self.ui.button_Logo:
 
+            if not self.setHomePage():
+                return
+
             self.setSideBarButtonEnabled(True)
-            self.setHomePage()
             self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
 
         elif self.sender() == self.ui.button_Account:
+
+            if not self.updateOnline:
+                return
+
+            if not self.setAccountPage():
+                return
 
             self.setSideBarButtonEnabled(False)
             self.ui.button_AccountExitNo.setChecked(True)
             self.ui.button_AccountEdit.setVisible(True)
             self.ui.button_AccountEdit.setVisible(True)
-
-            if not self.updateOnline:
-                return
-
-            self.setAccountPage()
-
             self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["account"])
 
         elif self.sender() == self.ui.button_AccountEdit:
 
             if not self.updateOnline:
                 return
-
-            self.setSideBarButtonEnabled(False)
-            self.setAccountEditPage()
-
+            if not self.setAccountEditPage():
+                return
             self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["edit"])
 
         elif self.sender() == self.ui.button_AccountExitYes:
 
-            self.__auth.logOut()
-            self.setSideBarButtonEnabled(True)
-            self.setHomePage()
+            if not self.logOut(openForm=False):
+                return
+
+            if not self.setHomePage():
+                return False
+
+            self.ui.button_Logo.setChecked(True)
             self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
 
         elif self.sender() == self.ui.button_AccountEditTabsProfile:
@@ -585,18 +562,11 @@ class App(Ui_MainWindow, QMainWindow):
 
             self.ui.stacked_AccountEditTabs.setCurrentIndex(self.widgetToIndexAccountEdit["chat"])
 
-    def setHomePage(self):
+    def setHomePage(self) -> bool:
 
         execute = self.__auth.checkAuthorization()
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-            elif execute["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            elif execute["error"]["format"]:
-                self.showConnectionError(execute["error"]["format"])
-            return
+        if self.isError(execute):
+            return False
 
         authorized = execute["data"]
 
@@ -606,22 +576,17 @@ class App(Ui_MainWindow, QMainWindow):
                 self.ui.layout_ScrollAreaPosts.removeWidget(self.ui.layout_ScrollAreaPosts.itemAt(postIndex).widget())
 
         if authorized:
-            self.postCreate = self.getCreatePostWidget()
-            self.ui.layout_ScrollAreaPosts.insertWidget(0, self.postCreate)
+            self.postCreateWidget = self.getCreatePostWidget()
+            if not self.postCreateWidget:
+                return False
+            self.ui.layout_ScrollAreaPosts.insertWidget(0, self.postCreateWidget)
 
         execute = self.__postTools.getPostIds(sort_by_time=True)
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-            elif execute["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            elif execute["error"]["format"]:
-                self.showConnectionError(execute["error"]["format"])
-            return
+        if self.isError(execute):
+            return False
 
-        self.postsList = execute["data"]
-        if not self.postsList:
+        self.listPosts = execute["data"]
+        if not self.listPosts:
             self.setHomeSign("Seems like there are no posts yet.")
         self.setHomeSign()
 
@@ -636,57 +601,47 @@ class App(Ui_MainWindow, QMainWindow):
                 widget.widget().setHidden(True)
                 self.ui.layout_SetPostsPage.removeWidget(widget.widget())
 
-        self.buttonsPostsPagesGroup = QButtonGroup()
+        self.groupButtonsPostsPages = QButtonGroup()
 
-        for _ in range(math.ceil(len(self.postsList) / self.amountPostsOnPage)):
+        for _ in range(math.ceil(len(self.listPosts) / self.amountPostsOnPage)):
             self.addPostPage()
-        self.setPostsPage(pageIndex=1)
+        if not self.setPostsPage(pageIndex=1):
+            return False
 
-        homeBgPicturePath = ImageTools.getPictureForWidget(self.ui.page_Home.size().width(),
-                                                           self.ui.page_Home.size().height(),
-                                                           0,
-                                                           os.path.abspath(
-                                                               "gui/resources/images/homeBg.png"),
-                                                           self.__fileManager.tempPath,
-                                                           self.tempHomeBackgroundFileName)
-
+        if not (self.pathHomeBg and os.path.exists(self.pathHomeBg)):
+            self.pathHomeBg = ImageTools.getPictureForWidget(self.ui.page_Home.size().width(),
+                                                             self.ui.page_Home.size().height(),
+                                                             0,
+                                                             os.path.abspath(
+                                                                 "gui/resources/images/homeBg.png"),
+                                                             self.__fileManager.tempPath,
+                                                             self.filenameHomeBackground)
         self.ui.page_Home.setStyleSheet(
-            f"QWidget#page_Home {{border-image: url('{homeBgPicturePath}') 0 0 0 0  stretch stretch}}")
+            f"QWidget#page_Home {{border-image: url('{self.pathHomeBg}') 0 0 0 0  stretch stretch}}")
+
+        return True
 
     def getCreatePostWidget(self):
 
         imageIdExe = self.__currentUser.imageID
-        if imageIdExe["error"]:
-            if imageIdExe["error"]["connection"]:
-                self.showConnectionError(imageIdExe["error"]["connection"])
-            elif imageIdExe["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            return
-        self.ui.frame_Error.setHidden(True)
+        if self.isError(imageIdExe):
+            return False
 
         imageId = imageIdExe["data"]
         execute = self.__fileManager.getFilePath(imageID=imageId)
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-            elif execute["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            elif execute["error"]["format"]:
-                self.showConnectionError(execute["error"]["format"])
-            return
+        if self.isError(execute):
+            return False
 
         imagePath = execute["data"]
-
         postCreate = CreatePost(imagePath)
         return postCreate
 
     def addPostPage(self):
 
         layout = QVBoxLayout()
-        layout.setContentsMargins(20, 0, 10, 40)
         layout.setSpacing(20)
+        layout.setContentsMargins(20, 0, 10, 40)
+
         page = QWidget()
         page.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         page.setLayout(layout)
@@ -695,30 +650,23 @@ class App(Ui_MainWindow, QMainWindow):
         buttonPage = QPushButton(str(self.ui.stacked_Posts.count()))
         buttonPage.clicked.connect(self.setPostsPage)
         buttonPage.setCheckable(True)
-        self.buttonsPostsPagesGroup.addButton(buttonPage)
+        self.groupButtonsPostsPages.addButton(buttonPage)
         if self.ui.stacked_Posts.count() == 1:
             buttonPage.setChecked(True)
         self.ui.layout_SetPostsPage.insertWidget(self.ui.layout_SetPostsPage.count() - 1, buttonPage)
 
-    def setPostsPage(self, pageIndex: int = None):
+    def setPostsPage(self, pageIndex: int = None) -> bool:
 
-        if not self.postsList:
-            return
+        if not self.listPosts:
+            return False
 
         if isinstance(self.sender(), QPushButton) and self.sender().text():
             pageIndex = int(self.sender().text())
 
-        postsOnPageList = self.postsList[(pageIndex - 1) * self.amountPostsOnPage: pageIndex * self.amountPostsOnPage]
+        postsOnPageList = self.listPosts[(pageIndex - 1) * self.amountPostsOnPage: pageIndex * self.amountPostsOnPage]
         execute = self.__postTools.getPostsInfo(postsOnPageList)
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-            elif execute["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            elif execute["error"]["format"]:
-                self.showConnectionError(execute["error"]["format"])
-            return
+        if self.isError(execute):
+            return False
 
         postsOnPageInfo = execute["data"]
 
@@ -739,22 +687,18 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.scrollArea_HomePosts.verticalScrollBar().setValue(0)
         self.ui.stacked_Posts.setCurrentIndex(pageIndex - 1)
 
-    def setAccountPage(self):
+        return True
+
+    def setAccountPage(self) -> bool:
 
         infoExe = self.__currentUser.userInfo
-
-        if infoExe["error"]:
-            if infoExe["error"]["connection"]:
-                self.showConnectionError(infoExe["error"]["connection"])
-            elif infoExe["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            return
-        self.ui.frame_Error.setHidden(True)
+        if self.isError(infoExe):
+            return False
 
         imageId = infoExe["data"]["image_id"]
         name = infoExe["data"]["name"]
         username = infoExe["data"]["username"]
+        access = infoExe["data"]["access"]
         about = infoExe["data"]["about"]
         online = infoExe["data"]["online"]
 
@@ -764,7 +708,7 @@ class App(Ui_MainWindow, QMainWindow):
                                                               os.path.abspath(
                                                                   "gui/resources/images/profileBgSource.png"),
                                                               self.__fileManager.tempPath,
-                                                              self.tempProfileBackgroundFileName)
+                                                              self.filenameProfileBackground)
 
         self.ui.frame_AccountInfoContainer.setStyleSheet(
             f"QFrame#frame_AccountInfoContainer {{border-image: url('{profileBgPicturePath}') "
@@ -777,21 +721,14 @@ class App(Ui_MainWindow, QMainWindow):
                                                            os.path.abspath(
                                                                "gui/resources/images/profileBgSource.png"),
                                                            self.__fileManager.tempPath,
-                                                           self.tempAccountTabsBackgroundFileName)
+                                                           self.filenameAccountTabsBackground)
 
         self.ui.frame_AccountTabsContainer.setStyleSheet(
             f"QFrame#frame_AccountTabsContainer {{border-image: url('{accountTabsBgPath}') 0 0 0 0  stretch stretch}}")
 
         execute = self.__fileManager.getFilePath(imageID=imageId)
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-            elif execute["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            elif execute["error"]["format"]:
-                self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
-            return
+        if self.isError(infoExe):
+            return False
 
         for i in range(self.ui.layout_AccountInfoContainer.count()):
             if (self.ui.layout_AccountInfoContainer.itemAt(i).widget()
@@ -805,7 +742,13 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.layout_AccountInfoContainer.insertWidget(0, profilePictureFrame)
         profilePictureFrame.setToolTip("@" + username)
 
-        self.ui.label_AccountNickname.setText(self.getTextHTML(name, color="white", weight=700))
+        if access == "Admin":
+            self.ui.label_AccountNickname.setText(
+                self.getTextHTML(name, color="white", weight=700) + " " + self.getTextHTML("(" + access + ")",
+                                                                                           color="rgb(219,228,233)",
+                                                                                           weight=400))
+        else:
+            self.ui.label_AccountNickname.setText(self.getTextHTML(name, color="white", weight=700))
         self.ui.label_AccountNickname.setToolTip("@" + username)
 
         self.ui.label_AccountStatus.setText(self.getTextHTML(self.getOnlineCircle(online)))
@@ -818,44 +761,49 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.label_AccountInformationText.setText(
             self.getTextHTML(about, color="rgb(229,235,238)", size=19, weight=100))
 
+        return True
+
     def setLabelAccountEditProfileWarning(self, show=False, save=False, error=None):
 
         if show:
             if save:
                 self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(0,210,0);")
                 self.ui.label_AccountEditProfileWarning.setText("Saved successfully!")
-                self.accountEditPhotoSet = False
-                self.accountEditPhotoReset = False
+                self.ui.frame_AccountEditButtonsContainer.setVisible(False)
+                self.flagAccountAboutReset = False
+                self.flagAccountEditPhotoSet = False
+                self.flagAccountEditPhotoReset = False
 
             elif error:
                 self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(255,0,0);")
                 self.ui.label_AccountEditProfileWarning.setText(error)
+                self.ui.frame_AccountEditButtonsContainer.setVisible(False)
 
             else:
                 self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(255,0,0);")
                 self.ui.label_AccountEditProfileWarning.setText("You have unsaved changes!")
+                self.ui.frame_AccountEditButtonsContainer.setVisible(True)
         else:
+            self.ui.frame_AccountEditButtonsContainer.setVisible(False)
             self.ui.label_AccountEditProfileWarning.setStyleSheet("color:rgb(0,210,0);")
             self.ui.label_AccountEditProfileWarning.setText("")
-            self.accountEditPhotoSet = False
-            self.accountEditPhotoReset = False
+            self.flagAccountAboutReset = False
+            self.flagAccountEditPhotoSet = False
+            self.flagAccountEditPhotoReset = False
 
-    def setAccountEditPage(self):
+    def setAccountEditPage(self) -> bool:
 
         self.ui.frame_AccountEditButtonsContainer.setHidden(True)
-        self.accountEditPhotoReset = False
-        self.accountAboutReset = False
+        self.flagAccountEditPhotoReset = False
+        self.flagAccountAboutReset = False
         self.setLabelAccountEditProfileWarning(show=False)
+        self.ui.line_AccountEditUsername.setText("")
         self.ui.line_AccountEditName.setText("")
         self.ui.line_AccountEditAbout.setText("")
 
         infoExe = self.__currentUser.userInfo
-
-        if infoExe["error"]:
-            if infoExe["error"]["connection"]:
-                self.showConnectionError(infoExe["error"]["connection"])
-                return
-        self.ui.frame_Error.setHidden(True)
+        if self.isError(infoExe):
+            return False
 
         imageId = infoExe["data"]["image_id"]
         name = infoExe["data"]["name"]
@@ -863,18 +811,11 @@ class App(Ui_MainWindow, QMainWindow):
         about = infoExe["data"]["about"]
 
         execute = self.__fileManager.getFilePath(imageID=imageId)
-        if execute["error"]:
-            if execute["error"]["connection"]:
-                self.showConnectionError(execute["error"]["connection"])
-            elif execute["error"]["format"]:
-                self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
-            elif execute["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            return
+        if self.isError(execute):
+            return False
 
         imagePath = ImageTools.getProfilePicture(execute["data"], self.__fileManager.tempPath,
-                                                 self.tempAccountEditProfilePictureFileName)
+                                                 self.filenameAccountEditProfilePicture)
 
         self.ui.frame_AccountEditPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
         self.ui.frame_AccountEditPhoto.setToolTip("@" + username)
@@ -889,7 +830,7 @@ class App(Ui_MainWindow, QMainWindow):
             self.ui.layout_AccountEditImages.removeWidget(widget)
 
         drag = DragNDrop(self.ui.frame_AccountEditPhoto, self.__fileManager.tempPath,
-                         self.tempAccountEditProfilePictureFileName)
+                         self.filenameAccountEditProfilePicture)
         self.ui.layout_AccountEditImages.insertWidget(self.ui.layout_AccountEditImages.count() - 1, drag)
         drag.setToolTip("Drag images as files or URLs from browser")
         drag.imageDropped.connect(self.isAccountEditProfilePhotoSet)
@@ -898,73 +839,71 @@ class App(Ui_MainWindow, QMainWindow):
         self.ui.line_AccountEditUsername.setPlaceholderText(username)
         self.ui.line_AccountEditAbout.setPlaceholderText(about)
 
-    def setAccountImageToDefault(self):
+        return True
+
+    def setAccountImageToDefault(self) -> bool:
 
         if not self.updateOnline:
-            return
+            return False
 
         imageIdExe = self.__currentUser.imageID
-        if imageIdExe["error"]:
-            if imageIdExe["error"]["connection"]:
-                self.showConnectionError(imageIdExe["error"]["connection"])
-                return
-        self.ui.frame_Error.setHidden(True)
+        if self.isError(imageIdExe):
+            return False
+
         imageId = imageIdExe["data"]
+        if imageId == 1:
+            return True
 
-        if imageId > 1:
-            execute = self.__fileManager.getFilePath(imageID=1)
-            if execute["error"]:
-                if execute["error"]["connection"]:
-                    self.showConnectionError(execute["error"]["connection"])
-                elif execute["error"]["format"]:
-                    self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
-                return
+        execute = self.__fileManager.getFilePath(imageID=1)
+        if self.isError(execute):
+            return False
 
-            imagePath = ImageTools.getProfilePicture(execute["data"], self.__fileManager.tempPath,
-                                                     self.tempAccountEditProfilePictureFileName)
+        imagePath = ImageTools.getProfilePicture(execute["data"], self.__fileManager.tempPath,
+                                                 self.filenameAccountEditProfilePicture)
 
-            self.ui.frame_AccountEditPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
-            self.accountEditPhotoSet = True
-            self.accountEditPhotoReset = True
-            self.ui.frame_AccountEditButtonsContainer.setVisible(True)
-            self.setLabelAccountEditProfileWarning(show=True, save=False)
+        self.ui.frame_AccountEditPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
+        self.flagAccountEditPhotoSet = True
+        self.flagAccountEditPhotoReset = True
+        self.setLabelAccountEditProfileWarning(show=True, save=False)
 
-    def setAccountEditImageFromFile(self):
+        return True
+
+    def setAccountEditImageFromFile(self) -> bool:
 
         fp = self.chooseFile(os.path.expanduser("~/Desktop"), "Images (*.png)")
         if not fp:
-            return
+            self.setLabelAccountEditProfileWarning(show=True, save=False, error="File Not Found")
+            return True
 
         if not self.updateOnline:
-            return
+            return False
 
         imagePath = ImageTools.getProfilePicture(fp, self.__fileManager.tempPath,
-                                                 self.tempAccountEditProfilePictureFileName)
+                                                 self.filenameAccountEditProfilePicture)
         self.ui.frame_AccountEditPhoto.setStyleSheet(f"""QFrame {{border-image: url({imagePath}) 0 0 0 0}}""")
-        self.accountEditPhotoSet = True
-        self.ui.frame_AccountEditButtonsContainer.setVisible(True)
+        self.flagAccountEditPhotoSet = True
         self.setLabelAccountEditProfileWarning(show=True, save=False)
+        return True
 
     def deleteAbout(self):
 
-        self.accountAboutReset = True
+        self.flagAccountAboutReset = True
         self.ui.line_AccountEditAbout.setText("")
         self.ui.line_AccountEditAbout.setPlaceholderText("")
-        self.ui.frame_AccountEditButtonsContainer.setVisible(True)
         self.setLabelAccountEditProfileWarning(show=True, save=False)
 
     @Slot(bool)
     def isAccountEditProfilePhotoSet(self, value: bool):
 
-        self.accountEditPhotoSet = value
+        self.flagAccountEditPhotoSet = value
         if value:
             self.ui.frame_AccountEditButtonsContainer.setVisible(True)
             self.setLabelAccountEditProfileWarning(show=True, save=False)
 
-    def saveProfileChanges(self):
+    def saveProfileChanges(self) -> bool:
 
         if not self.updateOnline:
-            return
+            return False
 
         newName = self.ui.line_AccountEditName.text()
         newUsername = self.ui.line_AccountEditUsername.text()
@@ -980,7 +919,7 @@ class App(Ui_MainWindow, QMainWindow):
                 elif formatError["error"]["auth"]:
                     self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
                     self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-                return
+                return False
 
         if newUsername:
             formatError = self.__currentUser.changeUsername(newUsername)
@@ -992,9 +931,9 @@ class App(Ui_MainWindow, QMainWindow):
                 elif formatError["error"]["auth"]:
                     self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
                     self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-                return
+                return False
 
-        if newAbout or self.accountAboutReset:
+        if newAbout or self.flagAccountAboutReset:
             formatError = self.__currentUser.changeAbout(newAbout)
             if formatError["error"]:
                 if formatError["error"]["connection"]:
@@ -1004,57 +943,33 @@ class App(Ui_MainWindow, QMainWindow):
                 elif formatError["error"]["auth"]:
                     self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
                     self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-                return
+                return False
 
         imageIdExe = self.__currentUser.imageID
-        if imageIdExe["error"]:
-            if imageIdExe["error"]["connection"]:
-                self.showConnectionError(imageIdExe["error"]["connection"])
-            elif imageIdExe["error"]["auth"]:
-                self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-            return
-        self.ui.frame_Error.setHidden(True)
+        if self.isError(imageIdExe):
+            return False
+
         imageId = imageIdExe["data"]
-
-        if self.accountEditPhotoSet:
-
-            if self.accountEditPhotoReset:
+        if self.flagAccountEditPhotoSet:
+            if self.flagAccountEditPhotoReset:
                 execute = self.__fileManager.deleteFile(imageId)
             else:
                 execute = self.__fileManager.loadFile(
-                    self.__fileManager.tempPath + "Just" + self.tempAccountEditProfilePictureFileName,
+                    self.__fileManager.tempPath + "Just" + self.filenameAccountEditProfilePicture,
                     imageID=imageId)
 
-            if execute["error"]:
-                if execute["error"]["connection"]:
-                    self.showConnectionError(execute["error"]["connection"])
-                elif execute["error"]["format"]:
-                    self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
-                elif execute["error"]["auth"]:
-                    self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                    self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-                return
+            if self.isError(execute):
+                return False
 
             execute = self.__currentUser.changeImageID(execute["data"])
-            if execute["error"]:
-                if execute["error"]["connection"]:
-                    self.showConnectionError(execute["error"]["connection"])
-                elif execute["error"]["format"]:
-                    self.setLabelAccountEditProfileWarning(show=True, error=execute["error"]["format"])
-                elif execute["error"]["auth"]:
-                    self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-                    self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
-                return
+            if self.isError(execute):
+                return False
 
-        self.setAccountEditPage()
+        if not self.setAccountEditPage():
+            return False
+
         self.setLabelAccountEditProfileWarning(show=True, save=True)
-
-    # def addPost(self, postId):
-    #
-    #     postUI = Post(postId, self.__postTools, self.__fileManager)
-    #
-    #     self.ui.layout_Posts.addWidget(postUI)
+        return True
 
     def sortByTime(self):
         pass
@@ -1095,18 +1010,26 @@ class App(Ui_MainWindow, QMainWindow):
             if not self.isVisible():
                 self.show()
 
-    def logOut(self):
+    def logOut(self, openForm: bool = True) -> bool:
 
-        self.__auth.logOut()
-        self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
-        self.setHomePage()
-        self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
+        execute = self.__auth.logOut()
+        if self.isError(execute):
+            return False
 
-    def refresh(self):
+        if openForm:
+            self.changeForm("login", QPoint(self.pos().x(), self.pos().y()))
 
+        return True
+
+    def refresh(self) -> bool:
+
+        if not self.setHomePage():
+            return False
         self.setSideBarButtonEnabled(True)
-        self.setHomePage()
+        self.ui.button_Logo.setChecked(True)
         self.ui.stacked_Pages.setCurrentIndex(self.widgetToIndex["home"])
+        return True
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

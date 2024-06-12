@@ -2,15 +2,15 @@ import re
     
 
 def validateEmail(email):
-    pat = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-    if re.match(pat, email):
+    pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+    if re.match(pattern, email):
         return ""
     return "Invalid email"
 
     
 def validateUsername(username):
     if len(username) < 5 or len(username) > 32:
-        return "Username must contain 5 -> 32 symbols"
+        return "Username must contain 5 - 32 symbols"
     
     for i in r"""-+={}"[]<>!#£%^&*()~`'?/|\:;""":
         if username.find(i) > 0:
@@ -31,14 +31,14 @@ def validateUsername(username):
     
 def validateName(name):
     if len(name) < 4 or len(name) > 15:
-        return "Name must contain 4 -> 15 symbols"
+        return "Name must contain 4 - 15 symbols"
 
     return ""
 
 
 def validatePassword(password):
     if len(password) < 8 or len(password) > 16:
-        return "Password must contain 8 -> 16 symbols"
+        return "Password must contain 8 - 16 symbols"
 
     flag = False
     for i in [chr(j) for j in range(ord('a'), ord('z') + 1)]:
@@ -80,14 +80,14 @@ def validatePassword(password):
 
     
 def validateInfo(info):
-    if len(info) > 50:
-        return "About must contain < 70 symbols"
+    if len(info) > 70:
+        return "About must contain <= 70 symbols"
         
     return ""
 
 
 def validateText(text):
     if len(text) > 100 or text == 0:
-        return "Text must contain 1 -> 100 symbols"
+        return "Text must contain 1 - 100 symbols"
         
     return ""

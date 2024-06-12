@@ -54,6 +54,8 @@ class CreatePost(Ui_frame_PostCreate, QFrame):
         self.ui.frame_PostCreateToolsSelected.setVisible(False)
         self.ui.frame_PostCreateToolsUnselected.setHidden(False)
 
+        self.setAttribute(Qt.WidgetAttribute.WA_Hover)
+
         self.ui.line_PostCreateText.installEventFilter(self)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
@@ -84,7 +86,12 @@ class CreatePost(Ui_frame_PostCreate, QFrame):
 
         if watched == self.ui.line_PostCreateText:
 
-            if event.type() == QEvent.Type.FocusIn:
+            if event.type() == QEvent.Type.FocusOut and self.underMouse():
+
+                self.ui.line_PostCreateText.setFocus()
+                return True
+
+            if event.type() == QEvent.Type.FocusIn and self.underMouse():
 
                 self.ui.frame_PostCreateToolsSelected.setVisible(True)
                 self.ui.frame_PostCreateMain.setStyleSheet(
@@ -96,7 +103,7 @@ class CreatePost(Ui_frame_PostCreate, QFrame):
                 QPlainTextEdit.focusInEvent(self.ui.line_PostCreateText, event)
                 return True
 
-            elif event.type() == QEvent.Type.FocusOut:
+            elif event.type() == QEvent.Type.FocusOut and not self.underMouse():
 
                 self.ui.frame_PostCreateToolsSelected.setVisible(False)
                 self.ui.frame_PostCreateMain.setStyleSheet(
@@ -111,16 +118,6 @@ class CreatePost(Ui_frame_PostCreate, QFrame):
                 return True
 
         return False
-
-    @staticmethod
-    def mouseOnUserImage():
-
-        QApplication.setOverrideCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
-    @staticmethod
-    def mouseOffUserImage():
-
-        QApplication.restoreOverrideCursor()
 
     def openUserAccountPage(self):
 
