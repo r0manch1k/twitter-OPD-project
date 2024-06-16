@@ -1,11 +1,9 @@
 import tzlocal
-from datetime import datetime
-from pytz import timezone, utc
 from src.main.objects.server.DataBase import DataBase
 from src.main.objects.server.UserInfo import CurrentUser
 from src.main.objects.server.Result import generateResult
-from src.main.objects.server.Validator import validateText
 from src.main.objects.server.Static import setConfigInfo, getConfigInfo
+from src.main.objects.server.Validator import validateText, getValidString
 
 
 class PostTools:
@@ -20,8 +18,6 @@ class PostTools:
         if validateText(post_text):
             return generateResult(validateText(post_text), "format")
 
-        utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
-        fixed_post_text = post_text.replace("'", "''")
         user_id = CurrentUser().userID['data']
 
         if not self.__db.connect():
@@ -30,19 +26,19 @@ class PostTools:
             if image_id and video_id:
                 self.__db.insert(
                     f"""INSERT INTO Posts (user_id, image_id, video_id, post_text, likes, dislikes, post_time) \
-                        VALUES  ({user_id}, {image_id}, {video_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
+                        VALUES  ({user_id}, {image_id}, {video_id}, '{getValidString(post_text)}', 0, 0, NOW());""")
             elif image_id:
                 self.__db.insert(
                     f"""INSERT INTO Posts (user_id, image_id, post_text, likes, dislikes, post_time) \
-                        VALUES  ({user_id}, {image_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
+                        VALUES  ({user_id}, {image_id}, '{getValidString(post_text)}', 0, 0, NOW());""")
             elif video_id:
                 self.__db.insert(
                     f"""INSERT INTO Posts (user_id, video_id, post_text, likes, dislikes, post_time) \
-                        VALUES  ({user_id}, {video_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
+                        VALUES  ({user_id}, {video_id}, '{getValidString(post_text)}', 0, 0, NOW());""")
             else:
                 self.__db.insert(
                     f"""INSERT INTO Posts (user_id, post_text, likes, dislikes, post_time) \
-                        VALUES  ({user_id}, '{fixed_post_text}', 0, 0, '{utc_time}');""")
+                        VALUES  ({user_id}, '{getValidString(post_text)}', 0, 0, NOW());""")
         return generateResult()
 
     def deletePost(self, post_id: int):
@@ -102,8 +98,6 @@ class PostTools:
             if self.__db.select(f"""SELECT likes FROM Posts WHERE post_id = {post_id};""") == ():
                 return generateResult("This post isn't found", "format")
 
-        utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
-        fixed_comment_text = comment_text.replace("'", "''")
         user_id = CurrentUser().userID['data']
 
         if not self.__db.connect():
@@ -111,7 +105,7 @@ class PostTools:
         else:
             self.__db.insert(
                 f"""INSERT INTO Comments (post_id, user_id, comment_time, comment_text, likes, dislikes) \
-                    VALUES  ({post_id}, {user_id}, '{utc_time}', '{fixed_comment_text}', 0, 0);""")
+                    VALUES  ({post_id}, {user_id}, NOW(), '{getValidString(comment_text)}', 0, 0);""")
         return generateResult()
 
     def deleteComment(self, comment_id: int):
@@ -307,35 +301,48 @@ class PostTools:
         else:
             return generateResult(data=reaction[0]['reaction'])
             
-    def getPostIds(self, sort_by_time=False, sort_by_likes=False, search_by_key=None):
-        if sort_by_time:
+    def getPostIds(self, sort_by_likes=False, sort_by_dislikes=False, sort_by_comments=False, sort_by_all_reactions=False, search_by_key=""):
+        if sort_by_likes:
             if not self.__db.connect():
                 return generateResult("Check your internet connection", "connection")
             else:
-                post_ids = self.__db.select("""SELECT post_id FROM Posts ORDER BY (post_time) DESC;""")
-        elif sort_by_likes:
+                post_ids = self.__db.select("""SELECT post_id FROM Posts \
+                                               ORDER BY (likes) DESC;""")
+        elif sort_by_dislikes:
             if not self.__db.connect():
                 return generateResult("Check your internet connection", "connection")
             else:
-                post_ids = self.__db.select("""SELECT post_id FROM Posts ORDER BY (likes) DESC;""")
-        elif search_by_key is not None:
+                post_ids = self.__db.select("""SELECT post_id FROM Posts \
+                                               ORDER BY (dislikes) DESC;""")
+        elif sort_by_comments:
+            if not self.__db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                post_ids = self.__db.select("""SELECT post_id FROM Posts \
+                                               ORDER BY \
+                                               (SELECT COUNT(comment_id) FROM Comments WHERE Comments.post_id = Posts.post_id) \
+                                               DESC;""")
+        elif sort_by_all_reactions:
+            if not self.__db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                post_ids = self.__db.select("""SELECT post_id FROM Posts \
+                                               ORDER BY \
+                                               ((SELECT COUNT(comment_id) FROM Comments WHERE Comments.post_id = Posts.post_id) + Posts.likes) \
+                                               DESC;""")
+        elif search_by_key != "":
             if not self.__db.connect():
                 return generateResult("Check your internet connection", "connection")
             else:
                 search_by_key = search_by_key.replace("'", "''")
-                post_ids = self.__db.select(f"""SELECT post_id FROM Posts WHERE post_text LIKE '%{search_by_key}%';""")
+                post_ids = self.__db.select(f"""SELECT post_id FROM Posts \
+                                                WHERE post_text LIKE '%{search_by_key}%';""") 
         else:
             if not self.__db.connect():
                 return generateResult("Check your internet connection", "connection")
             else:
-                post_ids = self.__db.select("""SELECT post_id FROM Posts;""")
-        
-        if not self.__db.connect():
-            return generateResult("Check your internet connection", "connection")
-        else:
-            max_post_id = self.__db.select("""SELECT MAX(post_id) FROM Posts;""")[0]['MAX(post_id)']
-            setConfigInfo('const', 'last_post_id', str(max_post_id))
-
+                post_ids = self.__db.select("""SELECT post_id FROM Posts \
+                                               ORDER BY (post_time) DESC;""")
         ids = []
         for i in post_ids:
             ids.append(i['post_id'])
@@ -343,86 +350,85 @@ class PostTools:
         return generateResult(data=ids)
 
     def getPostsInfo(self, post_ids: list):
-        if not self.__db.connect():
-            return generateResult("Check your internet connection", "connection")
-        else:
-            posts_info = self.__db.select(
-                f"""SELECT Posts.post_id, \
-                           Posts.image_id, \
-                           Posts.video_id, \
-                           Posts.post_text, \
-                           Posts.likes, \
-                           Posts.dislikes, \
-                           Posts.post_time, \
-                           Users.username, \
-                           Users.name, \
-                           Users.image_id \
-                    FROM Posts \
-                    INNER JOIN Users \
-                        ON Posts.user_id = Users.user_id \
-                    WHERE Posts.post_id IN ({', '.join([str(i) for i in post_ids])});""")
+        local_tz = str(tzlocal.get_localzone())
+        followingsIds = CurrentUser().followingsIds["data"]
+        
+        posts_info = []
+        for post_id in post_ids:
+            if not self.__db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                post_info = self.__db.select(
+                    f"""SELECT Posts.post_id, \
+                            Posts.image_id, \
+                            Posts.video_id, \
+                            Posts.post_text, \
+                            Posts.likes, \
+                            Posts.dislikes, \
+                            DATE_FORMAT(CONVERT_TZ(Posts.post_time, @@SESSION.TIME_ZONE, '{local_tz}'), '%I:%i %p - %d %b %Y') AS post_time, \
+                            Posts.user_id, \
+                            Users.username, \
+                            Users.name, \
+                            Users.image_id, \
+                            Users.access \
+                        FROM Posts \
+                        INNER JOIN Users \
+                            ON Posts.user_id = Users.user_id \
+                        WHERE Posts.post_id = {post_id};""")[0]
 
-        if not self.__db.connect():
-            return generateResult("Check your internet connection", "connection")
-        else:
-            comments_info = self.__db.select(
-                f"""SELECT Comments.comment_id, \
-                           Comments.post_id, \
-                           Comments.user_id, \
-                           Comments.comment_text, \
-                           Comments.comment_time, \
-                           Comments.likes, \
-                           Comments.dislikes, \
-                           Users.username, \
-                           Users.name, \
-                           Users.image_id \
-                    FROM Comments \
-                    INNER JOIN Users \
-                        ON Comments.user_id = Users.user_id \
-                    WHERE Comments.post_id IN ({', '.join([str(i) for i in post_ids])}) \
-                    ORDER BY (Comments.comment_time) DESC;""")
-        dict_posts_info = dict()
-        for i in range(len(posts_info)):
-            server_datetime = utc.localize(datetime.strptime(posts_info[i]['post_time'], "%Y-%m-%d %H:%M:%S"))
-            posts_info[i]['post_time'] = server_datetime.astimezone(timezone(str(tzlocal.get_localzone()))).strftime(
-                "%I:%M %p - %d %b %Y")
-            dict_posts_info[int(posts_info[i]['post_id'])] = posts_info[i]
-            dict_posts_info[int(posts_info[i]['post_id'])].pop('post_id')
+            if post_info["user_id"] in followingsIds:
+                post_info["is_following"] = True
+            else:
+                post_info["is_following"] = False
 
-        if comments_info == ():
-            for i in list(dict_posts_info.keys()):
-                dict_posts_info[i]['comments'] = None
-        else:
-            dict_comments_info = dict()
-            for i in range(len(comments_info)):
-                server_datetime = utc.localize(datetime.strptime(comments_info[i]['comment_time'], "%Y-%m-%d %H:%M:%S"))
-                comments_info[i]['comment_time'] = server_datetime.astimezone(timezone(str(tzlocal.get_localzone()))).strftime("%I:%M %p - %d %b %Y")
-                dict_comments_info[comments_info[i]['post_id']] = dict()
-            for i in range(len(comments_info)):
-                dict_comments_info[comments_info[i]['post_id']][comments_info[i]['comment_id']] = comments_info[i]
-                post_id = comments_info[i]['post_id']
-                comment_id = comments_info[i]['comment_id']
-                dict_comments_info[post_id][comment_id].pop('post_id')
-                dict_comments_info[post_id][comment_id].pop('comment_id')
-            for i in list(dict_posts_info.keys()):
-                if i in list(dict_comments_info.keys()):
-                    dict_posts_info[i]['comments'] = dict_comments_info[i]
+            if not self.__db.connect():
+                return generateResult("Check your internet connection", "connection")
+            else:
+                comments_info = self.__db.select(
+                    f"""SELECT Comments.comment_id, \
+                            Comments.post_id, \
+                            Comments.user_id, \
+                            Comments.comment_text, \
+                            DATE_FORMAT(CONVERT_TZ(Comments.comment_time, @@SESSION.TIME_ZONE, '{local_tz}'), '%I:%i %p - %d %b %Y') AS comment_time, \
+                            Comments.likes, \
+                            Comments.dislikes, \
+                            Users.user_id, \
+                            Users.username, \
+                            Users.name, \
+                            Users.image_id, \
+                            Users.access \
+                        FROM Comments \
+                        INNER JOIN Users \
+                            ON Comments.user_id = Users.user_id \
+                        WHERE Comments.post_id = {post_id} \
+                        ORDER BY (Comments.comment_time) ASC;""")
+                if comments_info != ():
+                    for comment in range(len(comments_info)):
+                        if comments_info[comment]["user_id"] in followingsIds:
+                            comments_info[comment]["is_following"] = True
+                        else:
+                            comments_info[comment]["is_following"] = False
+                    post_info["comments"] = comments_info
                 else:
-                    dict_posts_info[i]['comments'] = None
+                    post_info["comments"] = None
+            posts_info.append(post_info)
 
-        return generateResult(data=dict_posts_info)
+        return generateResult(data=posts_info)
     
     def checkNewPosts(self):
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
-            max_post_id = self.__db.select("""SELECT MAX(post_id) FROM Posts;""")[0]['MAX(post_id)']
-        
+            max_post_id = self.__db.select("""SELECT post_id FROM Posts \
+                                              WHERE post_time = (SELECT MAX(post_time) FROM Posts);""")
+            if max_post_id == ():
+                return generateResult(data=False)
+            max_post_id = max_post_id[0]['post_id']
+
         if str(max_post_id) != str(getConfigInfo('const', 'last_post_id')):
             setConfigInfo('const', 'last_post_id', str(max_post_id))
             return generateResult(data=True)
-        else:
-            return generateResult(data=False)
+        return generateResult(data=False)
 
 
 # EXAMPLES FOR USING
@@ -452,10 +458,14 @@ class PostTools:
 # post_tools.checkReaction(comment_id=1) -> for check if there is a reaction to this comment from current user
 
 # GET POST IDS
-# post_tools.getPostIds() -> for get all post ids without filters
-# post_tools.getPostIds(sort_by_time=True)
+# post_tools.getPostIds() -> for get all post sorted by time 
 # post_tools.getPostIds(sort_by_likes=True)
-# post_tools.getPostIds(search_by_key=True)
+# post_tools.getPostIds(sort_by_comments=True)
+# post_tools.getPostIds(sort_by_likes_comments=True)
+# post_tools.getPostIds(search_by_key="some words")
 
 # GET POSTS INFO
 # post_tools.getPostsInfo(post_ids=[1, 2, 3, 4]) -> for get information about posts by id with user information and comments
+
+# CHECK NEW POSTS
+# post_tools.checkNewPosts() -> to check for new posts
