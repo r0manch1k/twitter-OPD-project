@@ -1029,6 +1029,7 @@ class App(Ui_MainWindow, QMainWindow):
     @staticmethod
     def getAdvertWidget(widgetWidth: int):
         widgetAd = Advert(widgetWidth)
+        widgetAd.setAdvert(os.path.abspath("gui/resources/images/Ad/airjourney.png"), offsetY=26)
         widgetAd.setAdvert(os.path.abspath("gui/resources/images/Ad/karmen1.png"), offsetY=35,
                            url="https://drive.google.com/drive/folders/1LRuyE-nsm95ONkVcVmHtXFex0aUc0GOg?usp=drive_link")
         widgetAd.setAdvert(os.path.abspath("gui/resources/images/Ad/karmen2.png"), offsetY=50,
@@ -1107,7 +1108,8 @@ class App(Ui_MainWindow, QMainWindow):
             self.commentCreateWidget.errorSignal.connect(self.isError)
             self.commentCreateWidget.commentCreatedSignal.connect(self.commentCreated)
             self.commentCreateWidget.focusInSignal.connect(
-                lambda: self.ui.scrollArea_CommentsPost.verticalScrollBar().setValue())
+                lambda: self.ui.scrollArea_CommentsPost.verticalScrollBar().setValue(
+                    self.ui.scrollArea_CommentsPost.verticalScrollBar().maximum()))
             self.commentCreateWidget.setFixedWidth(
                 self.ui.frame_PostContainer.size().width() - self.ui.layout_CommentsPostScroll.contentsMargins().left()
                 - self.ui.layout_CommentsPostScroll.contentsMargins().right())

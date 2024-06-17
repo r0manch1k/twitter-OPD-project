@@ -188,17 +188,23 @@ class ImageTools:
         return generateResult(data=execute)
 
     @classmethod
-    def getProfileToolTip(cls, imagePath: str, name: str, username: str, about: str = None) -> dict:
+    def getProfileToolTip(cls, imagePath: str, name: str, username: str, online: bool = None) -> dict:
 
         pixmap = cls.getProfilePicturePixmap(imagePath, 60, 60)
         buffer = QBuffer()
         buffer.open(QIODevice.WriteOnly)
         pixmap.save(buffer, "PNG", quality=100)
         image = bytes(buffer.data().toBase64()).decode()
+
+        if online:
+            online = "Online"
+        else:
+            online = "False"
+
         html = (
             f'<img src="data:image/png;base64,{image}" style="margin-left:auto;margin-right:auto;">'
             f'<p style="{cls.nameStyle}line-height:0.1;"><strong>{name}</strong><br>'
-            f'<p style="{cls.usernameStyle}">@{username}</p><p style="{cls.aboutStyle}">{about}</p>')
+            f'<p style="{cls.usernameStyle}">@{username}<br>{online}</p></p>')
 
         styleSheet = ("QToolTip { border: 0; border-radius: 20px; background-color: white; color: black; "
                       "opacity: 255; padding: 5px; }")

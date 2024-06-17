@@ -57,7 +57,10 @@ class Advert(Ui_form_Ad, QWidget):
         if not self._listAds:
             return
         urlIndex = -self._scrollbar.pos().x() // self.size().width()
-        webbrowser.open(self._listAds[urlIndex]["url"])
+        try:
+            webbrowser.open(self._listAds[urlIndex]["url"])
+        except AttributeError:
+            pass
         self.start()
 
     def paintEvent(self, event):

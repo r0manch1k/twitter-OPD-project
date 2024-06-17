@@ -98,7 +98,7 @@ class Comment(Ui_form_Comment, QWidget):
         icon_Dislike = QIcon()
         icon_Dislike.addFile(":icons/icons/Dislike.svg", QSize(), QIcon.Normal)
         self.ui.button_CommentDislike.setIcon(icon_Dislike)
-        self.ui.button_CommentDislike.setIconSize(QSize(15, 15))
+        self.ui.button_CommentDislike.setIconSize(QSize(16, 16))
 
         icon_DislikeSelected = QIcon()
         icon_DislikeSelected.addFile(":icons/icons/DislikeSelected.svg", QSize(), QIcon.Normal)

@@ -83,7 +83,10 @@ class DataBase(Singleton):
                 updated_query = query.split(" ")
                 updated_query[3] = f"""({self.identity_ids[table_name]}, """ + updated_query[3][1:]
                 insert_value_index = [j for j in range(len(updated_query)) if updated_query[j] == "VALUES"][0] + 2
+                if insert_value_index == len(updated_query):
+                    insert_value_index -= 1
                 updated_query[insert_value_index] = f"""({str(new_id)}, """ + updated_query[insert_value_index][1:]
 
                 return " ".join(updated_query)
         return query
+
