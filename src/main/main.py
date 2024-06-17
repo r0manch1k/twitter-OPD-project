@@ -1106,16 +1106,12 @@ class App(Ui_MainWindow, QMainWindow):
                 return False
             self.commentCreateWidget.errorSignal.connect(self.isError)
             self.commentCreateWidget.commentCreatedSignal.connect(self.commentCreated)
+            self.commentCreateWidget.focusInSignal.connect(
+                lambda: self.ui.scrollArea_CommentsPost.verticalScrollBar().setValue())
             self.commentCreateWidget.setFixedWidth(
                 self.ui.frame_PostContainer.size().width() - self.ui.layout_CommentsPostScroll.contentsMargins().left()
                 - self.ui.layout_CommentsPostScroll.contentsMargins().right())
             self.ui.layout_CommentsPostScroll.insertWidget(1, self.commentCreateWidget)
-
-        for commentIndex in range(self.ui.layout_ScrollAreaComments.count() - 1, -1, -1):
-            if isinstance(self.ui.layout_ScrollAreaComments.itemAt(commentIndex).widget(), CreatePost):
-                self.ui.layout_ScrollAreaComments.itemAt(commentIndex).widget().setHidden(True)
-                self.ui.layout_ScrollAreaComments.removeWidget(
-                    self.ui.layout_ScrollAreaPosts.itemAt(commentIndex).widget())
 
         if postInfo:
             self.listComments = postInfo["comments"]

@@ -87,8 +87,8 @@ def validatePassword(password: str):
     return ""
 
     
-def validateAbout(info: str):
-    if len(info) > 70:
+def validateAbout(about: str):
+    if len(about) > 70:
         return "About must contain <= 70 symbols"
         
     return ""

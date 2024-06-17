@@ -14,6 +14,8 @@ class CreateComment(Ui_frame_CommentCreate, QFrame):
 
     commentCreatedSignal = Signal(int)
 
+    focusInSignal = Signal()
+
     def __init__(self, userImagePath, postId: int, postTools: PostTools):
         super(Ui_frame_CommentCreate, self).__init__()
         self.ui = Ui_frame_CommentCreate()
@@ -65,6 +67,15 @@ class CreateComment(Ui_frame_CommentCreate, QFrame):
         self.setGraphicsEffect(self.__effect)
 
         self.repaint()
+
+    def resizeEvent(self, event):
+
+        oldSize = event.oldSize()
+        newSize = event.size()
+
+        if oldSize.height() < newSize.height():
+
+            self.focusInSignal.emit()
 
     def eventFilter(self, watched, event):
 
