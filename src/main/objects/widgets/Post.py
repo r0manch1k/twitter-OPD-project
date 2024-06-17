@@ -325,12 +325,17 @@ class Post(Ui_form_Post, QWidget):
             comments = self.getComments(0)
         self.ui.label_Comments.setText(comments)
 
+        execute = self.__currentUser.online
+        if self.isError(execute):
+            return
+        online = execute["data"]
+
         photo = ProfilePictureFrame(userImagePath, 40, 40, 20, shadowOffset=0, hoverOn=True)
-        # tooltip = ImageTools.getProfileToolTip(userImagePath, self.name, self.username, self.about)
-        # photo.setToolTip(tooltip["html"])
-        # photo.setStyleSheet(tooltip["styleSheet"])
-        # photo.setFont(self.fontRegular)
-        photo.setToolTip(self.about)
+        tooltip = ImageTools.getProfileToolTip(userImagePath, self.name, self.username, online)
+        photo.setToolTip(tooltip["html"])
+        photo.setStyleSheet(tooltip["styleSheet"])
+        photo.setFont(self.fontRegular)
+        # photo.setToolTip(self.about)
         photo.mouseClickedSignal.connect(self.__openUserPage)
         self.ui.layout_userName.insertWidget(0, photo)
 

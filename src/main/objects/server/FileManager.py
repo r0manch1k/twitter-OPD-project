@@ -160,6 +160,10 @@ class FileManager(Singleton):
             self.__ftp = FTP(self.__host)
             self.__ftp.login(user=self.__user, passwd=self.__passwd)
 
+        except ftplib.error_temp:
+            self.__ftp = FTP(self.__host)
+            self.__ftp.login(user=self.__user, passwd=self.__passwd)
+
         dirs = path.split("/")
         for i in range(2, len(dirs)):
             try:
