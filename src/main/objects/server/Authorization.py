@@ -100,10 +100,10 @@ class Authorization:
         return self.__closeVerificationSession(verification_id)
 
     def resetPassword(self, email_: str):
-        self.logOut()
-
         if email_ == "":
             return generateResult("Enter email!", "format")
+        
+        self.logOut()
         
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
@@ -201,20 +201,24 @@ class Authorization:
 
         return generateResult()
     
-    def __makeVerificationSession(self, email: str, username="", name=""):
+    def checkAuthorization(self):
+        user_id = getConfigInfo('current_user', 'user_id')
+        password = getConfigInfo('current_user', 'password')
+        
         if not self.__db.connect():
-            return generateResult("Check your internet connection", "connection") 
+            return generateResult("Check your internet connection", "connection")
         else:
-            code = MailSender(email).sendVerificationEmail()
-            self.__db.insert(
-                f"""INSERT INTO Verifications (email, username, name, code, time) \
-                    VALUES  ('{email}', '{getValidString(username)}', '{getValidString(name)}', {code}, NOW());""")
-            
-            verification_id = self.__db.select(f"""SELECT verification_id FROM Verifications WHERE email = '{email}';""")[0]['verification_id']
-            setConfigInfo('verification_session', 'verification_id', str(verification_id))
-            setConfigInfo('verification_session', 'status', 'not_confirmed')
+            email = self.__db.select(f"""SELECT email FROM Users WHERE user_id = {user_id};""")
+            if email == ():
+                self.logOut()
+                return generateResult(data=False)
+            email = email[0]['email']
 
-        return generateResult()
+        if self.logIn(email, password)['error']:
+            self.logOut()
+            return generateResult(data=False)
+        
+        return generateResult(data=True)
 
     def verificationSession(self, in_code: int):
         if in_code == "":
@@ -240,6 +244,21 @@ class Authorization:
         setConfigInfo("verification_session", "status", "confirmed")
         return generateResult()
     
+    def __makeVerificationSession(self, email: str, username="", name=""):
+        if not self.__db.connect():
+            return generateResult("Check your internet connection", "connection") 
+        else:
+            code = MailSender(email).sendVerificationEmail()
+            self.__db.insert(
+                f"""INSERT INTO Verifications (email, username, name, code, time) \
+                    VALUES  ('{email}', '{getValidString(username)}', '{getValidString(name)}', {code}, NOW());""")
+            
+            verification_id = self.__db.select(f"""SELECT verification_id FROM Verifications WHERE email = '{email}';""")[0]['verification_id']
+            setConfigInfo('verification_session', 'verification_id', str(verification_id))
+            setConfigInfo('verification_session', 'status', 'not_confirmed')
+
+        return generateResult()
+    
     def __closeVerificationSession(self, verification_id):
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
@@ -250,25 +269,6 @@ class Authorization:
         setConfigInfo('verification_session', 'status', 'not_confirmed')
 
         return generateResult()
-
-    def checkAuthorization(self):
-        user_id = getConfigInfo('current_user', 'user_id')
-        password = getConfigInfo('current_user', 'password')
-        
-        if not self.__db.connect():
-            return generateResult("Check your internet connection", "connection")
-        else:
-            email = self.__db.select(f"""SELECT email FROM Users WHERE user_id = {user_id};""")
-            if email == ():
-                self.logOut()
-                return generateResult(data=False)
-            email = email[0]['email']
-
-        if self.logIn(email, password)['error']:
-            self.logOut()
-            return generateResult(data=False)
-        
-        return generateResult(data=True)
     
     def __checkRelevanceSession(self, email):
         if not self.__db.connect():
@@ -281,12 +281,14 @@ class Authorization:
         verification_id = verification_id[0]['verification_id']
 
         if not self.__db.connect():
-            return generateResult("Check your internet connection", "connection")
+            return 'Check your internet connection'
         else:
             difference_seconds = int(self.__db.select(f"""SELECT TIMESTAMPDIFF(SECOND, time, NOW()) AS time \
                                                          FROM Verifications WHERE verification_id = {verification_id};""")[0]['time'])
         if difference_seconds > int(getConfigInfo("const", "difference_time_code")):
-            self.__closeVerificationSession(verification_id)
+            message = self.__closeVerificationSession(verification_id)
+            if message["error"] is not None:
+                return 'Check your internet connection'
             return False
         else:
             return True
@@ -311,3 +313,6 @@ class Authorization:
 
 # LOG OUT
 # auth.logOut()
+
+# CHECK AUTHORIZATION
+# auth.checkAuthorization() -> to check if the user is logged in to the account

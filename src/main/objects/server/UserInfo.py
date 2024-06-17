@@ -3,7 +3,7 @@ from src.main.objects.server.Static import getConfigInfo
 from src.main.objects.server.Result import generateResult
 from src.main.objects.server.MailSender import MailSender
 from src.main.objects.server.Authorization import Authorization
-from src.main.objects.server.Validator import validateName, validateUsername, validateInfo, getValidString
+from src.main.objects.server.Validator import validateName, validateUsername, validateAbout, getValidString
 
 
 class User:
@@ -339,8 +339,8 @@ class CurrentUser(User):
         if error["error"]:
             return error
         
-        if validateInfo(new_about):
-            return generateResult(validateInfo(new_about), "format")
+        if validateAbout(new_about):
+            return generateResult(validateAbout(new_about), "format")
         
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
@@ -390,8 +390,8 @@ class CurrentUser(User):
             else:
                 current_user_id = self.userID['data']
                 self._db.insert(
-                    f"""INSERT INTO Followers (id, user_id, follower_id) \
-                        VALUES  (12, {str(user_id)}, {str(current_user_id)});""")
+                    f"""INSERT INTO Followers (user_id, follower_id) \
+                        VALUES  ({str(user_id)}, {str(current_user_id)});""")
         return generateResult()
 
     def unfollowTo(self, user_id: int):
@@ -474,7 +474,7 @@ class CurrentUser(User):
                                                                 {"user_id": user_id_2, "username": username_2, 
                                                                  "post_id": post_id})
         return generateResult()
-    
+        
 
 # EXAMPLES FOR USING
 

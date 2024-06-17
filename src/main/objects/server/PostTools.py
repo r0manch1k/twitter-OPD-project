@@ -14,10 +14,9 @@ class PostTools:
         error = CurrentUser().updateOnline()
         if error["error"]:
             return error
-
         if validateText(post_text):
             return generateResult(validateText(post_text), "format")
-
+        
         user_id = CurrentUser().userID['data']
 
         if not self.__db.connect():
@@ -46,7 +45,7 @@ class PostTools:
             return generateResult("Check your internet connection", "connection")
         else:
             if self.__db.select(f"""SELECT * FROM Posts WHERE post_id = {post_id};""") == ():
-                return generateResult("This object isn't found", "format")
+                return generateResult("This post isn't found", "format")
         
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
@@ -88,9 +87,10 @@ class PostTools:
         error = CurrentUser().updateOnline()
         if error["error"]:
             return error
-
         if validateText(comment_text):
             return generateResult(validateText(comment_text), "format")
+        
+        user_id = CurrentUser().userID['data']
         
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
@@ -98,14 +98,13 @@ class PostTools:
             if self.__db.select(f"""SELECT likes FROM Posts WHERE post_id = {post_id};""") == ():
                 return generateResult("This post isn't found", "format")
 
-        user_id = CurrentUser().userID['data']
-
         if not self.__db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
             self.__db.insert(
                 f"""INSERT INTO Comments (post_id, user_id, comment_time, comment_text, likes, dislikes) \
                     VALUES  ({post_id}, {user_id}, NOW(), '{getValidString(comment_text)}', 0, 0);""")
+        
         return generateResult()
 
     def deleteComment(self, comment_id: int):
@@ -272,6 +271,7 @@ class PostTools:
             return error
         
         user_id = CurrentUser().userID['data']
+        
         if post_id != -1:
             index = "post_id"
             table_name = "Posts"
@@ -351,7 +351,14 @@ class PostTools:
 
     def getPostsInfo(self, post_ids: list):
         local_tz = str(tzlocal.get_localzone())
-        followingsIds = CurrentUser().followingsIds["data"]
+        message = CurrentUser().followingsIds
+        if message["error"]:
+            if message["error"]["connection"]:
+                return message
+            elif message["error"]["auth"]:
+                followingsIds = []
+        else:
+            followingsIds = message["data"]
         
         posts_info = []
         for post_id in post_ids:
@@ -368,6 +375,7 @@ class PostTools:
                             DATE_FORMAT(CONVERT_TZ(Posts.post_time, @@SESSION.TIME_ZONE, '{local_tz}'), '%I:%i %p - %d %b %Y') AS post_time, \
                             Posts.user_id, \
                             Users.username, \
+                            Users.about, \
                             Users.name, \
                             Users.image_id, \
                             Users.access \
@@ -394,6 +402,7 @@ class PostTools:
                             Comments.dislikes, \
                             Users.user_id, \
                             Users.username, \
+                            Users.about, \
                             Users.name, \
                             Users.image_id, \
                             Users.access \
@@ -412,7 +421,6 @@ class PostTools:
                 else:
                     post_info["comments"] = None
             posts_info.append(post_info)
-
         return generateResult(data=posts_info)
     
     def checkNewPosts(self):
@@ -425,7 +433,7 @@ class PostTools:
                 return generateResult(data=False)
             max_post_id = max_post_id[0]['post_id']
 
-        if str(max_post_id) != str(getConfigInfo('const', 'last_post_id')):
+        if int(max_post_id) != int(getConfigInfo('const', 'last_post_id')):
             setConfigInfo('const', 'last_post_id', str(max_post_id))
             return generateResult(data=True)
         return generateResult(data=False)
@@ -461,7 +469,7 @@ class PostTools:
 # post_tools.getPostIds() -> for get all post sorted by time 
 # post_tools.getPostIds(sort_by_likes=True)
 # post_tools.getPostIds(sort_by_comments=True)
-# post_tools.getPostIds(sort_by_likes_comments=True)
+# post_tools.getPostIds(sort_by_all_reactions=True)
 # post_tools.getPostIds(search_by_key="some words")
 
 # GET POSTS INFO
