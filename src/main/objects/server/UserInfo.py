@@ -1,12 +1,10 @@
-from pytz import utc
-from datetime import datetime
 from src.main.objects.server.DataBase import DataBase
 from src.main.objects.server.Static import getConfigInfo
 from src.main.objects.server.Result import generateResult
 from src.main.objects.server.MailSender import MailSender
 from src.main.objects.server.Authorization import Authorization
-from src.main.objects.server.Validator import validateName, validateUsername, validateInfo
-#src.main.objects.server.
+from src.main.objects.server.Validator import validateName, validateUsername, validateAbout, getValidString
+
 
 class User:
     def __init__(self, user_id):
@@ -178,12 +176,9 @@ class User:
             if not self._db.connect():
                 return generateResult("Check your internet connection", "connection")
             else:
-                recent_activity = self._db.select(f"""SELECT time FROM Online WHERE user_id = {user_id};""")[0]['time']
-
-        time1 = datetime.strptime(recent_activity, "%Y-%m-%d %H:%M:%S")
-        time2 = datetime.strptime(datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
-        difference = time2 - time1
-        difference_seconds = difference.total_seconds()
+                difference_seconds = int(self._db.select(f"""SELECT TIMESTAMPDIFF(SECOND, time, NOW()) AS time \
+                                                             FROM Online WHERE user_id = {user_id};""")[0]['time'])
+                
         if difference_seconds <= int(getConfigInfo('const', 'difference_time_online')):
             return generateResult(data=True)
         return generateResult(data=False)
@@ -205,13 +200,11 @@ class User:
                 return generateResult("Check your internet connection", "connection")
             else:
                 follower_ids = self._db.select(f"""SELECT follower_id FROM Followers WHERE user_id = {user_id};""")
-        
-            if follower_ids == ():
-                return generateResult("Followers were not found", "format")
             
             ids = []
-            for i in follower_ids:
-                ids.append(i['follower_id'])
+            if follower_ids != ():
+                for i in follower_ids:
+                    ids.append(i['follower_id'])
 
         return generateResult(data=ids)
     
@@ -232,13 +225,11 @@ class User:
                 return generateResult("Check your internet connection", "connection")
             else:
                 following_ids = self._db.select(f"""SELECT user_id FROM Followers WHERE follower_id = {user_id};""")
-        
-            if following_ids == ():
-                return generateResult("Followings were not found", "format")
             
             ids = []
-            for i in following_ids:
-                ids.append(i['user_id'])
+            if following_ids != ():
+                for i in following_ids:
+                    ids.append(i['user_id'])
 
         return generateResult(data=ids)
     
@@ -313,12 +304,11 @@ class CurrentUser(User):
         if validateName(new_name):
             return generateResult(validateName(new_name), "format")    
         
-        fixed_name = new_name.replace("'", "''")
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
             user_id = self.userID['data']
-            self._db.insert(f"""UPDATE Users SET name = '{fixed_name}' WHERE user_id = {user_id};""")
+            self._db.insert(f"""UPDATE Users SET name = '{getValidString(new_name)}' WHERE user_id = {user_id};""")
         
         return generateResult()
 
@@ -349,15 +339,14 @@ class CurrentUser(User):
         if error["error"]:
             return error
         
-        if validateInfo(new_about):
-            return generateResult(validateInfo(new_about), "format")
+        if validateAbout(new_about):
+            return generateResult(validateAbout(new_about), "format")
         
-        fixed_about = new_about.replace("'", "''")
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
             user_id = self.userID['data']
-            self._db.insert(f"""UPDATE Users SET about = '{fixed_about}' WHERE user_id = {user_id};""")
+            self._db.insert(f"""UPDATE Users SET about = '{getValidString(new_about)}' WHERE user_id = {user_id};""")
 
         return generateResult()
     
@@ -399,9 +388,10 @@ class CurrentUser(User):
             if not self._db.connect():
                 return generateResult("Check your internet connection", "connection")
             else:
+                current_user_id = self.userID['data']
                 self._db.insert(
                     f"""INSERT INTO Followers (user_id, follower_id) \
-                        VALUES  ({str(user_id)}, {str(self.userID)});""")
+                        VALUES  ({str(user_id)}, {str(current_user_id)});""")
         return generateResult()
 
     def unfollowTo(self, user_id: int):
@@ -415,9 +405,10 @@ class CurrentUser(User):
             if not self._db.connect():
                 return generateResult("Check your internet connection", "connection")
             else:
+                current_user_id = self.userID['data']
                 self._db.insert(
                     f"""DELETE FROM Followers
-                        WHERE follower_id = {str(self.userID)} 
+                        WHERE follower_id = {str(current_user_id)} 
                         AND 
                         user_id = {user_id};""")
         return generateResult() 
@@ -426,13 +417,12 @@ class CurrentUser(User):
         if not Authorization().checkAuthorization()["data"]:
             return generateResult(error_type="auth", error="User is not authorized!")
         
-        utc_time = datetime.now(utc).strftime("%Y-%m-%d %H:%M:%S")
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
         else:
             user_id = self.userID['data']
             self._db.insert(
-                f"""UPDATE Online SET time = '{str(utc_time)}' \
+                f"""UPDATE Online SET time = NOW() \
                     WHERE user_id = {user_id};""")
         
         return generateResult()
@@ -456,9 +446,21 @@ class CurrentUser(User):
                                                 ON Posts.user_id = Users.user_id 
                                             WHERE Posts.post_id = {post_id};""")
             if post_info == ():
-                return generateResult("This account isn't found", "format")
+                return generateResult("This post isn't found", "format")
             user_id_2 = post_info[0]["user_id"]
             username_2 = post_info[0]["username"]
+        
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            if self._db.select(f"""SELECT report_id FROM Reports \
+                                   WHERE user_id_1 = {user_id_1} AND post_id = {post_id} AND user_id_2 = {user_id_2};""") != ():
+                 return generateResult("You already sent report about this post", "format")
+        if not self._db.connect():
+            return generateResult("Check your internet connection", "connection")
+        else:
+            self._db.insert(f"""INSERT INTO Reports (user_id_1, post_id, user_id_2) \
+                                VALUES  ({user_id_1}, {post_id}, {user_id_2});""")
         
         if not self._db.connect():
             return generateResult("Check your internet connection", "connection")
@@ -472,3 +474,101 @@ class CurrentUser(User):
                                                                 {"user_id": user_id_2, "username": username_2, 
                                                                  "post_id": post_id})
         return generateResult()
+        
+
+# EXAMPLES FOR USING
+
+# user = User(user_id=1) -> this class is needed to get information about a user by his user_id
+# cur_user = CurrentUser() -> this class is a child class of User(), in which, in addition to getting information about the current user, it will be possible to change information about him
+
+# GET USER INFO
+# user.userInfo -> for getting email, username, name, access, image_id, about, user_id, online, followers_ids, followings_ids of user
+# or
+# cur_user.userInfo
+
+# GET USER ID
+# user.userID
+# or
+# cur_user.userID
+
+# GET EMAIL
+# user.email
+# or
+# cur_user.email
+
+# GET USERNAME
+# user.username
+# or
+# cur_user.username
+
+# GET NAME
+# user.name
+# or
+# cur_user.name
+
+# GET ACCESS
+# user.access
+# or
+# cur_user.access
+
+# GET IMAGE ID
+# user.image_id
+# or
+# cur_user.image_id
+
+# GET ABOUT
+# user.about
+# or
+# cur_user.about
+
+# GET ONLINE
+# user.online -> to check the online user
+# or
+# cur_user.online
+
+# GET FOLLOWERS IDS
+# user.followers_ids -> to get the user_id of users who are followed to this user
+# or
+# cur_user.followers_ids
+
+# GET FOLLOWINGS IDS
+# user.followings_ids -> to get the user_id of the users that this user is followed to
+# or
+# cur_user.followings_ids
+
+# GET POST IDS
+# user.postIds -> to get the post_id of the posts that this user has made
+# or
+# cur_user.postIds
+
+# GET COMMENT IDS
+# user.commentIds -> to get the comment_id of the comment that this user has made
+# or
+# cur_user.commentIds
+
+# CHANGE NAME
+# cur_user.changeName(new_name="new name")
+
+# CHANGE USERNAME
+# cur_user.changeUsername(new_username="new username")
+
+# CHANGE ABOUT
+# cur_user.changeAbout(new_about="new about")
+
+# CHANGE IMAGE ID
+# cur_user.changeImageID(new_image_id=1)
+
+# CHANGE IMAGE ID
+# cur_user.changeImageID(new_image_id=1)
+
+# FOLLOW
+# cur_user.followTo(user_id=1) -> to follow to another user
+
+# UNFOLLOW
+# cur_user.unfollowTo(user_id=1) -> to unfollow from a user, current user have already followed to
+
+# UPDATE ONLINE
+# cur_user.updateOnline() -> to mark the user's last action
+
+# MAKE REPORT
+# cur_user.makeReportTo(post_id=1) -> to send a post complaint to all admins by email

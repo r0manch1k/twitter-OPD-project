@@ -26,9 +26,14 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QFrame , QWidget{
+   <string notr="true">
+QFrame , QWidget{
 	border: 0;
 	background-color: white;
+}
+
+QWidget#widget_PostImage {
+	border-radius: 10px;
 }
 
 QFrame#frame_Main {
@@ -163,7 +168,7 @@ QComboBox QAbstractItemView::item:pselected {
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="layout_Main">
       <property name="spacing">
        <number>10</number>
       </property>
@@ -341,6 +346,16 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="openExternalLinks">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_PostImage" native="true">
+        <property name="maximumSize">
+         <size>
+          <width>570</width>
+          <height>16777215</height>
+         </size>
         </property>
        </widget>
       </item>

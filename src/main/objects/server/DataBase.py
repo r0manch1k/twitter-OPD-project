@@ -29,7 +29,8 @@ class DataBase(Singleton):
                              'Images': 'image_id',
                              'Messages': 'message_id',
                              'Videos': 'video_id',
-                             'Followers': 'id'}
+                             'Followers': 'id',
+                             'Reports': 'report_id'}
 
         self.connection = None
         self.cursor = None
@@ -59,28 +60,30 @@ class DataBase(Singleton):
             return info
 
     def insert(self, query):
-        self.__update_id(query)
+        updated_query = self.__update_query(query)
             
-        self.cursor.execute(query)
+        self.cursor.execute(updated_query)
         self.connection.commit()
     
-    def __update_id(self, query):
+    def __update_query(self, query):
         if query.startswith("INSERT INTO"):
             table_name = query.split(" ")[2]
             if table_name != "Online":
                 table_primary_ids = self.select(f"""SELECT {self.identity_ids[table_name]} FROM {table_name};""")
-
-                new_id = 0
+                new_id = 1
                 if table_primary_ids != ():
-                    ids = []
+                    ids = set()
                     for i in table_primary_ids:
-                        ids.append(i[self.identity_ids[table_name]])
-                    ids.sort()
-                    new_id = max(ids) + 1
-                    for i in range(1, len(ids)):
-                        if ids[i - 1] + 1 != ids[i]:
-                            new_id = ids[i - 1] + 1
-        
-                self.cursor.execute(f"""ALTER TABLE {table_name} AUTO_INCREMENT = {new_id};""")
-                self.connection.commit()
-        return 
+                        ids.add(i[self.identity_ids[table_name]])
+                    for i in range(1, len(ids) + 2):
+                        if i not in ids:
+                            new_id = i
+                            break
+                
+                updated_query = query.split(" ")
+                updated_query[3] = f"""({self.identity_ids[table_name]}, """ + updated_query[3][1:]
+                insert_value_index = [j for j in range(len(updated_query)) if updated_query[j] == "VALUES"][0] + 2
+                updated_query[insert_value_index] = f"""({str(new_id)}, """ + updated_query[insert_value_index][1:]
+
+                return " ".join(updated_query)
+        return query

@@ -1,0 +1,1 @@
+from .ad import Ui_form_Ad

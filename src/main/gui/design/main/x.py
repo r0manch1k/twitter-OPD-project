@@ -121,41 +121,6 @@ class Ui_MainWindow(object):
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.frame_Error = QFrame(self.frame_Main)
-        self.frame_Error.setObjectName(u"frame_Error")
-        self.frame_Error.setStyleSheet(u"QFrame {\n"
-"	background-color: rgb(184,191,195);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	border-radius: 10px;\n"
-"}")
-        self.frame_Error.setFrameShape(QFrame.StyledPanel)
-        self.frame_Error.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_10 = QHBoxLayout(self.frame_Error)
-        self.horizontalLayout_10.setSpacing(5)
-        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
-        self.horizontalLayout_10.setContentsMargins(10, 5, 10, 5)
-        self.label_ErrorText = QLabel(self.frame_Error)
-        self.label_ErrorText.setObjectName(u"label_ErrorText")
-        font = QFont()
-        font.setPointSize(10)
-        self.label_ErrorText.setFont(font)
-
-        self.horizontalLayout_10.addWidget(self.label_ErrorText)
-
-        self.button_ErrorClose = QPushButton(self.frame_Error)
-        self.button_ErrorClose.setObjectName(u"button_ErrorClose")
-        self.button_ErrorClose.setMinimumSize(QSize(20, 20))
-        self.button_ErrorClose.setMaximumSize(QSize(20, 20))
-        self.button_ErrorClose.setStyleSheet(u"")
-        self.button_ErrorClose.setCheckable(True)
-
-        self.horizontalLayout_10.addWidget(self.button_ErrorClose)
-
-
-        self.gridLayout.addWidget(self.frame_Error, 1, 0, 1, 2)
-
         self.frame_MainBar = QFrame(self.frame_Main)
         self.frame_MainBar.setObjectName(u"frame_MainBar")
         self.frame_MainBar.setMinimumSize(QSize(0, 60))
@@ -369,11 +334,13 @@ class Ui_MainWindow(object):
 "QScrollArea {\n"
 "	background: transponent;\n"
 "}\n"
+"\n"
+"\n"
 "")
         self.scrollArea_HomePosts.setWidgetResizable(True)
         self.scrollAreaWidget_Posts = QWidget()
         self.scrollAreaWidget_Posts.setObjectName(u"scrollAreaWidget_Posts")
-        self.scrollAreaWidget_Posts.setGeometry(QRect(0, 0, 620, 460))
+        self.scrollAreaWidget_Posts.setGeometry(QRect(0, 0, 620, 490))
         self.scrollAreaWidget_Posts.setStyleSheet(u"")
         self.layout_ScrollAreaPosts = QVBoxLayout(self.scrollAreaWidget_Posts)
         self.layout_ScrollAreaPosts.setSpacing(20)
@@ -412,7 +379,8 @@ class Ui_MainWindow(object):
 "\n"
 "QPushButton:checked {\n"
 "	background-color: rgb(219,228,233);\n"
-"}")
+"}\n"
+"")
         self.frame_SetPostsPage.setFrameShape(QFrame.StyledPanel)
         self.frame_SetPostsPage.setFrameShadow(QFrame.Raised)
         self.layout_SetPostsPage = QHBoxLayout(self.frame_SetPostsPage)
@@ -434,10 +402,10 @@ class Ui_MainWindow(object):
         self.label_HomeSign.setObjectName(u"label_HomeSign")
         self.label_HomeSign.setMinimumSize(QSize(0, 20))
         self.label_HomeSign.setMaximumSize(QSize(16777215, 20))
-        font1 = QFont()
-        font1.setBold(True)
-        font1.setItalic(True)
-        self.label_HomeSign.setFont(font1)
+        font = QFont()
+        font.setBold(True)
+        font.setItalic(True)
+        self.label_HomeSign.setFont(font)
         self.label_HomeSign.setStyleSheet(u"color: rgba(255, 255, 255, 100);")
         self.label_HomeSign.setAlignment(Qt.AlignCenter)
 
@@ -447,50 +415,179 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_9.addWidget(self.scrollArea_HomePosts)
 
-        self.frame_SideBarApps = QFrame(self.page_Home)
-        self.frame_SideBarApps.setObjectName(u"frame_SideBarApps")
-        self.frame_SideBarApps.setMinimumSize(QSize(50, 420))
-        self.frame_SideBarApps.setMaximumSize(QSize(16777215, 450))
-        self.frame_SideBarApps.setStyleSheet(u"QFrame {\n"
+        self.stacked_SideBar = QStackedWidget(self.page_Home)
+        self.stacked_SideBar.setObjectName(u"stacked_SideBar")
+        self.stacked_SideBar.setMinimumSize(QSize(0, 420))
+        self.stacked_SideBar.setMaximumSize(QSize(16777215, 450))
+        self.stacked_SideBar.setStyleSheet(u"QStackedWidget {\n"
+"	background: transponent;\n"
 "	border-radius: 20px;\n"
+"}\n"
+"\n"
+"QWidget {\n"
+"	border: 0;\n"
+"	background: transponent;\n"
+"	border-radius: 20px;\n"
+"}\n"
+"\n"
+"QFrame {\n"
+"	border: 0;\n"
+"	background: white;\n"
+"	border-radius: 20px;\n"
+"}\n"
+"\n"
+"")
+        self.page_Apps = QWidget()
+        self.page_Apps.setObjectName(u"page_Apps")
+        self.page_Apps.setStyleSheet(u"")
+        self.gridLayout_14 = QGridLayout(self.page_Apps)
+        self.gridLayout_14.setSpacing(0)
+        self.gridLayout_14.setObjectName(u"gridLayout_14")
+        self.gridLayout_14.setContentsMargins(0, 0, 0, 0)
+        self.frame_SideBarApps = QFrame(self.page_Apps)
+        self.frame_SideBarApps.setObjectName(u"frame_SideBarApps")
+        self.frame_SideBarApps.setStyleSheet(u"QLabel {\n"
+"	border-bottom: 1px solid  rgb(235, 237, 239);\n"
+"}\n"
+"\n"
+"QScrollArea, QWidget {\n"
+"	background-color: white;\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"	height: 40px;\n"
+"	color: black;\n"
+"	margin: 0;\n"
+"	padding-left: 10px;\n"
+"	border-radius: 15px;\n"
+"	background-color: white;\n"
+"	text-align: left;\n"
+"}\n"
+"\n"
+"QPushButton:hover, QPushButton:checked {\n"
+"	background-color:  rgb(229,235,238);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: rgb(219,228,233);\n"
 "}")
         self.frame_SideBarApps.setFrameShape(QFrame.StyledPanel)
         self.frame_SideBarApps.setFrameShadow(QFrame.Raised)
-        self.label_5 = QLabel(self.frame_SideBarApps)
-        self.label_5.setObjectName(u"label_5")
-        self.label_5.setGeometry(QRect(50, 30, 121, 20))
+        self.gridLayout_19 = QGridLayout(self.frame_SideBarApps)
+        self.gridLayout_19.setSpacing(10)
+        self.gridLayout_19.setObjectName(u"gridLayout_19")
+        self.gridLayout_19.setContentsMargins(10, 10, 10, 10)
+        self.scrollArea = QScrollArea(self.frame_SideBarApps)
+        self.scrollArea.setObjectName(u"scrollArea")
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 330, 430))
+        self.scrollAreaWidgetContents.setStyleSheet(u"")
+        self.verticalLayout_11 = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_11.setSpacing(5)
+        self.verticalLayout_11.setObjectName(u"verticalLayout_11")
+        self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
+        self.button_SortByTime = QPushButton(self.scrollAreaWidgetContents)
+        self.buttonGroup_Apps = QButtonGroup(MainWindow)
+        self.buttonGroup_Apps.setObjectName(u"buttonGroup_Apps")
+        self.buttonGroup_Apps.addButton(self.button_SortByTime)
+        self.button_SortByTime.setObjectName(u"button_SortByTime")
+        self.button_SortByTime.setCheckable(True)
+        self.button_SortByTime.setChecked(True)
 
-        self.horizontalLayout_9.addWidget(self.frame_SideBarApps)
+        self.verticalLayout_11.addWidget(self.button_SortByTime)
 
-        self.frame_SideBarChat = QFrame(self.page_Home)
+        self.button_SortByLikes = QPushButton(self.scrollAreaWidgetContents)
+        self.buttonGroup_Apps.addButton(self.button_SortByLikes)
+        self.button_SortByLikes.setObjectName(u"button_SortByLikes")
+        self.button_SortByLikes.setCheckable(True)
+
+        self.verticalLayout_11.addWidget(self.button_SortByLikes)
+
+        self.button_SortByDislikes = QPushButton(self.scrollAreaWidgetContents)
+        self.buttonGroup_Apps.addButton(self.button_SortByDislikes)
+        self.button_SortByDislikes.setObjectName(u"button_SortByDislikes")
+        self.button_SortByDislikes.setCheckable(True)
+
+        self.verticalLayout_11.addWidget(self.button_SortByDislikes)
+
+        self.button_SortByComments = QPushButton(self.scrollAreaWidgetContents)
+        self.buttonGroup_Apps.addButton(self.button_SortByComments)
+        self.button_SortByComments.setObjectName(u"button_SortByComments")
+        self.button_SortByComments.setCheckable(True)
+
+        self.verticalLayout_11.addWidget(self.button_SortByComments)
+
+        self.button_SortByHot = QPushButton(self.scrollAreaWidgetContents)
+        self.buttonGroup_Apps.addButton(self.button_SortByHot)
+        self.button_SortByHot.setObjectName(u"button_SortByHot")
+        self.button_SortByHot.setCheckable(True)
+
+        self.verticalLayout_11.addWidget(self.button_SortByHot)
+
+        self.label = QLabel(self.scrollAreaWidgetContents)
+        self.label.setObjectName(u"label")
+        self.label.setMaximumSize(QSize(16777215, 5))
+
+        self.verticalLayout_11.addWidget(self.label)
+
+        self.button_AppsAccount = QPushButton(self.scrollAreaWidgetContents)
+        self.buttonGroup_Apps.addButton(self.button_AppsAccount)
+        self.button_AppsAccount.setObjectName(u"button_AppsAccount")
+        self.button_AppsAccount.setCheckable(True)
+
+        self.verticalLayout_11.addWidget(self.button_AppsAccount)
+
+        self.verticalSpacer_15 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_11.addItem(self.verticalSpacer_15)
+
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+
+        self.gridLayout_19.addWidget(self.scrollArea, 0, 0, 1, 1)
+
+
+        self.gridLayout_14.addWidget(self.frame_SideBarApps, 0, 0, 1, 1)
+
+        self.stacked_SideBar.addWidget(self.page_Apps)
+        self.page_Chat = QWidget()
+        self.page_Chat.setObjectName(u"page_Chat")
+        self.page_Chat.setStyleSheet(u"")
+        self.gridLayout_13 = QGridLayout(self.page_Chat)
+        self.gridLayout_13.setSpacing(0)
+        self.gridLayout_13.setObjectName(u"gridLayout_13")
+        self.gridLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.frame_SideBarChat = QFrame(self.page_Chat)
         self.frame_SideBarChat.setObjectName(u"frame_SideBarChat")
-        self.frame_SideBarChat.setMinimumSize(QSize(50, 420))
-        self.frame_SideBarChat.setMaximumSize(QSize(16777215, 450))
-        self.frame_SideBarChat.setStyleSheet(u"QFrame {\n"
-"	border-radius: 20px;\n"
-"}")
         self.frame_SideBarChat.setFrameShape(QFrame.StyledPanel)
         self.frame_SideBarChat.setFrameShadow(QFrame.Raised)
-        self.label = QLabel(self.frame_SideBarChat)
-        self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(60, 20, 60, 16))
+        self.label_2 = QLabel(self.frame_SideBarChat)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setGeometry(QRect(220, 220, 60, 16))
 
-        self.horizontalLayout_9.addWidget(self.frame_SideBarChat)
+        self.gridLayout_13.addWidget(self.frame_SideBarChat, 0, 0, 1, 1)
 
-        self.frame_SideBarNotifications = QFrame(self.page_Home)
+        self.stacked_SideBar.addWidget(self.page_Chat)
+        self.page_Notifications = QWidget()
+        self.page_Notifications.setObjectName(u"page_Notifications")
+        self.gridLayout_12 = QGridLayout(self.page_Notifications)
+        self.gridLayout_12.setSpacing(0)
+        self.gridLayout_12.setObjectName(u"gridLayout_12")
+        self.gridLayout_12.setContentsMargins(0, 0, 0, 0)
+        self.frame_SideBarNotifications = QFrame(self.page_Notifications)
         self.frame_SideBarNotifications.setObjectName(u"frame_SideBarNotifications")
-        self.frame_SideBarNotifications.setMinimumSize(QSize(50, 420))
-        self.frame_SideBarNotifications.setMaximumSize(QSize(16777215, 450))
-        self.frame_SideBarNotifications.setStyleSheet(u"QFrame {\n"
-"	border-radius: 20px;\n"
-"}")
         self.frame_SideBarNotifications.setFrameShape(QFrame.StyledPanel)
         self.frame_SideBarNotifications.setFrameShadow(QFrame.Raised)
-        self.label_2 = QLabel(self.frame_SideBarNotifications)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(50, 30, 121, 20))
+        self.label_5 = QLabel(self.frame_SideBarNotifications)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setGeometry(QRect(50, 230, 131, 16))
 
-        self.horizontalLayout_9.addWidget(self.frame_SideBarNotifications)
+        self.gridLayout_12.addWidget(self.frame_SideBarNotifications, 0, 0, 1, 1)
+
+        self.stacked_SideBar.addWidget(self.page_Notifications)
+
+        self.horizontalLayout_9.addWidget(self.stacked_SideBar)
 
         self.stacked_Pages.addWidget(self.page_Home)
         self.page_Account = QWidget()
@@ -572,12 +669,12 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.button_AccountTabsPosts)
 
-        self.button_AccountTabsFriend = QPushButton(self.frame_AccountTabs)
-        self.buttonGroup_AccountTabs.addButton(self.button_AccountTabsFriend)
-        self.button_AccountTabsFriend.setObjectName(u"button_AccountTabsFriend")
-        self.button_AccountTabsFriend.setCheckable(True)
+        self.button_AccountTabsFollows = QPushButton(self.frame_AccountTabs)
+        self.buttonGroup_AccountTabs.addButton(self.button_AccountTabsFollows)
+        self.button_AccountTabsFollows.setObjectName(u"button_AccountTabsFollows")
+        self.button_AccountTabsFollows.setCheckable(True)
 
-        self.horizontalLayout_3.addWidget(self.button_AccountTabsFriend)
+        self.horizontalLayout_3.addWidget(self.button_AccountTabsFollows)
 
 
         self.verticalLayout_6.addWidget(self.frame_AccountTabs)
@@ -598,12 +695,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addWidget(self.frame)
 
         self.stacked_AccountTabs.addWidget(self.page_AccountTabsPosts)
-        self.page_AccountTabsComments = QWidget()
-        self.page_AccountTabsComments.setObjectName(u"page_AccountTabsComments")
-        self.stacked_AccountTabs.addWidget(self.page_AccountTabsComments)
-        self.page_AccountTabsFriends = QWidget()
-        self.page_AccountTabsFriends.setObjectName(u"page_AccountTabsFriends")
-        self.stacked_AccountTabs.addWidget(self.page_AccountTabsFriends)
+        self.page_AccountTabsFollows = QWidget()
+        self.page_AccountTabsFollows.setObjectName(u"page_AccountTabsFollows")
+        self.stacked_AccountTabs.addWidget(self.page_AccountTabsFollows)
 
         self.verticalLayout_6.addWidget(self.stacked_AccountTabs)
 
@@ -633,15 +727,15 @@ class Ui_MainWindow(object):
         self.layout_AccountInfoContainer = QHBoxLayout(self.frame_AccountInfoContainer)
         self.layout_AccountInfoContainer.setSpacing(10)
         self.layout_AccountInfoContainer.setObjectName(u"layout_AccountInfoContainer")
-        self.layout_AccountInfoContainer.setContentsMargins(20, 10, 10, 10)
+        self.layout_AccountInfoContainer.setContentsMargins(20, 15, 10, 0)
         self.frame_AccountInfo = QFrame(self.frame_AccountInfoContainer)
         self.frame_AccountInfo.setObjectName(u"frame_AccountInfo")
         self.frame_AccountInfo.setMinimumSize(QSize(0, 150))
         self.frame_AccountInfo.setMaximumSize(QSize(16777215, 150))
-        font2 = QFont()
-        font2.setFamilies([u".AppleSystemUIFont"])
-        font2.setBold(False)
-        self.frame_AccountInfo.setFont(font2)
+        font1 = QFont()
+        font1.setFamilies([u".AppleSystemUIFont"])
+        font1.setBold(False)
+        self.frame_AccountInfo.setFont(font1)
         self.frame_AccountInfo.setStyleSheet(u"QFrame {\n"
 "	border-top-left-radius: 0;\n"
 "	border-top-right-radius: 0;\n"
@@ -717,8 +811,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QVBoxLayout(self.frame_AccountInfo)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(10, 0, 10, 0)
-        self.verticalSpacer_2 = QSpacerItem(20, 30, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalLayout_2.setContentsMargins(10, 0, 5, 0)
+        self.verticalSpacer_2 = QSpacerItem(20, 60, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
 
         self.verticalLayout_2.addItem(self.verticalSpacer_2)
 
@@ -742,9 +836,9 @@ class Ui_MainWindow(object):
         self.label_AccountNickname.setSizePolicy(sizePolicy)
         self.label_AccountNickname.setMinimumSize(QSize(0, 30))
         self.label_AccountNickname.setMaximumSize(QSize(16777215, 30))
-        font3 = QFont()
-        font3.setPointSize(28)
-        self.label_AccountNickname.setFont(font3)
+        font2 = QFont()
+        font2.setPointSize(28)
+        self.label_AccountNickname.setFont(font2)
         self.label_AccountNickname.setStyleSheet(u"")
         self.label_AccountNickname.setScaledContents(False)
         self.label_AccountNickname.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
@@ -782,7 +876,7 @@ class Ui_MainWindow(object):
         self.gridLayout_6.setObjectName(u"gridLayout_6")
         self.gridLayout_6.setHorizontalSpacing(5)
         self.gridLayout_6.setVerticalSpacing(10)
-        self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_6.setContentsMargins(0, 0, 5, 5)
         self.horizontalSpacer_4 = QSpacerItem(182, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_6.addItem(self.horizontalSpacer_4, 0, 1, 1, 4)
@@ -811,35 +905,35 @@ class Ui_MainWindow(object):
         self.gridLayout_7 = QGridLayout(self.frame_AccountInformationContainer)
         self.gridLayout_7.setSpacing(0)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
-        self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_7.setContentsMargins(0, 0, 0, 5)
         self.label_AccountInformationID = QLabel(self.frame_AccountInformationContainer)
         self.label_AccountInformationID.setObjectName(u"label_AccountInformationID")
         self.label_AccountInformationID.setMinimumSize(QSize(0, 20))
         self.label_AccountInformationID.setMaximumSize(QSize(100, 20))
-        font4 = QFont()
-        font4.setPointSize(12)
-        font4.setItalic(False)
-        self.label_AccountInformationID.setFont(font4)
+        font3 = QFont()
+        font3.setPointSize(12)
+        font3.setItalic(False)
+        self.label_AccountInformationID.setFont(font3)
         self.label_AccountInformationID.setStyleSheet(u"")
         self.label_AccountInformationID.setIndent(0)
         self.label_AccountInformationID.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
 
         self.gridLayout_7.addWidget(self.label_AccountInformationID, 1, 0, 1, 1)
 
-        self.label_AccountInformationText = QLabel(self.frame_AccountInformationContainer)
-        self.label_AccountInformationText.setObjectName(u"label_AccountInformationText")
-        self.label_AccountInformationText.setMinimumSize(QSize(300, 20))
-        self.label_AccountInformationText.setMaximumSize(QSize(300, 70))
-        font5 = QFont()
-        font5.setItalic(False)
-        self.label_AccountInformationText.setFont(font5)
-        self.label_AccountInformationText.setStyleSheet(u"")
-        self.label_AccountInformationText.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
-        self.label_AccountInformationText.setWordWrap(True)
-        self.label_AccountInformationText.setIndent(0)
-        self.label_AccountInformationText.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByMouse)
+        self.label_AccountAbout = QLabel(self.frame_AccountInformationContainer)
+        self.label_AccountAbout.setObjectName(u"label_AccountAbout")
+        self.label_AccountAbout.setMinimumSize(QSize(300, 20))
+        self.label_AccountAbout.setMaximumSize(QSize(300, 70))
+        font4 = QFont()
+        font4.setItalic(False)
+        self.label_AccountAbout.setFont(font4)
+        self.label_AccountAbout.setStyleSheet(u"")
+        self.label_AccountAbout.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.label_AccountAbout.setWordWrap(True)
+        self.label_AccountAbout.setIndent(0)
+        self.label_AccountAbout.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByMouse)
 
-        self.gridLayout_7.addWidget(self.label_AccountInformationText, 0, 0, 1, 2)
+        self.gridLayout_7.addWidget(self.label_AccountAbout, 0, 0, 1, 2)
 
         self.label_AccountInformationAccess = QLabel(self.frame_AccountInformationContainer)
         self.label_AccountInformationAccess.setObjectName(u"label_AccountInformationAccess")
@@ -925,7 +1019,7 @@ class Ui_MainWindow(object):
         self.scrollArea_AccountEdit.setWidgetResizable(True)
         self.scrollAreaWidget_AccountEdit = QWidget()
         self.scrollAreaWidget_AccountEdit.setObjectName(u"scrollAreaWidget_AccountEdit")
-        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, -311, 980, 761))
+        self.scrollAreaWidget_AccountEdit.setGeometry(QRect(0, 0, 980, 761))
         self.scrollAreaWidget_AccountEdit.setStyleSheet(u"")
         self.verticalLayout_8 = QVBoxLayout(self.scrollAreaWidget_AccountEdit)
         self.verticalLayout_8.setSpacing(10)
@@ -947,13 +1041,13 @@ class Ui_MainWindow(object):
         self.label_AccountEditSettings.setObjectName(u"label_AccountEditSettings")
         self.label_AccountEditSettings.setMinimumSize(QSize(0, 50))
         self.label_AccountEditSettings.setMaximumSize(QSize(16777215, 50))
-        font6 = QFont()
-        font6.setPointSize(20)
-        font6.setBold(False)
-        font6.setItalic(False)
-        font6.setUnderline(False)
-        font6.setStrikeOut(False)
-        self.label_AccountEditSettings.setFont(font6)
+        font5 = QFont()
+        font5.setPointSize(20)
+        font5.setBold(False)
+        font5.setItalic(False)
+        font5.setUnderline(False)
+        font5.setStrikeOut(False)
+        self.label_AccountEditSettings.setFont(font5)
         self.label_AccountEditSettings.setStyleSheet(u"")
         self.label_AccountEditSettings.setLineWidth(0)
         self.label_AccountEditSettings.setIndent(0)
@@ -1113,7 +1207,9 @@ class Ui_MainWindow(object):
         self.label_AccountEditPhoto = QLabel(self.frame_AccountEditProfileContainer)
         self.label_AccountEditPhoto.setObjectName(u"label_AccountEditPhoto")
         self.label_AccountEditPhoto.setMaximumSize(QSize(16777215, 20))
-        self.label_AccountEditPhoto.setFont(font)
+        font6 = QFont()
+        font6.setPointSize(10)
+        self.label_AccountEditPhoto.setFont(font6)
         self.label_AccountEditPhoto.setIndent(0)
 
         self.verticalLayout_14.addWidget(self.label_AccountEditPhoto)
@@ -1188,7 +1284,7 @@ class Ui_MainWindow(object):
         self.label_AccountEditPhoto_2 = QLabel(self.frame_AccountEditProfileContainer)
         self.label_AccountEditPhoto_2.setObjectName(u"label_AccountEditPhoto_2")
         self.label_AccountEditPhoto_2.setMaximumSize(QSize(16777215, 20))
-        self.label_AccountEditPhoto_2.setFont(font)
+        self.label_AccountEditPhoto_2.setFont(font6)
         self.label_AccountEditPhoto_2.setStyleSheet(u"")
         self.label_AccountEditPhoto_2.setIndent(0)
 
@@ -1281,7 +1377,7 @@ class Ui_MainWindow(object):
         self.label_Sign_3.setObjectName(u"label_Sign_3")
         self.label_Sign_3.setMinimumSize(QSize(0, 15))
         self.label_Sign_3.setMaximumSize(QSize(16777215, 15))
-        self.label_Sign_3.setFont(font)
+        self.label_Sign_3.setFont(font6)
         self.label_Sign_3.setIndent(0)
         self.label_Sign_3.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
@@ -1298,7 +1394,7 @@ class Ui_MainWindow(object):
         self.label_AccountEditNameSymbols.setObjectName(u"label_AccountEditNameSymbols")
         self.label_AccountEditNameSymbols.setMinimumSize(QSize(0, 15))
         self.label_AccountEditNameSymbols.setMaximumSize(QSize(16777215, 15))
-        self.label_AccountEditNameSymbols.setFont(font)
+        self.label_AccountEditNameSymbols.setFont(font6)
         self.label_AccountEditNameSymbols.setIndent(0)
         self.label_AccountEditNameSymbols.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
@@ -1327,7 +1423,7 @@ class Ui_MainWindow(object):
         self.label_Sign_4.setObjectName(u"label_Sign_4")
         self.label_Sign_4.setMinimumSize(QSize(0, 15))
         self.label_Sign_4.setMaximumSize(QSize(16777215, 15))
-        self.label_Sign_4.setFont(font)
+        self.label_Sign_4.setFont(font6)
         self.label_Sign_4.setIndent(0)
         self.label_Sign_4.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
@@ -1355,7 +1451,7 @@ class Ui_MainWindow(object):
         self.label_AccountEditUsernameSymbols.setObjectName(u"label_AccountEditUsernameSymbols")
         self.label_AccountEditUsernameSymbols.setMinimumSize(QSize(0, 15))
         self.label_AccountEditUsernameSymbols.setMaximumSize(QSize(16777215, 15))
-        self.label_AccountEditUsernameSymbols.setFont(font)
+        self.label_AccountEditUsernameSymbols.setFont(font6)
         self.label_AccountEditUsernameSymbols.setIndent(0)
         self.label_AccountEditUsernameSymbols.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
@@ -1394,7 +1490,7 @@ class Ui_MainWindow(object):
         self.label_Sign_1.setObjectName(u"label_Sign_1")
         self.label_Sign_1.setMinimumSize(QSize(0, 15))
         self.label_Sign_1.setMaximumSize(QSize(16777215, 15))
-        self.label_Sign_1.setFont(font)
+        self.label_Sign_1.setFont(font6)
         self.label_Sign_1.setIndent(0)
         self.label_Sign_1.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
@@ -1412,7 +1508,7 @@ class Ui_MainWindow(object):
         self.label_AccountEditAboutSymbols.setObjectName(u"label_AccountEditAboutSymbols")
         self.label_AccountEditAboutSymbols.setMinimumSize(QSize(0, 15))
         self.label_AccountEditAboutSymbols.setMaximumSize(QSize(16777215, 15))
-        self.label_AccountEditAboutSymbols.setFont(font)
+        self.label_AccountEditAboutSymbols.setFont(font6)
         self.label_AccountEditAboutSymbols.setIndent(0)
         self.label_AccountEditAboutSymbols.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
@@ -1439,7 +1535,7 @@ class Ui_MainWindow(object):
         self.label_AccountEditProfileWarning.setObjectName(u"label_AccountEditProfileWarning")
         self.label_AccountEditProfileWarning.setMinimumSize(QSize(0, 15))
         self.label_AccountEditProfileWarning.setMaximumSize(QSize(16777215, 15))
-        self.label_AccountEditProfileWarning.setFont(font)
+        self.label_AccountEditProfileWarning.setFont(font6)
         self.label_AccountEditProfileWarning.setIndent(0)
 
         self.verticalLayout_14.addWidget(self.label_AccountEditProfileWarning)
@@ -1504,8 +1600,754 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.addWidget(self.frame_AccountEditContainer)
 
         self.stacked_Pages.addWidget(self.page_AccountEdit)
+        self.page_Report = QWidget()
+        self.page_Report.setObjectName(u"page_Report")
+        self.page_Report.setStyleSheet(u"")
+        self.horizontalLayout_2 = QHBoxLayout(self.page_Report)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.frame_Report_1 = QFrame(self.page_Report)
+        self.frame_Report_1.setObjectName(u"frame_Report_1")
+        self.frame_Report_1.setStyleSheet(u"QWidget {\n"
+"	background: transponent;\n"
+"}\n"
+"\n"
+"QFrame#frame_Report_Container,\n"
+"QFrame#frame_Report {\n"
+"	background-color: white;\n"
+"	border: 0;\n"
+"	border-radius: 20px;\n"
+"}\n"
+"\n"
+"QLabel {\n"
+"	background-color: white;\n"
+"	border: 0;\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"	width: 40px;\n"
+"	height: 40px;\n"
+"	color: white;\n"
+"	margin: 0;\n"
+"	border-radius: 20px;\n"
+"	background-color:  white;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"	background-color:  rgb(229,235,238);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: rgb(219,228,233);\n"
+"}\n"
+"\n"
+"QPushButton#button_Report {\n"
+"	background-color: rgb(255, 0, 0);\n"
+"}\n"
+"\n"
+"QPushButton#button_Report:hover {\n"
+"	background-color:  rgb(235, 0, 0);\n"
+"}\n"
+"\n"
+"QPushButton#button_Report:pressed {\n"
+"	background-color: rgb(215, 0, 0);\n"
+"}")
+        self.frame_Report_1.setFrameShape(QFrame.StyledPanel)
+        self.frame_Report_1.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_4 = QVBoxLayout(self.frame_Report_1)
+        self.verticalLayout_4.setSpacing(10)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.frame_ReportBack = QFrame(self.frame_Report_1)
+        self.frame_ReportBack.setObjectName(u"frame_ReportBack")
+        self.frame_ReportBack.setMinimumSize(QSize(0, 60))
+        self.frame_ReportBack.setMaximumSize(QSize(16777215, 60))
+        self.frame_ReportBack.setFrameShape(QFrame.StyledPanel)
+        self.frame_ReportBack.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_6 = QHBoxLayout(self.frame_ReportBack)
+        self.horizontalLayout_6.setSpacing(10)
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalLayout_6.setContentsMargins(0, 0, 0, 20)
+        self.button_ReportBack = QPushButton(self.frame_ReportBack)
+        self.button_ReportBack.setObjectName(u"button_ReportBack")
 
-        self.gridLayout.addWidget(self.stacked_Pages, 2, 0, 1, 1)
+        self.horizontalLayout_6.addWidget(self.button_ReportBack)
+
+        self.horizontalSpacer_2 = QSpacerItem(244, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_6.addItem(self.horizontalSpacer_2)
+
+
+        self.verticalLayout_4.addWidget(self.frame_ReportBack)
+
+        self.verticalSpacer_10 = QSpacerItem(20, 393, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_4.addItem(self.verticalSpacer_10)
+
+
+        self.horizontalLayout_2.addWidget(self.frame_Report_1)
+
+        self.frame_ReportContainer = QFrame(self.page_Report)
+        self.frame_ReportContainer.setObjectName(u"frame_ReportContainer")
+        self.frame_ReportContainer.setMinimumSize(QSize(370, 0))
+        self.frame_ReportContainer.setMaximumSize(QSize(370, 16777215))
+        self.frame_ReportContainer.setStyleSheet(u"QWidget {\n"
+"	background: transponent;\n"
+"}\n"
+"\n"
+"QFrame#frame_Report_Container,\n"
+"QFrame#frame_Report {\n"
+"	background-color: white;\n"
+"	border: 0;\n"
+"	border-radius: 20px;\n"
+"}\n"
+"\n"
+"QLabel, QTextEdit {\n"
+"	background-color: white;\n"
+"	border: 0;\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"	width: 40px;\n"
+"	height: 40px;\n"
+"	color: white;\n"
+"	margin: 0;\n"
+"	border-radius: 20px;\n"
+"	background-color:  white;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"	background-color:  rgb(229,235,238);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: rgb(219,228,233);\n"
+"}\n"
+"\n"
+"QPushButton#button_Report {\n"
+"	border-radius: 15px;\n"
+"	background-color: rgb(255, 0, 0);\n"
+"}\n"
+"\n"
+"QPushButton#button_Report:hover {\n"
+"	background-color:  rgb(235, 0, 0);\n"
+"}\n"
+"\n"
+"QPushButton#button_Report:pressed {\n"
+"	background-color: rgb(215, 0, 0);\n"
+"}")
+        self.frame_ReportContainer.setFrameShape(QFrame.StyledPanel)
+        self.frame_ReportContainer.setFrameShadow(QFrame.Raised)
+        self.verticalLayout = QVBoxLayout(self.frame_ReportContainer)
+        self.verticalLayout.setSpacing(10)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(20, 0, 20, 0)
+        self.verticalSpacer_7 = QSpacerItem(20, 5, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout.addItem(self.verticalSpacer_7)
+
+        self.frame_Report = QFrame(self.frame_ReportContainer)
+        self.frame_Report.setObjectName(u"frame_Report")
+        self.frame_Report.setMinimumSize(QSize(330, 400))
+        self.frame_Report.setMaximumSize(QSize(330, 400))
+        self.frame_Report.setStyleSheet(u"")
+        self.frame_Report.setFrameShape(QFrame.StyledPanel)
+        self.frame_Report.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_7 = QVBoxLayout(self.frame_Report)
+        self.verticalLayout_7.setSpacing(10)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.verticalLayout_7.setContentsMargins(20, 20, 20, 20)
+        self.label_Report = QLabel(self.frame_Report)
+        self.label_Report.setObjectName(u"label_Report")
+        self.label_Report.setMaximumSize(QSize(16777215, 50))
+        font9 = QFont()
+        font9.setPointSize(25)
+        font9.setBold(True)
+        self.label_Report.setFont(font9)
+
+        self.verticalLayout_7.addWidget(self.label_Report)
+
+        self.label_ReportText = QLabel(self.frame_Report)
+        self.label_ReportText.setObjectName(u"label_ReportText")
+        self.label_ReportText.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
+        self.label_ReportText.setWordWrap(True)
+        self.label_ReportText.setIndent(0)
+
+        self.verticalLayout_7.addWidget(self.label_ReportText)
+
+        self.textEdit_ReportText = QTextEdit(self.frame_Report)
+        self.textEdit_ReportText.setObjectName(u"textEdit_ReportText")
+        font10 = QFont()
+        font10.setItalic(True)
+        self.textEdit_ReportText.setFont(font10)
+        self.textEdit_ReportText.setReadOnly(False)
+
+        self.verticalLayout_7.addWidget(self.textEdit_ReportText)
+
+        self.button_Report = QPushButton(self.frame_Report)
+        self.button_Report.setObjectName(u"button_Report")
+        self.button_Report.setMinimumSize(QSize(0, 50))
+        self.button_Report.setMaximumSize(QSize(16777215, 50))
+        font11 = QFont()
+        font11.setPointSize(14)
+        font11.setBold(True)
+        self.button_Report.setFont(font11)
+
+        self.verticalLayout_7.addWidget(self.button_Report)
+
+
+        self.verticalLayout.addWidget(self.frame_Report)
+
+        self.verticalSpacer_8 = QSpacerItem(20, 39, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout.addItem(self.verticalSpacer_8)
+
+
+        self.horizontalLayout_2.addWidget(self.frame_ReportContainer)
+
+        self.frame_Report_2 = QFrame(self.page_Report)
+        self.frame_Report_2.setObjectName(u"frame_Report_2")
+        self.frame_Report_2.setStyleSheet(u"QWidget {\n"
+"	background: transponent;\n"
+"}\n"
+"\n"
+"QFrame#frame_Report_Container,\n"
+"QFrame#frame_Report {\n"
+"	background-color: white;\n"
+"	border: 0;\n"
+"	border-radius: 20px;\n"
+"}\n"
+"\n"
+"QLabel {\n"
+"	background-color: white;\n"
+"	border: 0;\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"	width: 40px;\n"
+"	height: 40px;\n"
+"	color: white;\n"
+"	margin: 0;\n"
+"	border-radius: 20px;\n"
+"	background-color:  white;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"	background-color:  rgb(229,235,238);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: rgb(219,228,233);\n"
+"}\n"
+"\n"
+"QPushButton#button_Report {\n"
+"	background-color: rgb(255, 0, 0);\n"
+"}\n"
+"\n"
+"QPushButton#button_Report:hover {\n"
+"	background-color:  rgb(235, 0, 0);\n"
+"}\n"
+"\n"
+"QPushButton#button_Report:pressed {\n"
+"	background-color: rgb(215, 0, 0);\n"
+"}")
+        self.frame_Report_2.setFrameShape(QFrame.StyledPanel)
+        self.frame_Report_2.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_7 = QHBoxLayout(self.frame_Report_2)
+        self.horizontalLayout_7.setSpacing(10)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_7.addItem(self.horizontalSpacer_3)
+
+
+        self.horizontalLayout_2.addWidget(self.frame_Report_2)
+
+        self.stacked_Pages.addWidget(self.page_Report)
+        self.page_Comments = QWidget()
+        self.page_Comments.setObjectName(u"page_Comments")
+        self.page_Comments.setStyleSheet(u"")
+        self.horizontalLayout_10 = QHBoxLayout(self.page_Comments)
+        self.horizontalLayout_10.setSpacing(10)
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.horizontalLayout_10.setContentsMargins(10, 0, 10, 0)
+        self.frame_PostContainer = QFrame(self.page_Comments)
+        self.frame_PostContainer.setObjectName(u"frame_PostContainer")
+        self.frame_PostContainer.setMinimumSize(QSize(485, 0))
+        self.frame_PostContainer.setStyleSheet(u"QWidget, QScrollArea {\n"
+"	background: transponent;\n"
+"}\n"
+"\n"
+"QLabel#label_CommentsSign {\n"
+"	color: white;\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"	margin: 0;\n"
+"	background-color:  white;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"	background-color:  rgb(229,235,238);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: rgb(219,228,233);\n"
+"}")
+        self.frame_PostContainer.setFrameShape(QFrame.StyledPanel)
+        self.frame_PostContainer.setFrameShadow(QFrame.Raised)
+        self.layout_CommentsPost = QVBoxLayout(self.frame_PostContainer)
+        self.layout_CommentsPost.setSpacing(0)
+        self.layout_CommentsPost.setObjectName(u"layout_CommentsPost")
+        self.layout_CommentsPost.setContentsMargins(0, 20, 0, 0)
+        self.frame_CommentsBack = QFrame(self.frame_PostContainer)
+        self.frame_CommentsBack.setObjectName(u"frame_CommentsBack")
+        self.frame_CommentsBack.setMinimumSize(QSize(0, 50))
+        self.frame_CommentsBack.setMaximumSize(QSize(16777215, 50))
+        self.frame_CommentsBack.setStyleSheet(u"")
+        self.frame_CommentsBack.setFrameShape(QFrame.StyledPanel)
+        self.frame_CommentsBack.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_14 = QHBoxLayout(self.frame_CommentsBack)
+        self.horizontalLayout_14.setSpacing(10)
+        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
+        self.horizontalLayout_14.setContentsMargins(10, 0, 5, 10)
+        self.button_CommentsBack = QPushButton(self.frame_CommentsBack)
+        self.button_CommentsBack.setObjectName(u"button_CommentsBack")
+
+        self.horizontalLayout_14.addWidget(self.button_CommentsBack)
+
+        self.horizontalSpacer_21 = QSpacerItem(244, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_14.addItem(self.horizontalSpacer_21)
+
+
+        self.layout_CommentsPost.addWidget(self.frame_CommentsBack)
+
+        self.scrollArea_CommentsPost = QScrollArea(self.frame_PostContainer)
+        self.scrollArea_CommentsPost.setObjectName(u"scrollArea_CommentsPost")
+        self.scrollArea_CommentsPost.setWidgetResizable(True)
+        self.scrollAreaWidget_CommentsPost = QWidget()
+        self.scrollAreaWidget_CommentsPost.setObjectName(u"scrollAreaWidget_CommentsPost")
+        self.scrollAreaWidget_CommentsPost.setGeometry(QRect(0, 0, 485, 420))
+        self.layout_CommentsPostScroll = QVBoxLayout(self.scrollAreaWidget_CommentsPost)
+        self.layout_CommentsPostScroll.setSpacing(20)
+        self.layout_CommentsPostScroll.setObjectName(u"layout_CommentsPostScroll")
+        self.layout_CommentsPostScroll.setContentsMargins(10, 0, 5, 20)
+        self.verticalSpacer_12 = QSpacerItem(467, 157, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.layout_CommentsPostScroll.addItem(self.verticalSpacer_12)
+
+        self.verticalSpacer_13 = QSpacerItem(20, 217, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.layout_CommentsPostScroll.addItem(self.verticalSpacer_13)
+
+        self.scrollArea_CommentsPost.setWidget(self.scrollAreaWidget_CommentsPost)
+
+        self.layout_CommentsPost.addWidget(self.scrollArea_CommentsPost)
+
+
+        self.horizontalLayout_10.addWidget(self.frame_PostContainer)
+
+        self.scrollArea_Comments = QScrollArea(self.page_Comments)
+        self.scrollArea_Comments.setObjectName(u"scrollArea_Comments")
+        self.scrollArea_Comments.setStyleSheet(u"QWidget, QScrollArea {\n"
+"	background: transponent;\n"
+"}\n"
+"\n"
+"QLabel#label_CommentsSign {\n"
+"	color: rgba(255,255,255,180);\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"	margin: 0;\n"
+"	background-color:  white;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"	background-color:  rgb(229,235,238);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: rgb(219,228,233);\n"
+"}")
+        self.scrollArea_Comments.setWidgetResizable(True)
+        self.scrollAreaWidget_Comments = QWidget()
+        self.scrollAreaWidget_Comments.setObjectName(u"scrollAreaWidget_Comments")
+        self.scrollAreaWidget_Comments.setGeometry(QRect(0, 0, 485, 490))
+        self.layout_ScrollAreaComments = QVBoxLayout(self.scrollAreaWidget_Comments)
+        self.layout_ScrollAreaComments.setSpacing(0)
+        self.layout_ScrollAreaComments.setObjectName(u"layout_ScrollAreaComments")
+        self.layout_ScrollAreaComments.setContentsMargins(0, 20, 0, 20)
+        self.stacked_Comments = QStackedWidget(self.scrollAreaWidget_Comments)
+        self.stacked_Comments.setObjectName(u"stacked_Comments")
+
+        self.layout_ScrollAreaComments.addWidget(self.stacked_Comments)
+
+        self.frame_SetCommentPage = QFrame(self.scrollAreaWidget_Comments)
+        self.frame_SetCommentPage.setObjectName(u"frame_SetCommentPage")
+        self.frame_SetCommentPage.setMinimumSize(QSize(0, 30))
+        self.frame_SetCommentPage.setMaximumSize(QSize(16777215, 30))
+        self.frame_SetCommentPage.setStyleSheet(u"QPushButton { \n"
+"	width: 30px;\n"
+"	height: 30px;\n"
+"	border-radius: 15px;\n"
+"	background-color: white;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"	background-color:  rgb(219,228,233);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: rgb(184,191,195);\n"
+"}\n"
+"\n"
+"QPushButton:checked {\n"
+"	background-color: rgb(219,228,233);\n"
+"}")
+        self.frame_SetCommentPage.setFrameShape(QFrame.StyledPanel)
+        self.frame_SetCommentPage.setFrameShadow(QFrame.Raised)
+        self.layout_SetCommentsPage = QHBoxLayout(self.frame_SetCommentPage)
+        self.layout_SetCommentsPage.setSpacing(5)
+        self.layout_SetCommentsPage.setObjectName(u"layout_SetCommentsPage")
+        self.layout_SetCommentsPage.setContentsMargins(0, 0, 0, 0)
+        self.horizontalSpacer_15 = QSpacerItem(277, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.layout_SetCommentsPage.addItem(self.horizontalSpacer_15)
+
+        self.horizontalSpacer_17 = QSpacerItem(277, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.layout_SetCommentsPage.addItem(self.horizontalSpacer_17)
+
+
+        self.layout_ScrollAreaComments.addWidget(self.frame_SetCommentPage)
+
+        self.label_CommentsSign = QLabel(self.scrollAreaWidget_Comments)
+        self.label_CommentsSign.setObjectName(u"label_CommentsSign")
+        font12 = QFont()
+        font12.setBold(True)
+        self.label_CommentsSign.setFont(font12)
+        self.label_CommentsSign.setAlignment(Qt.AlignCenter)
+        self.label_CommentsSign.setIndent(0)
+
+        self.layout_ScrollAreaComments.addWidget(self.label_CommentsSign)
+
+        self.scrollArea_Comments.setWidget(self.scrollAreaWidget_Comments)
+
+        self.horizontalLayout_10.addWidget(self.scrollArea_Comments)
+
+        self.stacked_Pages.addWidget(self.page_Comments)
+        self.page_User = QWidget()
+        self.page_User.setObjectName(u"page_User")
+        self.gridLayout_18 = QGridLayout(self.page_User)
+        self.gridLayout_18.setSpacing(0)
+        self.gridLayout_18.setObjectName(u"gridLayout_18")
+        self.gridLayout_18.setContentsMargins(0, 0, 0, 0)
+        self.scrollArea_User = QScrollArea(self.page_User)
+        self.scrollArea_User.setObjectName(u"scrollArea_User")
+        self.scrollArea_User.setStyleSheet(u"")
+        self.scrollArea_User.setWidgetResizable(True)
+        self.scrollAreaWidget_User = QWidget()
+        self.scrollAreaWidget_User.setObjectName(u"scrollAreaWidget_User")
+        self.scrollAreaWidget_User.setGeometry(QRect(0, 0, 1000, 1065))
+        self.scrollAreaWidget_User.setStyleSheet(u"QFrame#frame_UserTabsContainer {\n"
+"	border: 0;\n"
+"}")
+        self.gridLayout_15 = QGridLayout(self.scrollAreaWidget_User)
+        self.gridLayout_15.setSpacing(0)
+        self.gridLayout_15.setObjectName(u"gridLayout_15")
+        self.gridLayout_15.setContentsMargins(0, 0, 0, 0)
+        self.frame_UserTabsContainer = QFrame(self.scrollAreaWidget_User)
+        self.frame_UserTabsContainer.setObjectName(u"frame_UserTabsContainer")
+        self.frame_UserTabsContainer.setMinimumSize(QSize(0, 800))
+        self.frame_UserTabsContainer.setMaximumSize(QSize(1000, 16777215))
+        self.frame_UserTabsContainer.setStyleSheet(u"")
+        self.frame_UserTabsContainer.setFrameShape(QFrame.StyledPanel)
+        self.frame_UserTabsContainer.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_15 = QVBoxLayout(self.frame_UserTabsContainer)
+        self.verticalLayout_15.setSpacing(0)
+        self.verticalLayout_15.setObjectName(u"verticalLayout_15")
+        self.verticalLayout_15.setContentsMargins(10, 15, 10, 0)
+        self.frame_UserTabs = QFrame(self.frame_UserTabsContainer)
+        self.frame_UserTabs.setObjectName(u"frame_UserTabs")
+        self.frame_UserTabs.setMinimumSize(QSize(0, 60))
+        self.frame_UserTabs.setMaximumSize(QSize(16777215, 60))
+        self.frame_UserTabs.setStyleSheet(u"QFrame {\n"
+"	border-radius: 0;\n"
+"	border-top-left-radius: 20px;\n"
+"	border-top-right-radius: 20px;\n"
+"	border-bottom: 1px solid rgb(235, 237, 239);\n"
+"	border-top: 1px solid rgb(235, 237, 239);\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"	height: 40px;\n"
+"	width: 150px;\n"
+"	border-radius: 15px;\n"
+"	color: black;\n"
+"	background-color:  white;\n"
+"}\n"
+"\n"
+"QPushButton:checked  {\n"
+"	background-color:  rgb(235, 237, 239);\n"
+"}\n"
+"\n"
+"QPushButton:hover  {\n"
+"	background-color:  rgb(235, 237, 239);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: rgb(184,191,195);\n"
+"}\n"
+"")
+        self.frame_UserTabs.setFrameShape(QFrame.StyledPanel)
+        self.frame_UserTabs.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_12 = QHBoxLayout(self.frame_UserTabs)
+        self.horizontalLayout_12.setSpacing(10)
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.horizontalLayout_12.setContentsMargins(10, 10, 10, 10)
+        self.button_UserTabsPosts = QPushButton(self.frame_UserTabs)
+        self.button_UserTabsPosts.setObjectName(u"button_UserTabsPosts")
+        self.button_UserTabsPosts.setCheckable(True)
+
+        self.horizontalLayout_12.addWidget(self.button_UserTabsPosts)
+
+        self.button_UserTabsFollows = QPushButton(self.frame_UserTabs)
+        self.button_UserTabsFollows.setObjectName(u"button_UserTabsFollows")
+        self.button_UserTabsFollows.setCheckable(True)
+
+        self.horizontalLayout_12.addWidget(self.button_UserTabsFollows)
+
+
+        self.verticalLayout_15.addWidget(self.frame_UserTabs)
+
+        self.stacked_UserTabs = QStackedWidget(self.frame_UserTabsContainer)
+        self.stacked_UserTabs.setObjectName(u"stacked_UserTabs")
+        self.stacked_UserTabs.setMinimumSize(QSize(0, 800))
+        self.page_UserTabsPosts = QWidget()
+        self.page_UserTabsPosts.setObjectName(u"page_UserTabsPosts")
+        self.verticalLayout_16 = QVBoxLayout(self.page_UserTabsPosts)
+        self.verticalLayout_16.setObjectName(u"verticalLayout_16")
+        self.frame_2 = QFrame(self.page_UserTabsPosts)
+        self.frame_2.setObjectName(u"frame_2")
+        self.frame_2.setMinimumSize(QSize(0, 400))
+        self.frame_2.setFrameShape(QFrame.StyledPanel)
+        self.frame_2.setFrameShadow(QFrame.Raised)
+
+        self.verticalLayout_16.addWidget(self.frame_2)
+
+        self.stacked_UserTabs.addWidget(self.page_UserTabsPosts)
+        self.page_UserTabsFollows = QWidget()
+        self.page_UserTabsFollows.setObjectName(u"page_UserTabsFollows")
+        self.stacked_UserTabs.addWidget(self.page_UserTabsFollows)
+
+        self.verticalLayout_15.addWidget(self.stacked_UserTabs)
+
+
+        self.gridLayout_15.addWidget(self.frame_UserTabsContainer, 1, 0, 1, 2)
+
+        self.frame_UserInfoContainer = QFrame(self.scrollAreaWidget_User)
+        self.frame_UserInfoContainer.setObjectName(u"frame_UserInfoContainer")
+        self.frame_UserInfoContainer.setMinimumSize(QSize(0, 190))
+        self.frame_UserInfoContainer.setMaximumSize(QSize(1000, 190))
+        self.frame_UserInfoContainer.setStyleSheet(u"QFrame {\n"
+"	background: transponent;\n"
+"	color: white;\n"
+"}\n"
+"\n"
+"QFrame#frame_UsertInfoContainer {\n"
+"	border-radius: 0;\n"
+"}\n"
+"\n"
+"")
+        self.frame_UserInfoContainer.setFrameShape(QFrame.StyledPanel)
+        self.frame_UserInfoContainer.setFrameShadow(QFrame.Raised)
+        self.layout_UserInfoContainer = QHBoxLayout(self.frame_UserInfoContainer)
+        self.layout_UserInfoContainer.setSpacing(10)
+        self.layout_UserInfoContainer.setObjectName(u"layout_UserInfoContainer")
+        self.layout_UserInfoContainer.setContentsMargins(20, 15, 10, 0)
+        self.frame_UserInfo = QFrame(self.frame_UserInfoContainer)
+        self.frame_UserInfo.setObjectName(u"frame_UserInfo")
+        self.frame_UserInfo.setMinimumSize(QSize(0, 150))
+        self.frame_UserInfo.setMaximumSize(QSize(16777215, 150))
+        self.frame_UserInfo.setFont(font1)
+        self.frame_UserInfo.setStyleSheet(u"QFrame {\n"
+"	border-top-left-radius: 0;\n"
+"	border-top-right-radius: 0;\n"
+"}\n"
+"\n"
+"QLabel#label_UserAbout {\n"
+"	padding-bottom: 5px;\n"
+"	border-bottom: 1px solid rgb(229,235,238);\n"
+"}\n"
+"\n"
+"QLabel#label_UsertInformationID {\n"
+"	margin: 0;\n"
+"	border-bottom-left-radius: 10px;\n"
+"}\n"
+"\n"
+"QLabel#label_UserInformationAccess{\n"
+"	margin: 0;\n"
+"	border-bottom-right-radius: 10px;\n"
+"}\n"
+"\n"
+"")
+        self.frame_UserInfo.setFrameShape(QFrame.StyledPanel)
+        self.frame_UserInfo.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_17 = QVBoxLayout(self.frame_UserInfo)
+        self.verticalLayout_17.setSpacing(0)
+        self.verticalLayout_17.setObjectName(u"verticalLayout_17")
+        self.verticalLayout_17.setContentsMargins(10, 0, 5, 0)
+        self.verticalSpacer_14 = QSpacerItem(20, 60, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
+
+        self.verticalLayout_17.addItem(self.verticalSpacer_14)
+
+        self.frame_UserLabels = QFrame(self.frame_UserInfo)
+        self.frame_UserLabels.setObjectName(u"frame_UserLabels")
+        self.frame_UserLabels.setMinimumSize(QSize(0, 30))
+        self.frame_UserLabels.setMaximumSize(QSize(16777215, 30))
+        self.frame_UserLabels.setStyleSheet(u"")
+        self.frame_UserLabels.setFrameShape(QFrame.StyledPanel)
+        self.frame_UserLabels.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_13 = QHBoxLayout(self.frame_UserLabels)
+        self.horizontalLayout_13.setSpacing(5)
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.label_UserNickname = QLabel(self.frame_UserLabels)
+        self.label_UserNickname.setObjectName(u"label_UserNickname")
+        sizePolicy.setHeightForWidth(self.label_UserNickname.sizePolicy().hasHeightForWidth())
+        self.label_UserNickname.setSizePolicy(sizePolicy)
+        self.label_UserNickname.setMinimumSize(QSize(0, 30))
+        self.label_UserNickname.setMaximumSize(QSize(16777215, 30))
+        self.label_UserNickname.setFont(font2)
+        self.label_UserNickname.setStyleSheet(u"")
+        self.label_UserNickname.setScaledContents(False)
+        self.label_UserNickname.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
+        self.label_UserNickname.setMargin(0)
+        self.label_UserNickname.setIndent(0)
+        self.label_UserNickname.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
+
+        self.horizontalLayout_13.addWidget(self.label_UserNickname)
+
+        self.label_UserStatus = QLabel(self.frame_UserLabels)
+        self.label_UserStatus.setObjectName(u"label_UserStatus")
+        self.label_UserStatus.setMinimumSize(QSize(0, 0))
+        self.label_UserStatus.setMaximumSize(QSize(16777215, 16777215))
+        self.label_UserStatus.setTextFormat(Qt.RichText)
+        self.label_UserStatus.setAlignment(Qt.AlignBottom|Qt.AlignLeading|Qt.AlignLeft)
+        self.label_UserStatus.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByMouse)
+
+        self.horizontalLayout_13.addWidget(self.label_UserStatus)
+
+        self.horizontalSpacer_18 = QSpacerItem(151, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_13.addItem(self.horizontalSpacer_18)
+
+
+        self.verticalLayout_17.addWidget(self.frame_UserLabels)
+
+        self.frame_UserButtons = QFrame(self.frame_UserInfo)
+        self.frame_UserButtons.setObjectName(u"frame_UserButtons")
+        self.frame_UserButtons.setMinimumSize(QSize(0, 0))
+        self.frame_UserButtons.setMaximumSize(QSize(16777215, 90))
+        self.frame_UserButtons.setStyleSheet(u"")
+        self.frame_UserButtons.setFrameShape(QFrame.StyledPanel)
+        self.frame_UserButtons.setFrameShadow(QFrame.Raised)
+        self.gridLayout_16 = QGridLayout(self.frame_UserButtons)
+        self.gridLayout_16.setObjectName(u"gridLayout_16")
+        self.gridLayout_16.setHorizontalSpacing(5)
+        self.gridLayout_16.setVerticalSpacing(10)
+        self.gridLayout_16.setContentsMargins(0, 0, 5, 5)
+        self.horizontalSpacer_20 = QSpacerItem(7, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_16.addItem(self.horizontalSpacer_20, 1, 1, 1, 1)
+
+        self.horizontalSpacer_19 = QSpacerItem(182, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_16.addItem(self.horizontalSpacer_19, 0, 1, 1, 4)
+
+        self.button_UserReport = QPushButton(self.frame_UserButtons)
+        self.button_UserReport.setObjectName(u"button_UserReport")
+
+        self.gridLayout_16.addWidget(self.button_UserReport, 1, 4, 1, 1)
+
+        self.button_UserFollow = QPushButton(self.frame_UserButtons)
+        self.button_UserFollow.setObjectName(u"button_UserFollow")
+
+        self.gridLayout_16.addWidget(self.button_UserFollow, 1, 2, 1, 1)
+
+        self.button_UserMessage = QPushButton(self.frame_UserButtons)
+        self.button_UserMessage.setObjectName(u"button_UserMessage")
+
+        self.gridLayout_16.addWidget(self.button_UserMessage, 1, 3, 1, 1)
+
+        self.frame_UserAboutContainer = QFrame(self.frame_UserButtons)
+        self.frame_UserAboutContainer.setObjectName(u"frame_UserAboutContainer")
+        self.frame_UserAboutContainer.setMinimumSize(QSize(200, 60))
+        self.frame_UserAboutContainer.setMaximumSize(QSize(16777215, 90))
+        self.frame_UserAboutContainer.setStyleSheet(u"")
+        self.frame_UserAboutContainer.setFrameShape(QFrame.StyledPanel)
+        self.frame_UserAboutContainer.setFrameShadow(QFrame.Raised)
+        self.gridLayout_17 = QGridLayout(self.frame_UserAboutContainer)
+        self.gridLayout_17.setSpacing(0)
+        self.gridLayout_17.setObjectName(u"gridLayout_17")
+        self.gridLayout_17.setContentsMargins(0, 0, 0, 5)
+        self.label_UserId = QLabel(self.frame_UserAboutContainer)
+        self.label_UserId.setObjectName(u"label_UserId")
+        self.label_UserId.setMinimumSize(QSize(0, 20))
+        self.label_UserId.setMaximumSize(QSize(100, 20))
+        self.label_UserId.setFont(font3)
+        self.label_UserId.setStyleSheet(u"")
+        self.label_UserId.setIndent(0)
+        self.label_UserId.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByKeyboard|Qt.TextSelectableByMouse)
+
+        self.gridLayout_17.addWidget(self.label_UserId, 1, 0, 1, 1)
+
+        self.label_UserAbout = QLabel(self.frame_UserAboutContainer)
+        self.label_UserAbout.setObjectName(u"label_UserAbout")
+        self.label_UserAbout.setMinimumSize(QSize(300, 20))
+        self.label_UserAbout.setMaximumSize(QSize(300, 70))
+        self.label_UserAbout.setFont(font4)
+        self.label_UserAbout.setStyleSheet(u"")
+        self.label_UserAbout.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.label_UserAbout.setWordWrap(True)
+        self.label_UserAbout.setIndent(0)
+        self.label_UserAbout.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByMouse)
+
+        self.gridLayout_17.addWidget(self.label_UserAbout, 0, 0, 1, 2)
+
+        self.label_UserAccess = QLabel(self.frame_UserAboutContainer)
+        self.label_UserAccess.setObjectName(u"label_UserAccess")
+        self.label_UserAccess.setMaximumSize(QSize(100, 16777215))
+        self.label_UserAccess.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.label_UserAccess.setIndent(0)
+
+        self.gridLayout_17.addWidget(self.label_UserAccess, 1, 1, 1, 1)
+
+
+        self.gridLayout_16.addWidget(self.frame_UserAboutContainer, 0, 0, 2, 1)
+
+        self.button_UserDelete = QPushButton(self.frame_UserButtons)
+        self.button_UserDelete.setObjectName(u"button_UserDelete")
+
+        self.gridLayout_16.addWidget(self.button_UserDelete, 1, 5, 1, 1)
+
+
+        self.verticalLayout_17.addWidget(self.frame_UserButtons)
+
+
+        self.layout_UserInfoContainer.addWidget(self.frame_UserInfo)
+
+
+        self.gridLayout_15.addWidget(self.frame_UserInfoContainer, 0, 0, 1, 2)
+
+        self.scrollArea_User.setWidget(self.scrollAreaWidget_User)
+
+        self.gridLayout_18.addWidget(self.scrollArea_User, 0, 0, 1, 1)
+
+        self.stacked_Pages.addWidget(self.page_User)
+
+        self.gridLayout.addWidget(self.stacked_Pages, 1, 0, 1, 1)
 
 
         self.gridLayout_2.addWidget(self.frame_Main, 0, 0, 1, 1)
@@ -1515,11 +2357,9 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.button_AccountExit.toggled.connect(self.frame_AccountExitConfirmation.setVisible)
         self.button_AccountExit.toggled.connect(self.button_AccountExit.setHidden)
-        self.button_Apps.toggled.connect(self.frame_SideBarApps.setVisible)
-        self.button_Chat.toggled.connect(self.frame_SideBarChat.setVisible)
-        self.button_Notifications.toggled.connect(self.frame_SideBarNotifications.setVisible)
 
-        self.stacked_Pages.setCurrentIndex(0)
+        self.stacked_Pages.setCurrentIndex(4)
+        self.stacked_SideBar.setCurrentIndex(0)
         self.stacked_AccountEditTabs.setCurrentIndex(0)
 
 
@@ -1528,8 +2368,6 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"R&R", None))
-        self.label_ErrorText.setText(QCoreApplication.translate("MainWindow", u"ERROR! CONNECTION TO SERVER IS LOST!", None))
-        self.button_ErrorClose.setText("")
 #if QT_CONFIG(tooltip)
         self.button_Logo.setToolTip(QCoreApplication.translate("MainWindow", u"Home", None))
 #endif // QT_CONFIG(tooltip)
@@ -1556,11 +2394,17 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.button_Account.setText("")
         self.label_HomeSign.setText(QCoreApplication.translate("MainWindow", u"fdf", None))
+        self.button_SortByTime.setText(QCoreApplication.translate("MainWindow", u"New", None))
+        self.button_SortByLikes.setText(QCoreApplication.translate("MainWindow", u"Likes", None))
+        self.button_SortByDislikes.setText(QCoreApplication.translate("MainWindow", u"Dislikes", None))
+        self.button_SortByComments.setText(QCoreApplication.translate("MainWindow", u"Comments", None))
+        self.button_SortByHot.setText(QCoreApplication.translate("MainWindow", u"Hot", None))
+        self.label.setText("")
+        self.button_AppsAccount.setText(QCoreApplication.translate("MainWindow", u"My Account", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Chat", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Notifications", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Chat", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Notifications", None))
         self.button_AccountTabsPosts.setText(QCoreApplication.translate("MainWindow", u"Posts", None))
-        self.button_AccountTabsFriend.setText(QCoreApplication.translate("MainWindow", u"Follows", None))
+        self.button_AccountTabsFollows.setText(QCoreApplication.translate("MainWindow", u"Follows", None))
         self.label_AccountNickname.setText(QCoreApplication.translate("MainWindow", u"Nickname", None))
         self.label_AccountStatus.setText("")
 #if QT_CONFIG(tooltip)
@@ -1568,7 +2412,7 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.button_AccountExit.setText("")
         self.label_AccountInformationID.setText("")
-        self.label_AccountInformationText.setText(QCoreApplication.translate("MainWindow", u"\u0413\u0435\u043d\u0438\u0439, \u043c\u0438\u043b\u043b\u0438\u0430\u0440\u0434\u0435\u0440, \u043f\u043b\u044d\u0439\u0431\u043e\u0439, \u0444\u0438\u043b\u0430\u043d\u0442\u0440\u043e\u043f...", None))
+        self.label_AccountAbout.setText(QCoreApplication.translate("MainWindow", u"\u0413\u0435\u043d\u0438\u0439, \u043c\u0438\u043b\u043b\u0438\u0430\u0440\u0434\u0435\u0440, \u043f\u043b\u044d\u0439\u0431\u043e\u0439, \u0444\u0438\u043b\u0430\u043d\u0442\u0440\u043e\u043f...", None))
         self.label_AccountInformationAccess.setText("")
         self.button_AccountExitYes.setText("")
         self.button_AccountExitNo.setText("")
@@ -1609,5 +2453,28 @@ class Ui_MainWindow(object):
         self.label_AccountEditProfileWarning.setText(QCoreApplication.translate("MainWindow", u"There are unsaved changes!", None))
         self.button_AccountEditProfileCancel.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
         self.button_AccountEditProfileSave.setText(QCoreApplication.translate("MainWindow", u"Save Changes", None))
+        self.button_ReportBack.setText("")
+        self.label_Report.setText(QCoreApplication.translate("MainWindow", u"Report @skyskyskyy?", None))
+        self.label_ReportText.setText(QCoreApplication.translate("MainWindow", u"The report email will send to admins", None))
+        self.textEdit_ReportText.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:italic;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+        self.textEdit_ReportText.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Report message", None))
+        self.button_Report.setText(QCoreApplication.translate("MainWindow", u"Report", None))
+        self.button_CommentsBack.setText("")
+        self.label_CommentsSign.setText(QCoreApplication.translate("MainWindow", u"Seems like there are no comments yet", None))
+        self.button_UserTabsPosts.setText(QCoreApplication.translate("MainWindow", u"Posts", None))
+        self.button_UserTabsFollows.setText(QCoreApplication.translate("MainWindow", u"Follows", None))
+        self.label_UserNickname.setText(QCoreApplication.translate("MainWindow", u"Nickname", None))
+        self.label_UserStatus.setText("")
+        self.button_UserReport.setText("")
+        self.button_UserFollow.setText("")
+        self.button_UserMessage.setText("")
+        self.label_UserId.setText("")
+        self.label_UserAbout.setText(QCoreApplication.translate("MainWindow", u"\u0413\u0435\u043d\u0438\u0439, \u043c\u0438\u043b\u043b\u0438\u0430\u0440\u0434\u0435\u0440, \u043f\u043b\u044d\u0439\u0431\u043e\u0439, \u0444\u0438\u043b\u0430\u043d\u0442\u0440\u043e\u043f...", None))
+        self.label_UserAccess.setText("")
+        self.button_UserDelete.setText("")
     # retranslateUi
 

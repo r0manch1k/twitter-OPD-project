@@ -1,13 +1,15 @@
 import os
 
 from PySide6.QtCore import QSize, Signal, QPoint, QTimer, Qt, QEvent
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QWidget, QLineEdit, QLabel
+from PySide6.QtGui import QIcon, QColor
+from PySide6.QtWidgets import QWidget, QLineEdit, QLabel, QGraphicsDropShadowEffect
 
 from src.main.gui.design.signup.signup import Ui_form_SignUp
 from src.main.objects.ImageTools import ImageTools
 from src.main.objects.server.Authorization import Authorization
 from src.main.objects.server.FileManager import FileManager
+
+from src.main.objects.widgets import InfoBar
 
 
 class SignUpForm(Ui_form_SignUp, QWidget):
@@ -39,11 +41,13 @@ class SignUpForm(Ui_form_SignUp, QWidget):
         self.__email = None
         self.__password = None
 
-        self.button_IconPasswordVisibility = {}
-        self.button_IconCodeSent = {}
+        self.dictPasswordVisIcons = {}
+        self.dictCodeSentIcons = {}
+        self.errorBar = None
 
         self.__setIconsSVG()
         self.__initSetup()
+        self.__setShadow()
 
     def __setIconsSVG(self):
 
@@ -53,17 +57,14 @@ class SignUpForm(Ui_form_SignUp, QWidget):
         self.ui.button_ControlBack.setIconSize(QSize(30, 30))
 
         icon_PasswordVisibilityOn = QIcon()
-        icon_PasswordVisibilityOn.addFile(":icons/icons/PasswordVisibilityOn.svg", QSize(),
-                                          QIcon.Normal)
+        icon_PasswordVisibilityOn.addFile(":icons/icons/PasswordVisibilityOn.svg", QSize(), QIcon.Normal)
         self.ui.button_PasswordVisibility.setIcon(icon_PasswordVisibilityOn)
         self.ui.button_PasswordVisibility.setIconSize(QSize(25, 25))
 
         icon_PasswordVisibilityOff = QIcon()
-        icon_PasswordVisibilityOff.addFile(":icons/icons/PasswordVisibilityOff.svg", QSize(),
-                                           QIcon.Normal)
-
-        self.button_IconPasswordVisibility[True] = icon_PasswordVisibilityOn
-        self.button_IconPasswordVisibility[False] = icon_PasswordVisibilityOff
+        icon_PasswordVisibilityOff.addFile(":icons/icons/PasswordVisibilityOff.svg", QSize(), QIcon.Normal)
+        self.dictPasswordVisIcons[True] = icon_PasswordVisibilityOn
+        self.dictPasswordVisIcons[False] = icon_PasswordVisibilityOff
 
     def __initSetup(self):
 
@@ -109,25 +110,53 @@ class SignUpForm(Ui_form_SignUp, QWidget):
         self.ui.textBrowser_VerifyBack.document().setDocumentMargin(0)
         self.ui.textBrowser_VerifyBack.anchorClicked.connect(self.switchPage)
 
-        self.ui.textBrowser_VerifyBack.setLineWrapColumnOrWidth(0)
         self.ui.textBrowser_toLogIn.setLineWrapColumnOrWidth(0)
+        self.ui.textBrowser_VerifyBack.setLineWrapColumnOrWidth(0)
         self.ui.textBrowser_ResendTimer.setLineWrapColumnOrWidth(0)
 
-        self.ui.textBrowser_VerifyBack.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.ui.textBrowser_toLogIn.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.ui.textBrowser_VerifyBack.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.ui.textBrowser_ResendTimer.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
         self.ui.line_Name.installEventFilter(self)
-        self.ui.line_Username.installEventFilter(self)
+        self.ui.line_Code.installEventFilter(self)
         self.ui.line_Email.installEventFilter(self)
         self.ui.line_Password.installEventFilter(self)
-        self.ui.line_Code.installEventFilter(self)
+        self.ui.line_Username.installEventFilter(self)
 
-        self.ui.button_ControlBack.clicked.connect(self.switchPage)
         self.ui.button_NextStep.clicked.connect(self.switchPage)
+        self.ui.button_ControlBack.clicked.connect(self.switchPage)
         self.ui.button_VerifyEmail.clicked.connect(self.verifyEmail)
 
         self.timer.timeout.connect(self.timeUpdate)
+
+    def __setShadow(self):
+
+        self.__shadowBlurRadius = 10.0
+        self.__borderWidth = 1
+        self.__shadowMargin = 0
+        self.__borderRadius = 12.0
+
+        self.__effectSideBar = QGraphicsDropShadowEffect()
+        self.__effectSideBar.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectSideBar.setColor(QColor(0, 0, 0, 127))
+        self.__effectSideBar.setOffset(3.0)
+        self.ui.button_ControlBack.setGraphicsEffect(self.__effectSideBar)
+        self.ui.button_ControlBack.repaint()
+
+        self.__effectVerify = QGraphicsDropShadowEffect()
+        self.__effectVerify.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectVerify.setColor(QColor(0, 0, 0, 127))
+        self.__effectVerify.setOffset(5.0)
+        self.ui.frame_Verify_2.setGraphicsEffect(self.__effectVerify)
+        self.ui.frame_Verify_2.repaint()
+
+        self.__effectSignUp = QGraphicsDropShadowEffect()
+        self.__effectSignUp.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectSignUp.setColor(QColor(0, 0, 0, 127))
+        self.__effectSignUp.setOffset(5.0)
+        self.ui.frame_SignUp_2.setGraphicsEffect(self.__effectSignUp)
+        self.ui.frame_SignUp_2.repaint()
 
     def eventFilter(self, watched, event):
 
@@ -211,10 +240,10 @@ class SignUpForm(Ui_form_SignUp, QWidget):
 
         if self.sender().isChecked():
             self.ui.line_Password.setEchoMode(QLineEdit.EchoMode.Normal)
-            self.ui.button_PasswordVisibility.setIcon(self.button_IconPasswordVisibility[False])
+            self.ui.button_PasswordVisibility.setIcon(self.dictPasswordVisIcons[False])
         else:
             self.ui.line_Password.setEchoMode(QLineEdit.EchoMode.Password)
-            self.ui.button_PasswordVisibility.setIcon(self.button_IconPasswordVisibility[True])
+            self.ui.button_PasswordVisibility.setIcon(self.dictPasswordVisIcons[True])
         self.ui.button_PasswordVisibility.setIconSize(QSize(25, 25))
 
     def switchPage(self):
@@ -269,22 +298,30 @@ class SignUpForm(Ui_form_SignUp, QWidget):
         self.ui.textBrowser_ResendTimer.setOpenLinks(True)
         self.ui.textBrowser_ResendTimer.setVisible(True)
 
-    @staticmethod
-    def isError(label: QLabel, executeDict: dict) -> bool:
+    def isError(self, label: QLabel, execute: dict) -> bool:
 
-        if not executeDict["error"]:
+        if not execute["error"]:
             return False
 
-        label.setStyleSheet("color: red;")
-        label.setVisible(True)
+        if execute["error"]["connection"]:
+            self.showError(execute["error"]["connection"])
+            # label.setText(execute["error"]["connection"])
 
-        if executeDict["error"]["connection"]:
-            label.setText(executeDict["error"]["connection"])
+        elif execute["error"]["format"]:
+            label.setStyleSheet("color: red;")
+            label.setVisible(True)
+            label.setText(execute["error"]["format"])
 
-        elif executeDict["error"]["format"]:
-            label.setText(executeDict["error"]["format"])
+        elif execute["error"]["auth"]:
+            self.showError(execute["error"]["auth"])
+            # label.setText(execute["error"]["auth"])
 
         return True
+
+    def showError(self, error: str):
+        if self.errorBar is None or self.errorBar.isHidden():
+            self.errorBar = InfoBar(self, error, error=True)
+            self.errorBar.show()
 
     def nextStep(self):
 

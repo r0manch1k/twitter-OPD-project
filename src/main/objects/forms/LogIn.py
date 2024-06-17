@@ -1,13 +1,15 @@
 import os
 
 from PySide6.QtCore import QSize, Signal, QPoint, Qt, QTimer, QEvent
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QWidget, QLineEdit, QLabel
+from PySide6.QtGui import QIcon, QColor
+from PySide6.QtWidgets import QWidget, QLineEdit, QLabel, QGraphicsDropShadowEffect
 
 from src.main.gui.design.login.login import Ui_form_LogIn
 from src.main.objects.ImageTools import ImageTools
 from src.main.objects.server.Authorization import Authorization
 from src.main.objects.server.FileManager import FileManager
+
+from src.main.objects.widgets import InfoBar
 
 
 class LogInForm(Ui_form_LogIn, QWidget):
@@ -35,11 +37,13 @@ class LogInForm(Ui_form_LogIn, QWidget):
         self.timer = QTimer(self)
         self.timeCounter = 0
 
-        self.button_IconPasswordVisibility = {}
-        self.button_IconCodeSent = {}
+        self.dictPasswordVisIcons = {}
+        self.dictCodeSentIcons = {}
+        self.errorBar = None
 
         self.__setIconsSVG()
         self.__initSetup()
+        self.__setShadow()
 
     def __setIconsSVG(self):
 
@@ -59,8 +63,8 @@ class LogInForm(Ui_form_LogIn, QWidget):
         icon_PasswordVisibilityOff = QIcon()
         icon_PasswordVisibilityOff.addFile(":icons/icons/PasswordVisibilityOff.svg", QSize(), QIcon.Normal)
 
-        self.button_IconPasswordVisibility[True] = icon_PasswordVisibilityOn
-        self.button_IconPasswordVisibility[False] = icon_PasswordVisibilityOff
+        self.dictPasswordVisIcons[True] = icon_PasswordVisibilityOn
+        self.dictPasswordVisIcons[False] = icon_PasswordVisibilityOff
 
         icon_SendCode = QIcon()
         icon_SendCode.addFile(":icons/icons/SendCode.svg", QSize(), QIcon.Normal)
@@ -70,8 +74,8 @@ class LogInForm(Ui_form_LogIn, QWidget):
         icon_CodeSent = QIcon()
         icon_CodeSent.addFile(":icons/icons/CodeSent.svg", QSize(), QIcon.Normal)
 
-        self.button_IconCodeSent[True] = icon_CodeSent
-        self.button_IconCodeSent[False] = icon_SendCode
+        self.dictCodeSentIcons[True] = icon_CodeSent
+        self.dictCodeSentIcons[False] = icon_SendCode
 
     def __initSetup(self):
 
@@ -96,7 +100,7 @@ class LogInForm(Ui_form_LogIn, QWidget):
         self.ui.label_LogInError.setHidden(True)
         self.ui.textBrowser_ResendTimer.setHidden(True)
 
-        self.ui.button_CodeSend.setIcon(self.button_IconCodeSent[False])
+        self.ui.button_CodeSend.setIcon(self.dictCodeSentIcons[False])
         self.ui.button_CodeSend.setIconSize(QSize(25, 25))
 
         self.ui.button_PwdVis.toggled.connect(self.setPasswordVisibility)
@@ -170,6 +174,41 @@ class LogInForm(Ui_form_LogIn, QWidget):
         self.ui.button_LogIn.clicked.connect(self.logIn)
         self.ui.button_CodeSend.clicked.connect(self.sendCode)
         self.ui.button_Submit.clicked.connect(self.submitPassword)
+
+    def __setShadow(self):
+
+        self.__shadowBlurRadius = 10.0
+        self.__borderWidth = 1
+        self.__shadowMargin = 0
+        self.__borderRadius = 12.0
+
+        self.__effectSideBar = QGraphicsDropShadowEffect()
+        self.__effectSideBar.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectSideBar.setColor(QColor(0, 0, 0, 127))
+        self.__effectSideBar.setOffset(3.0)
+        self.ui.button_ControlBack.setGraphicsEffect(self.__effectSideBar)
+        self.ui.button_ControlBack.repaint()
+
+        self.__effectReset = QGraphicsDropShadowEffect()
+        self.__effectReset.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectReset.setColor(QColor(0, 0, 0, 127))
+        self.__effectReset.setOffset(5.0)
+        self.ui.frame_Reset_3.setGraphicsEffect(self.__effectReset)
+        self.ui.frame_Reset_3.repaint()
+
+        self.__effectLogin = QGraphicsDropShadowEffect()
+        self.__effectLogin.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectLogin.setColor(QColor(0, 0, 0, 127))
+        self.__effectLogin.setOffset(5.0)
+        self.ui.frame_LogIn_2.setGraphicsEffect(self.__effectLogin)
+        self.ui.frame_LogIn_2.repaint()
+
+        self.__effectNew = QGraphicsDropShadowEffect()
+        self.__effectNew.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectNew.setColor(QColor(0, 0, 0, 127))
+        self.__effectNew.setOffset(5.0)
+        self.ui.frame_New_3.setGraphicsEffect(self.__effectNew)
+        self.ui.frame_New_3.repaint()
 
     def eventFilter(self, watched, event):
 
@@ -263,7 +302,7 @@ class LogInForm(Ui_form_LogIn, QWidget):
             elif self.sender() == self.ui.button_PwdVis:
                 self.ui.line_PwdFirst.setEchoMode(QLineEdit.EchoMode.Normal)
 
-            self.sender().setIcon(self.button_IconPasswordVisibility[False])
+            self.sender().setIcon(self.dictPasswordVisIcons[False])
 
         else:
 
@@ -273,14 +312,14 @@ class LogInForm(Ui_form_LogIn, QWidget):
             elif self.sender() == self.ui.button_PwdVis:
                 self.ui.line_PwdFirst.setEchoMode(QLineEdit.EchoMode.Password)
 
-            self.sender().setIcon(self.button_IconPasswordVisibility[True])
+            self.sender().setIcon(self.dictPasswordVisIcons[True])
 
         self.ui.button_PasswordVisibility.setIconSize(QSize(25, 25))
 
     def setCodeSentButton(self, value: bool):
 
         self.ui.button_CodeSend.setChecked(value)
-        self.ui.button_CodeSend.setIcon(self.button_IconCodeSent[value])
+        self.ui.button_CodeSend.setIcon(self.dictCodeSentIcons[value])
 
     def setResendTimerText(self):
 
@@ -337,22 +376,33 @@ class LogInForm(Ui_form_LogIn, QWidget):
 
             self.exit()
 
-    @staticmethod
-    def isError(label: QLabel, executeDict: dict) -> bool:
+    def isError(self, label: QLabel, execute: dict) -> bool:
 
-        if not executeDict["error"]:
+        if not execute["error"]:
             return False
 
         label.setStyleSheet("color: red;")
-        label.setVisible(True)
+        # label.setVisible(True)
 
-        if executeDict["error"]["connection"]:
-            label.setText(executeDict["error"]["connection"])
+        if execute["error"]["connection"]:
+            self.showError(execute["error"]["connection"])
+            # label.setText(execute["error"]["connection"])
 
-        elif executeDict["error"]["format"]:
-            label.setText(executeDict["error"]["format"])
+        elif execute["error"]["format"]:
+            label.setStyleSheet("color: red;")
+            label.setVisible(True)
+            label.setText(execute["error"]["format"])
+
+        elif execute["error"]["auth"]:
+            self.showError(execute["error"]["auth"])
+            # label.setText(execute["error"]["auth"])
 
         return True
+
+    def showError(self, error: str):
+        if self.errorBar is None or self.errorBar.isHidden():
+            self.errorBar = InfoBar(self, error, error=True)
+            self.errorBar.show()
 
     def logIn(self):
 
@@ -368,7 +418,6 @@ class LogInForm(Ui_form_LogIn, QWidget):
             return
 
         execute = self.__auth.logIn(email, password)
-
         if self.isError(self.ui.label_LogInError, execute):
             return
 
@@ -385,7 +434,6 @@ class LogInForm(Ui_form_LogIn, QWidget):
             return
 
         execute = self.__auth.resetPassword(self.__email)
-
         if self.isError(self.ui.label_ResetError, execute):
             return
 
@@ -433,7 +481,6 @@ class LogInForm(Ui_form_LogIn, QWidget):
         code = int(self.ui.line_Code.text())
 
         execute = self.__auth.verificationSession(code)
-
         if self.isError(self.ui.label_ResetError, execute):
             return
 
@@ -456,11 +503,8 @@ class LogInForm(Ui_form_LogIn, QWidget):
             return
 
         execute = self.__auth.setNewPassword(passwordSecond)
-
         if self.isError(self.ui.label_NewError, execute):
             return
-
-        print(execute)
 
         self.exit()
 

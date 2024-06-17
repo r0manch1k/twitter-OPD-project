@@ -16,9 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QFrame, QGridLayout,
-    QHBoxLayout, QLabel, QLayout, QPlainTextEdit,
-    QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout,
-    QWidget)
+    QHBoxLayout, QLabel, QPlainTextEdit, QPushButton,
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
 class Ui_frame_PostCreate(object):
     def setupUi(self, frame_PostCreate):
@@ -107,11 +106,25 @@ class Ui_frame_PostCreate(object):
         self.frame_PostCreateMain.setStyleSheet(u"")
         self.frame_PostCreateMain.setFrameShape(QFrame.StyledPanel)
         self.frame_PostCreateMain.setFrameShadow(QFrame.Raised)
-        self.layout_PostCreateMain = QHBoxLayout(self.frame_PostCreateMain)
-        self.layout_PostCreateMain.setSpacing(10)
-        self.layout_PostCreateMain.setObjectName(u"layout_PostCreateMain")
-        self.layout_PostCreateMain.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.layout_PostCreateMain.setContentsMargins(10, 10, 10, 10)
+        self.gridLayout = QGridLayout(self.frame_PostCreateMain)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setHorizontalSpacing(10)
+        self.gridLayout.setVerticalSpacing(0)
+        self.gridLayout.setContentsMargins(10, 10, 10, 10)
+        self.line_PostCreateText = QPlainTextEdit(self.frame_PostCreateMain)
+        self.line_PostCreateText.setObjectName(u"line_PostCreateText")
+        self.line_PostCreateText.setMinimumSize(QSize(0, 30))
+        self.line_PostCreateText.setMaximumSize(QSize(16777215, 30))
+        self.line_PostCreateText.setStyleSheet(u"padding-top: 3px;")
+        self.line_PostCreateText.setFrameShadow(QFrame.Sunken)
+        self.line_PostCreateText.setLineWidth(0)
+        self.line_PostCreateText.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.line_PostCreateText.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.line_PostCreateText.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        self.line_PostCreateText.setBackgroundVisible(False)
+
+        self.gridLayout.addWidget(self.line_PostCreateText, 0, 1, 1, 1)
+
         self.frame_PostCreateImage = QFrame(self.frame_PostCreateMain)
         self.frame_PostCreateImage.setObjectName(u"frame_PostCreateImage")
         self.frame_PostCreateImage.setMinimumSize(QSize(0, 30))
@@ -133,25 +146,58 @@ class Ui_frame_PostCreate(object):
         self.verticalLayout_11.addItem(self.verticalSpacer_7)
 
 
-        self.layout_PostCreateMain.addWidget(self.frame_PostCreateImage)
+        self.gridLayout.addWidget(self.frame_PostCreateImage, 0, 0, 1, 1)
 
-        self.line_PostCreateText = QPlainTextEdit(self.frame_PostCreateMain)
-        self.line_PostCreateText.setObjectName(u"line_PostCreateText")
-        self.line_PostCreateText.setMinimumSize(QSize(0, 30))
-        self.line_PostCreateText.setMaximumSize(QSize(16777215, 30))
-        self.line_PostCreateText.setStyleSheet(u"padding-top: 3px;")
-        self.line_PostCreateText.setFrameShadow(QFrame.Sunken)
-        self.line_PostCreateText.setLineWidth(0)
-        self.line_PostCreateText.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.line_PostCreateText.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.line_PostCreateText.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
-        self.line_PostCreateText.setBackgroundVisible(False)
+        self.frame_Hint = QFrame(self.frame_PostCreateMain)
+        self.frame_Hint.setObjectName(u"frame_Hint")
+        self.frame_Hint.setMinimumSize(QSize(0, 25))
+        self.frame_Hint.setMaximumSize(QSize(16777215, 25))
+        self.frame_Hint.setStyleSheet(u"QPushButton {\n"
+"	width: 12px;\n"
+"	height: 12px;\n"
+"	color: black;\n"
+"	margin: 0;\n"
+"	border-radius: 6px;\n"
+"	background-color:  rgb(229,235,238);\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"	background-color:  rgb(219,228,233);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: rgb(184,191,195);\n"
+"}")
+        self.frame_Hint.setFrameShape(QFrame.StyledPanel)
+        self.frame_Hint.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout = QHBoxLayout(self.frame_Hint)
+        self.horizontalLayout.setSpacing(5)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.label_Hint = QLabel(self.frame_Hint)
+        self.label_Hint.setObjectName(u"label_Hint")
+        font = QFont()
+        font.setPointSize(10)
+        self.label_Hint.setFont(font)
 
-        self.layout_PostCreateMain.addWidget(self.line_PostCreateText)
+        self.horizontalLayout.addWidget(self.label_Hint)
+
+        self.button_RemoveFile = QPushButton(self.frame_Hint)
+        self.button_RemoveFile.setObjectName(u"button_RemoveFile")
+
+        self.horizontalLayout.addWidget(self.button_RemoveFile)
+
+        self.horizontalSpacer = QSpacerItem(467, 5, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+
+        self.gridLayout.addWidget(self.frame_Hint, 1, 0, 1, 3)
 
         self.frame_PostCreateToolsUnselected = QFrame(self.frame_PostCreateMain)
         self.frame_PostCreateToolsUnselected.setObjectName(u"frame_PostCreateToolsUnselected")
-        self.frame_PostCreateToolsUnselected.setMinimumSize(QSize(0, 30))
+        self.frame_PostCreateToolsUnselected.setMinimumSize(QSize(100, 30))
+        self.frame_PostCreateToolsUnselected.setMaximumSize(QSize(100, 16777215))
         self.frame_PostCreateToolsUnselected.setFrameShape(QFrame.StyledPanel)
         self.frame_PostCreateToolsUnselected.setFrameShadow(QFrame.Raised)
         self.gridLayout_12 = QGridLayout(self.frame_PostCreateToolsUnselected)
@@ -189,7 +235,7 @@ class Ui_frame_PostCreate(object):
         self.gridLayout_12.addWidget(self.button_PostCreateAddImageUnselected, 1, 1, 1, 1)
 
 
-        self.layout_PostCreateMain.addWidget(self.frame_PostCreateToolsUnselected)
+        self.gridLayout.addWidget(self.frame_PostCreateToolsUnselected, 0, 2, 1, 1)
 
 
         self.verticalLayout.addWidget(self.frame_PostCreateMain)
@@ -234,10 +280,10 @@ class Ui_frame_PostCreate(object):
         self.button_PostCreate.setObjectName(u"button_PostCreate")
         self.button_PostCreate.setMinimumSize(QSize(80, 40))
         self.button_PostCreate.setMaximumSize(QSize(80, 40))
-        font = QFont()
-        font.setBold(True)
-        font.setItalic(False)
-        self.button_PostCreate.setFont(font)
+        font1 = QFont()
+        font1.setBold(True)
+        font1.setItalic(False)
+        self.button_PostCreate.setFont(font1)
         self.button_PostCreate.setStyleSheet(u"")
 
         self.horizontalLayout_2.addWidget(self.button_PostCreate)
@@ -253,11 +299,13 @@ class Ui_frame_PostCreate(object):
 
     def retranslateUi(self, frame_PostCreate):
         frame_PostCreate.setWindowTitle(QCoreApplication.translate("frame_PostCreate", u"create", None))
+        self.line_PostCreateText.setPlaceholderText(QCoreApplication.translate("frame_PostCreate", u"What's new?", None))
 #if QT_CONFIG(tooltip)
         self.label_PostCreateImage.setToolTip(QCoreApplication.translate("frame_PostCreate", u"Your Profile", None))
 #endif // QT_CONFIG(tooltip)
         self.label_PostCreateImage.setText("")
-        self.line_PostCreateText.setPlaceholderText(QCoreApplication.translate("frame_PostCreate", u"What's new?", None))
+        self.label_Hint.setText(QCoreApplication.translate("frame_PostCreate", u"TextLabel", None))
+        self.button_RemoveFile.setText("")
 #if QT_CONFIG(tooltip)
         self.button_PostCreateAddVideoUnselected.setToolTip(QCoreApplication.translate("frame_PostCreate", u"Choose Video", None))
 #endif // QT_CONFIG(tooltip)

@@ -26,9 +26,14 @@ class Ui_form_Post(object):
         form_Post.resize(800, 300)
         form_Post.setMinimumSize(QSize(390, 0))
         form_Post.setMaximumSize(QSize(16777215, 16777215))
-        form_Post.setStyleSheet(u"QFrame , QWidget{\n"
+        form_Post.setStyleSheet(u"\n"
+"QFrame , QWidget{\n"
 "	border: 0;\n"
 "	background-color: white;\n"
+"}\n"
+"\n"
+"QWidget#widget_PostImage {\n"
+"	border-radius: 10px;\n"
 "}\n"
 "\n"
 "QFrame#frame_Main {\n"
@@ -77,12 +82,12 @@ class Ui_form_Post(object):
 "\n"
 "\n"
 "QComboBox {\n"
-"	border: 0;\n"
+""
+                        "	border: 0;\n"
 "	border-radius: 15px;	\n"
 "}\n"
 "\n"
-"QComboBox::hover"
-                        " {\n"
+"QComboBox::hover {\n"
 "	background-color: rgb(235, 237, 239);\n"
 "}\n"
 "\n"
@@ -145,10 +150,10 @@ class Ui_form_Post(object):
         self.frame_Main.setStyleSheet(u"")
         self.frame_Main.setFrameShape(QFrame.StyledPanel)
         self.frame_Main.setFrameShadow(QFrame.Raised)
-        self.verticalLayout = QVBoxLayout(self.frame_Main)
-        self.verticalLayout.setSpacing(10)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(10, 10, 10, 10)
+        self.layout_Main = QVBoxLayout(self.frame_Main)
+        self.layout_Main.setSpacing(10)
+        self.layout_Main.setObjectName(u"layout_Main")
+        self.layout_Main.setContentsMargins(10, 10, 10, 10)
         self.frame_PostAuthor = QFrame(self.frame_Main)
         self.frame_PostAuthor.setObjectName(u"frame_PostAuthor")
         self.frame_PostAuthor.setMinimumSize(QSize(0, 50))
@@ -195,7 +200,7 @@ class Ui_form_Post(object):
         self.horizontalLayout.addWidget(self.button_More)
 
 
-        self.verticalLayout.addWidget(self.frame_PostAuthor)
+        self.layout_Main.addWidget(self.frame_PostAuthor)
 
         self.textBrowser_PostText = QTextBrowser(self.frame_Main)
         self.textBrowser_PostText.setObjectName(u"textBrowser_PostText")
@@ -203,7 +208,13 @@ class Ui_form_Post(object):
         self.textBrowser_PostText.setMaximumSize(QSize(16777215, 100))
         self.textBrowser_PostText.setOpenExternalLinks(True)
 
-        self.verticalLayout.addWidget(self.textBrowser_PostText)
+        self.layout_Main.addWidget(self.textBrowser_PostText)
+
+        self.widget_PostImage = QWidget(self.frame_Main)
+        self.widget_PostImage.setObjectName(u"widget_PostImage")
+        self.widget_PostImage.setMaximumSize(QSize(570, 16777215))
+
+        self.layout_Main.addWidget(self.widget_PostImage)
 
         self.label_PostData = QTextEdit(self.frame_Main)
         self.label_PostData.setObjectName(u"label_PostData")
@@ -211,7 +222,7 @@ class Ui_form_Post(object):
         self.label_PostData.setMaximumSize(QSize(16777215, 30))
         self.label_PostData.setReadOnly(True)
 
-        self.verticalLayout.addWidget(self.label_PostData)
+        self.layout_Main.addWidget(self.label_PostData)
 
         self.frame_PostReactions = QFrame(self.frame_Main)
         self.frame_PostReactions.setObjectName(u"frame_PostReactions")
@@ -260,7 +271,7 @@ class Ui_form_Post(object):
         self.horizontalLayout_3.addItem(self.horizontalSpacer_3)
 
 
-        self.verticalLayout.addWidget(self.frame_PostReactions)
+        self.layout_Main.addWidget(self.frame_PostReactions)
 
         self.frame_PostInfo = QFrame(self.frame_Main)
         self.frame_PostInfo.setObjectName(u"frame_PostInfo")
@@ -302,7 +313,7 @@ class Ui_form_Post(object):
         self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
 
 
-        self.verticalLayout.addWidget(self.frame_PostInfo)
+        self.layout_Main.addWidget(self.frame_PostInfo)
 
 
         self.verticalLayout_3.addWidget(self.frame_Main)
