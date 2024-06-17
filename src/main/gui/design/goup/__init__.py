@@ -1,0 +1,1 @@
+from .goup import Ui_dialog_GoUp

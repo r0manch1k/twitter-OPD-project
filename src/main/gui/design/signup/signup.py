@@ -114,8 +114,8 @@ class Ui_form_SignUp(object):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.frame_ControlMain = QFrame(self.frame_Main)
         self.frame_ControlMain.setObjectName(u"frame_ControlMain")
-        self.frame_ControlMain.setMinimumSize(QSize(325, 0))
-        self.frame_ControlMain.setMaximumSize(QSize(325, 16777215))
+        self.frame_ControlMain.setMinimumSize(QSize(315, 0))
+        self.frame_ControlMain.setMaximumSize(QSize(315, 16777215))
         self.frame_ControlMain.setFrameShape(QFrame.StyledPanel)
         self.frame_ControlMain.setFrameShadow(QFrame.Raised)
         self.verticalLayout_2 = QVBoxLayout(self.frame_ControlMain)
@@ -153,14 +153,14 @@ class Ui_form_SignUp(object):
 
         self.frame_SignUpMain_1 = QFrame(self.frame_Main)
         self.frame_SignUpMain_1.setObjectName(u"frame_SignUpMain_1")
-        self.frame_SignUpMain_1.setMinimumSize(QSize(327, 0))
+        self.frame_SignUpMain_1.setMinimumSize(QSize(347, 0))
         self.frame_SignUpMain_1.setStyleSheet(u"")
         self.frame_SignUpMain_1.setFrameShape(QFrame.StyledPanel)
         self.frame_SignUpMain_1.setFrameShadow(QFrame.Raised)
         self.verticalLayout = QVBoxLayout(self.frame_SignUpMain_1)
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setContentsMargins(10, 0, 10, 0)
         self.verticalSpacer = QSpacerItem(20, 37, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -402,7 +402,7 @@ class Ui_form_SignUp(object):
 
         self.verticalLayout.addWidget(self.frame_SignUp_2)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 50, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 37, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer_2)
 
@@ -435,7 +435,8 @@ class Ui_form_SignUp(object):
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.frame_ControlSubmitContainer = QFrame(self.frame_Verify)
         self.frame_ControlSubmitContainer.setObjectName(u"frame_ControlSubmitContainer")
-        self.frame_ControlSubmitContainer.setMinimumSize(QSize(325, 0))
+        self.frame_ControlSubmitContainer.setMinimumSize(QSize(315, 0))
+        self.frame_ControlSubmitContainer.setMaximumSize(QSize(315, 16777215))
         self.frame_ControlSubmitContainer.setStyleSheet(u"")
         self.frame_ControlSubmitContainer.setFrameShape(QFrame.StyledPanel)
         self.frame_ControlSubmitContainer.setFrameShadow(QFrame.Raised)
@@ -452,14 +453,14 @@ class Ui_form_SignUp(object):
 
         self.frame_Verify_1 = QFrame(self.frame_Verify)
         self.frame_Verify_1.setObjectName(u"frame_Verify_1")
-        self.frame_Verify_1.setMinimumSize(QSize(327, 0))
+        self.frame_Verify_1.setMinimumSize(QSize(347, 0))
         self.frame_Verify_1.setStyleSheet(u"")
         self.frame_Verify_1.setFrameShape(QFrame.StyledPanel)
         self.frame_Verify_1.setFrameShadow(QFrame.Raised)
         self.verticalLayout_5 = QVBoxLayout(self.frame_Verify_1)
         self.verticalLayout_5.setSpacing(10)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_5.setContentsMargins(10, 0, 10, 0)
         self.verticalSpacer_7 = QSpacerItem(20, 37, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_7)
@@ -599,7 +600,7 @@ class Ui_form_SignUp(object):
 
         self.retranslateUi(form_SignUp)
 
-        self.stacked_Main.setCurrentIndex(0)
+        self.stacked_Main.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(form_SignUp)

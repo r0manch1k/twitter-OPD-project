@@ -1,13 +1,15 @@
 import os
 
 from PySide6.QtCore import QSize, Signal, QPoint, Qt, QTimer, QEvent
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QWidget, QLineEdit, QLabel
+from PySide6.QtGui import QIcon, QColor
+from PySide6.QtWidgets import QWidget, QLineEdit, QLabel, QGraphicsDropShadowEffect
 
 from src.main.gui.design.login.login import Ui_form_LogIn
 from src.main.objects.ImageTools import ImageTools
 from src.main.objects.server.Authorization import Authorization
 from src.main.objects.server.FileManager import FileManager
+
+from src.main.objects.widgets import InfoBar
 
 
 class LogInForm(Ui_form_LogIn, QWidget):
@@ -37,9 +39,11 @@ class LogInForm(Ui_form_LogIn, QWidget):
 
         self.dictPasswordVisIcons = {}
         self.dictCodeSentIcons = {}
+        self.errorBar = None
 
         self.__setIconsSVG()
         self.__initSetup()
+        self.__setShadow()
 
     def __setIconsSVG(self):
 
@@ -170,6 +174,41 @@ class LogInForm(Ui_form_LogIn, QWidget):
         self.ui.button_LogIn.clicked.connect(self.logIn)
         self.ui.button_CodeSend.clicked.connect(self.sendCode)
         self.ui.button_Submit.clicked.connect(self.submitPassword)
+
+    def __setShadow(self):
+
+        self.__shadowBlurRadius = 10.0
+        self.__borderWidth = 1
+        self.__shadowMargin = 0
+        self.__borderRadius = 12.0
+
+        self.__effectSideBar = QGraphicsDropShadowEffect()
+        self.__effectSideBar.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectSideBar.setColor(QColor(0, 0, 0, 127))
+        self.__effectSideBar.setOffset(3.0)
+        self.ui.button_ControlBack.setGraphicsEffect(self.__effectSideBar)
+        self.ui.button_ControlBack.repaint()
+
+        self.__effectReset = QGraphicsDropShadowEffect()
+        self.__effectReset.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectReset.setColor(QColor(0, 0, 0, 127))
+        self.__effectReset.setOffset(5.0)
+        self.ui.frame_Reset_3.setGraphicsEffect(self.__effectReset)
+        self.ui.frame_Reset_3.repaint()
+
+        self.__effectLogin = QGraphicsDropShadowEffect()
+        self.__effectLogin.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectLogin.setColor(QColor(0, 0, 0, 127))
+        self.__effectLogin.setOffset(5.0)
+        self.ui.frame_LogIn_2.setGraphicsEffect(self.__effectLogin)
+        self.ui.frame_LogIn_2.repaint()
+
+        self.__effectNew = QGraphicsDropShadowEffect()
+        self.__effectNew.setBlurRadius(self.__shadowBlurRadius)
+        self.__effectNew.setColor(QColor(0, 0, 0, 127))
+        self.__effectNew.setOffset(5.0)
+        self.ui.frame_New_3.setGraphicsEffect(self.__effectNew)
+        self.ui.frame_New_3.repaint()
 
     def eventFilter(self, watched, event):
 
@@ -337,25 +376,33 @@ class LogInForm(Ui_form_LogIn, QWidget):
 
             self.exit()
 
-    @staticmethod
-    def isError(label: QLabel, execute: dict) -> bool:
+    def isError(self, label: QLabel, execute: dict) -> bool:
 
         if not execute["error"]:
             return False
 
         label.setStyleSheet("color: red;")
-        label.setVisible(True)
+        # label.setVisible(True)
 
         if execute["error"]["connection"]:
-            label.setText(execute["error"]["connection"])
+            self.showError(execute["error"]["connection"])
+            # label.setText(execute["error"]["connection"])
 
         elif execute["error"]["format"]:
+            label.setStyleSheet("color: red;")
+            label.setVisible(True)
             label.setText(execute["error"]["format"])
 
         elif execute["error"]["auth"]:
-            label.setText(execute["error"]["auth"])
+            self.showError(execute["error"]["auth"])
+            # label.setText(execute["error"]["auth"])
 
         return True
+
+    def showError(self, error: str):
+        if self.errorBar is None or self.errorBar.isHidden():
+            self.errorBar = InfoBar(self, error, error=True)
+            self.errorBar.show()
 
     def logIn(self):
 

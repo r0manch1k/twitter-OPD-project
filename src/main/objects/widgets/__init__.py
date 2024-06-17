@@ -1,4 +1,9 @@
 from .DragNDrop import DragNDrop
 from .ProfilePictureFrame import ProfilePictureFrame
 from .Post import Post
-from.CreatePost import CreatePost
+from .CreatePost import CreatePost
+from .InfoBar import InfoBar
+from .GoUp import GoUp
+from .Comment import Comment
+from .Advert import Advert
+from .CreateComment import CreateComment

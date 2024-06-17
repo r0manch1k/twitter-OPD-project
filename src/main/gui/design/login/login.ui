@@ -139,7 +139,7 @@ QTextBrowser QScrollBar::sub-line:horizontal {
 }</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_Main">
       <property name="styleSheet">
@@ -192,13 +192,13 @@ QTextBrowser QScrollBar::sub-line:horizontal {
            <widget class="QFrame" name="frame_ControlMain">
             <property name="minimumSize">
              <size>
-              <width>325</width>
+              <width>315</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>325</width>
+              <width>315</width>
               <height>16777215</height>
              </size>
             </property>
@@ -303,7 +303,7 @@ QTextBrowser QScrollBar::sub-line:horizontal {
            <widget class="QFrame" name="frame_LogIn_1">
             <property name="minimumSize">
              <size>
-              <width>327</width>
+              <width>347</width>
               <height>0</height>
              </size>
             </property>
@@ -321,13 +321,13 @@ QTextBrowser QScrollBar::sub-line:horizontal {
               <number>10</number>
              </property>
              <property name="leftMargin">
-              <number>0</number>
+              <number>10</number>
              </property>
              <property name="topMargin">
               <number>0</number>
              </property>
              <property name="rightMargin">
-              <number>0</number>
+              <number>10</number>
              </property>
              <property name="bottomMargin">
               <number>0</number>
@@ -840,7 +840,7 @@ p, li { white-space: pre-wrap; }
            <widget class="QFrame" name="frame_Reset_1">
             <property name="minimumSize">
              <size>
-              <width>325</width>
+              <width>315</width>
               <height>0</height>
              </size>
             </property>
@@ -886,7 +886,7 @@ p, li { white-space: pre-wrap; }
            <widget class="QFrame" name="frame_Reset_2">
             <property name="minimumSize">
              <size>
-              <width>327</width>
+              <width>347</width>
               <height>0</height>
              </size>
             </property>
@@ -904,13 +904,13 @@ p, li { white-space: pre-wrap; }
               <number>10</number>
              </property>
              <property name="leftMargin">
-              <number>0</number>
+              <number>10</number>
              </property>
              <property name="topMargin">
               <number>0</number>
              </property>
              <property name="rightMargin">
-              <number>0</number>
+              <number>10</number>
              </property>
              <property name="bottomMargin">
               <number>0</number>
@@ -1424,7 +1424,7 @@ p, li { white-space: pre-wrap; }
            <widget class="QFrame" name="frame_New_1">
             <property name="minimumSize">
              <size>
-              <width>325</width>
+              <width>315</width>
               <height>0</height>
              </size>
             </property>
@@ -1470,7 +1470,7 @@ p, li { white-space: pre-wrap; }
            <widget class="QFrame" name="frame_New_2">
             <property name="minimumSize">
              <size>
-              <width>327</width>
+              <width>347</width>
               <height>0</height>
              </size>
             </property>
@@ -1488,13 +1488,13 @@ p, li { white-space: pre-wrap; }
               <number>10</number>
              </property>
              <property name="leftMargin">
-              <number>0</number>
+              <number>10</number>
              </property>
              <property name="topMargin">
               <number>0</number>
              </property>
              <property name="rightMargin">
-              <number>0</number>
+              <number>10</number>
              </property>
              <property name="bottomMargin">
               <number>0</number>

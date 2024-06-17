@@ -143,8 +143,8 @@ class Ui_form_LogIn(object):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.frame_ControlMain = QFrame(self.frame_Main)
         self.frame_ControlMain.setObjectName(u"frame_ControlMain")
-        self.frame_ControlMain.setMinimumSize(QSize(325, 0))
-        self.frame_ControlMain.setMaximumSize(QSize(325, 16777215))
+        self.frame_ControlMain.setMinimumSize(QSize(315, 0))
+        self.frame_ControlMain.setMaximumSize(QSize(315, 16777215))
         self.frame_ControlMain.setFrameShape(QFrame.StyledPanel)
         self.frame_ControlMain.setFrameShadow(QFrame.Raised)
         self.verticalLayout_2 = QVBoxLayout(self.frame_ControlMain)
@@ -182,14 +182,14 @@ class Ui_form_LogIn(object):
 
         self.frame_LogIn_1 = QFrame(self.frame_Main)
         self.frame_LogIn_1.setObjectName(u"frame_LogIn_1")
-        self.frame_LogIn_1.setMinimumSize(QSize(327, 0))
+        self.frame_LogIn_1.setMinimumSize(QSize(347, 0))
         self.frame_LogIn_1.setStyleSheet(u"")
         self.frame_LogIn_1.setFrameShape(QFrame.StyledPanel)
         self.frame_LogIn_1.setFrameShadow(QFrame.Raised)
         self.verticalLayout = QVBoxLayout(self.frame_LogIn_1)
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setContentsMargins(10, 0, 10, 0)
         self.verticalSpacer = QSpacerItem(20, 37, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -293,7 +293,7 @@ class Ui_form_LogIn(object):
         self.frame_PasswordInput.setObjectName(u"frame_PasswordInput")
         self.frame_PasswordInput.setMinimumSize(QSize(0, 50))
         self.frame_PasswordInput.setMaximumSize(QSize(16777215, 50))
-        self.frame_PasswordInput.setStyleSheet(u"x")
+        self.frame_PasswordInput.setStyleSheet(u"")
         self.frame_PasswordInput.setFrameShape(QFrame.StyledPanel)
         self.frame_PasswordInput.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_3 = QHBoxLayout(self.frame_PasswordInput)
@@ -303,6 +303,7 @@ class Ui_form_LogIn(object):
         self.line_Password = QLineEdit(self.frame_PasswordInput)
         self.line_Password.setObjectName(u"line_Password")
         self.line_Password.setFont(font1)
+        self.line_Password.setStyleSheet(u"")
         self.line_Password.setMaxLength(16)
         self.line_Password.setEchoMode(QLineEdit.Password)
 
@@ -310,6 +311,7 @@ class Ui_form_LogIn(object):
 
         self.button_PasswordVisibility = QPushButton(self.frame_PasswordInput)
         self.button_PasswordVisibility.setObjectName(u"button_PasswordVisibility")
+        self.button_PasswordVisibility.setStyleSheet(u"")
         self.button_PasswordVisibility.setCheckable(True)
 
         self.horizontalLayout_3.addWidget(self.button_PasswordVisibility)
@@ -402,7 +404,7 @@ class Ui_form_LogIn(object):
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.frame_Reset_1 = QFrame(self.frame_Reset)
         self.frame_Reset_1.setObjectName(u"frame_Reset_1")
-        self.frame_Reset_1.setMinimumSize(QSize(325, 0))
+        self.frame_Reset_1.setMinimumSize(QSize(315, 0))
         self.frame_Reset_1.setFrameShape(QFrame.StyledPanel)
         self.frame_Reset_1.setFrameShadow(QFrame.Raised)
         self.verticalLayout_4 = QVBoxLayout(self.frame_Reset_1)
@@ -418,14 +420,14 @@ class Ui_form_LogIn(object):
 
         self.frame_Reset_2 = QFrame(self.frame_Reset)
         self.frame_Reset_2.setObjectName(u"frame_Reset_2")
-        self.frame_Reset_2.setMinimumSize(QSize(327, 0))
+        self.frame_Reset_2.setMinimumSize(QSize(347, 0))
         self.frame_Reset_2.setStyleSheet(u"")
         self.frame_Reset_2.setFrameShape(QFrame.StyledPanel)
         self.frame_Reset_2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_5 = QVBoxLayout(self.frame_Reset_2)
         self.verticalLayout_5.setSpacing(10)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_5.setContentsMargins(10, 0, 10, 0)
         self.verticalSpacer_9 = QSpacerItem(20, 37, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer_9)
@@ -631,7 +633,7 @@ class Ui_form_LogIn(object):
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.frame_New_1 = QFrame(self.frame_New)
         self.frame_New_1.setObjectName(u"frame_New_1")
-        self.frame_New_1.setMinimumSize(QSize(325, 0))
+        self.frame_New_1.setMinimumSize(QSize(315, 0))
         self.frame_New_1.setFrameShape(QFrame.StyledPanel)
         self.frame_New_1.setFrameShadow(QFrame.Raised)
         self.verticalLayout_7 = QVBoxLayout(self.frame_New_1)
@@ -647,14 +649,14 @@ class Ui_form_LogIn(object):
 
         self.frame_New_2 = QFrame(self.frame_New)
         self.frame_New_2.setObjectName(u"frame_New_2")
-        self.frame_New_2.setMinimumSize(QSize(327, 0))
+        self.frame_New_2.setMinimumSize(QSize(347, 0))
         self.frame_New_2.setStyleSheet(u"")
         self.frame_New_2.setFrameShape(QFrame.StyledPanel)
         self.frame_New_2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_8 = QVBoxLayout(self.frame_New_2)
         self.verticalLayout_8.setSpacing(10)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_8.setContentsMargins(10, 0, 10, 0)
         self.verticalSpacer_15 = QSpacerItem(20, 37, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_8.addItem(self.verticalSpacer_15)
@@ -883,7 +885,7 @@ class Ui_form_LogIn(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
-        self.button_VerifyCode.setText(QCoreApplication.translate("form_LogIn", u"Verify Code", None))
+        self.button_VerifyCode.setText(QCoreApplication.translate("form_LogIn", u"Verify Email", None))
         self.label_Forgot_2.setText(QCoreApplication.translate("form_LogIn", u"Forgot Password", None))
         self.textBrowser_NewAbout.setHtml(QCoreApplication.translate("form_LogIn", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
