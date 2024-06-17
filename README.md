@@ -5,7 +5,7 @@ R&R - это онлайн соц сеть, предоставляющая пол
 
 > Основная идея — быстрая и лаконичная передача информации. Пользователи могут подписываться на других пользователей, следить за их сообщениями и делиться своими мыслями, новостями, фото и видео в реальном времени.
 
-![PngLogo.png](https://i.yapx.cc/XjyXD.png)
+![PngLogo.png](https://iimg.su/s/17/5EarAXqFsfBdHwy1bU2smCnbGHRu2sOsdOdPAd4W.png)
 
 ![photo_2024-06-17 15.15.43.jpg](https://iimg.su/s/17/3cj0DBYt9fS93cldWluuMAO0yzFcPZC1LlskGnnK.jpg)
 
