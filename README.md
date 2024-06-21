@@ -7,9 +7,27 @@ R&R (Roma & Ruslan) - это онлайн соц сеть, предоставл�
 
 ![PngLogo.png](https://iimg.su/s/17/5EarAXqFsfBdHwy1bU2smCnbGHRu2sOsdOdPAd4W.png)
 
-![photo_2024-06-17 15.15.43.jpg](https://iimg.su/s/17/3cj0DBYt9fS93cldWluuMAO0yzFcPZC1LlskGnnK.jpg)
+![Снимок экрана 2024-06-21 в 14.54.00.png](https://iimg.su/s/21/Fc5Q4FaUIOiNeRaz3UwvTEfuMJZ5wNog8ZBdZ7dJ.png)
 
-![photo_2024-06-17 15.15.49.jpg](https://iimg.su/s/17/gXZbFwB8hFkR7veL83xXDFZOsazrg93TR2cu4Wtf.jpg)
+![Снимок экрана 2024-06-21 в 14.54.06.png](https://iimg.su/s/21/GHHMHyqnnMQPZRDv1uuTYj0xtuYwUeCLkIfNd3j3.png)
+
+![Снимок экрана 2024-06-21 в 14.54.11.png](https://iimg.su/s/21/GpG4pDYmd2tlgVvWm5Wk82ms3TvPfvb0F11lB5fD.png)
+
+![Снимок экрана 2024-06-21 в 14.43.13.png](https://iimg.su/s/21/TAlc4rh51xmGjgoVBmhXndr2mwFmomZhXc46kJLM.png)
+
+![Снимок экрана 2024-06-21 в 14.43.46.png](https://iimg.su/s/21/wUWxr45ucrTRbWB2bbjFw6pSTy2rT5kMb7YzH1LV.png)
+
+![Снимок экрана 2024-06-21 в 14.43.55.png](https://iimg.su/s/21/gAf8LqDyOrNilXRnG6qStYt6wTmVJ6jdD2J83uvA.png)
+
+![Снимок экрана 2024-06-21 в 14.44.32.png](https://iimg.su/s/21/sWJEKbv81HwhqoH4TJYSfG7Zx4hUZZ7xqj1uAtW0.png)
+
+![Снимок экрана 2024-06-21 в 14.44.57.png](https://iimg.su/s/21/62JNVdQaJXdAChTOJwnft5q9eo0uemPFEU5wbMKX.png)
+
+![Снимок экрана 2024-06-21 в 14.52.05.png](https://iimg.su/s/21/iNCvSiBfQatwNZ28GhC2fgeT6r95I2UniKuPTnyL.png)
+
+![Снимок экрана 2024-06-21 в 14.52.50.png](https://iimg.su/s/21/wt6IuQEERrsoiADIIjjET2luTU2vyBjy7dM5NoIA.png)
+
+![Снимок экрана 2024-06-21 в 14.53.21.png](https://iimg.su/s/21/nbkk0XySVzkvNs7spLKT5eFccTMeCt33MwIEJyte.png)
 
 ![photo_2024-06-17 15.19.28.jpg](https://iimg.su/s/17/6yvUGpLARJJMDeO719a8rjVumBH3pV7xNw5g44bN.jpg)
 
