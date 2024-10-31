@@ -1,9 +1,9 @@
 # R&R 
 ![Static Badge](https://img.shields.io/badge/R%26R-v1.0.0-blue?style=flat-square&labelColor=gray)
 
-R&R (Roma & Ruslan) - это онлайн соц сеть, предоставляющая пользователям возможность обмениваться короткими сообщениями, обсуждать их и ставить реакции.
+R&R (Roma & Ruslan) is an online social network that provides users with the opportunity to exchange short messages, discuss them and set reactions.
 
-> Основная идея — быстрая и лаконичная передача информации. Пользователи могут подписываться на других пользователей, следить за их сообщениями и делиться своими мыслями, новостями, фото и видео в реальном времени.
+> The main idea is a fast and concise transfer of information. Users can subscribe to other users, follow their messages and share their thoughts, news, photos and videos in real time.
 
 ![PngLogo.png](https://iimg.su/s/17/5EarAXqFsfBdHwy1bU2smCnbGHRu2sOsdOdPAd4W.png)
 
@@ -29,34 +29,35 @@ R&R (Roma & Ruslan) - это онлайн соц сеть, предоставл�
 
 ![Снимок экрана 2024-06-21 в 14.53.21.png](https://iimg.su/s/21/nbkk0XySVzkvNs7spLKT5eFccTMeCt33MwIEJyte.png)
 
-Основной функционал **R&R** включает в себя возможность <u>подписываться на других пользователей, следить за их сообщениями и активно обмениваться мыслями, новостями, фотографиями и видео.</u> Пользователи могут быстро и удобно делиться своими мыслями и впечатлениями с широкой аудиторией, получая обратную связь и реакции на свои посты.
+The main functionality of **R&R** includes the ability to <u> subscribe to other users, follow their messages and actively share thoughts, news, photos and videos.Users can quickly and conveniently share their thoughts and impressions with a wide audience, receiving feedback and reactions to their posts.
 
-Этот проект представляет собой идеальное пространство для тех, кто ценит быстроту, лаконичность и возможность мгновенно делиться информацией с огромной аудиторией. **R&R** - это не просто социальная сеть, это инструмент для быстрого обмена мыслями, идеями и эмоциями в мире, где время ценится выше всего.
+This project is an ideal space for those who appreciate speed, conciseness and the ability to instantly share information with a huge audience. **R&R** is not just a social network, it is a tool for the rapid exchange of thoughts, ideas and emotions in a world where time is valued above all else.
 
 
 
-## ОСОБЕННОСТИ
-Приложение **R&R** обладает рядом особенностей:
+## FEATURES
+The application **R&R** has a number of features:
 
- - взаимодействие с удалённым сервером (**MySQL**, **FTP**)
+ - interaction with a remote server (**MySQL**, **FTP**)
 ![Снимок экрана 2024-06-17 в 11.32.33.png](https://iimg.su/s/17/OSOOyZ7Rlqw1IHup1HLnWIMfKC4STMRiiesch4OM.png)
 
-- создание постов с возможностью прикреплять фото
+- create posts with the ability to attach photos
 ![photo_2024-06-17 15.15.40.jpg](https://iimg.su/s/17/f4PiZHAOjJfUdn2K7vSwqlojYxguNmBhWd5GDRU0.jpg)
 
-- создание аккаунта и изменение пароля с верификацией с помощью персонального уникального кода, который пользователь получает в письме на email (с помощью **SMTP**)
-![Снимок экрана 2024-06-17 в 11.57.50.png](https://iimg.su/s/17/pp8f9o9YjhCkrnPkY4zDjXoC77qrQphrQRRe8Qiz.png)
+- account creation and password change with verification using a personal unique code that the user receives in an email (using **SMTP**)
+![Screenshot 2024-06-17 at 11.57.50.png](https://iimg.su/s/17/pp8f9o9YjhCkrnPkY4zDjXoC77qrQphrQRRe8Qiz.png )
 
-- система отправки жалоб на посты, жалобы рассылаются всем администраторам на почту, для дальнейшего рассмотрения (с помощью **SMTP**)
-![Снимок экрана 2024-06-17 в 12.05.17.png](https://iimg.su/s/17/QfujZQD2IeYQbdp7v1KA5rWTQdn9eMp7kluvPtq7.png)
+- a system for sending complaints to posts, complaints are sent to all administrators by mail, for further consideration (using **SMTP**)
+![Screenshot 2024-06-17 at 05/12/17.png](https://iimg.su/s/17/QfujZQD2IeYQbdp7v1KA5rWTQdn9eMp7kluvPtq7.png )
 
-- технология DRUG AND DROP для изменения автаркии пользователя
+- DRUG AND DROP technology to change the user's autarky
 ![photo_2024-06-17 15.41.32.jpg](https://iimg.su/s/17/PyCix85dtf1FHHWmEqfk6MpIuNZ2GZymVAvOAuWc.jpg)
-## ТЕХНОЛОГИИ
-Социальная сеть R&R полностью написана на языке программирования **Python v3.12**. В разработке также были использованы **PySide6** - привязка к Python кроссплатформенного GUI toolkit Qt и технология **git**:
+
+## TECHNOLOGIES
+The R&R social network is completely written in the programming language **Python v3.12**. The development also used **PySide6** - Python binding of the cross-platform GUI toolkit Qt and **git technology**:
 
 ## P.S
-На ГитХаб представлена ознокомительная версия приложения. Вы не сможете полноцено воспользоваться приложением без файлов с данными хостинга :(
+An amazing version of the app is presented on GitHub. You will not be able to fully use the application without hosting data files :(
 
 | Tech | Sources            |
 | ------ |--------------------|
@@ -65,8 +66,8 @@ R&R (Roma & Ruslan) - это онлайн соц сеть, предоставл�
 | Python | [python.org][SRCp] |
 
 ## РАЗРАБОТЧИКИ
-[Куторгин Руслан Алексеевич Б9123-01.03.02СП](https://github.com/teenxsky)
-[Соколовский Роман Вадимович Б9123-01.03.02СП](https://github.com/r0manch1k)
+[teenxsky](https://github.com/teenxsky)
+[r0manch1k](https://github.com/r0manch1k)
 
 ###### 00TEAM 2024 ™
 [SRCt]: <https://doc.qt.io/qtforpython-6/index.html>
