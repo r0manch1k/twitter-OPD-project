@@ -13,21 +13,11 @@ R&R (Roma & Ruslan) is an online social network that provides users with the opp
 
 ![Снимок экрана 2024-06-21 в 14.54.11.png](https://iimg.su/s/21/GpG4pDYmd2tlgVvWm5Wk82ms3TvPfvb0F11lB5fD.png)
 
+![Снимок экрана 2024-06-21 в 14.53.21.png](https://iimg.su/s/21/nbkk0XySVzkvNs7spLKT5eFccTMeCt33MwIEJyte.png)
+
 ![Снимок экрана 2024-06-21 в 14.43.13.png](https://iimg.su/s/21/TAlc4rh51xmGjgoVBmhXndr2mwFmomZhXc46kJLM.png)
 
-![Снимок экрана 2024-06-21 в 14.43.46.png](https://iimg.su/s/21/wUWxr45ucrTRbWB2bbjFw6pSTy2rT5kMb7YzH1LV.png)
-
-![Снимок экрана 2024-06-21 в 14.43.55.png](https://iimg.su/s/21/gAf8LqDyOrNilXRnG6qStYt6wTmVJ6jdD2J83uvA.png)
-
-![Снимок экрана 2024-06-21 в 14.44.32.png](https://iimg.su/s/21/sWJEKbv81HwhqoH4TJYSfG7Zx4hUZZ7xqj1uAtW0.png)
-
-![Снимок экрана 2024-06-21 в 14.44.57.png](https://iimg.su/s/21/62JNVdQaJXdAChTOJwnft5q9eo0uemPFEU5wbMKX.png)
-
 ![Снимок экрана 2024-06-21 в 14.52.05.png](https://iimg.su/s/21/iNCvSiBfQatwNZ28GhC2fgeT6r95I2UniKuPTnyL.png)
-
-![Снимок экрана 2024-06-21 в 14.52.50.png](https://iimg.su/s/21/wt6IuQEERrsoiADIIjjET2luTU2vyBjy7dM5NoIA.png)
-
-![Снимок экрана 2024-06-21 в 14.53.21.png](https://iimg.su/s/21/nbkk0XySVzkvNs7spLKT5eFccTMeCt33MwIEJyte.png)
 
 The main functionality of **R&R** includes the ability to <u> subscribe to other users, follow their messages and actively share thoughts, news, photos and videos.Users can quickly and conveniently share their thoughts and impressions with a wide audience, receiving feedback and reactions to their posts.
 
